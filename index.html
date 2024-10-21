@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial=1.0">
+    <meta name="description" content="Alvin's Pizzeria">
+    <meta name="keywords" content="pizza restuarant, pizza near me">
+    <meta name="author" content="Kalman Web Design">
+    <title>Alvin's Pizzeria</title>
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
+    <!-- stylesheet -->
+    <link href="styles/styles.css" rel="stylesheet">
+    <!-- font awesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="scripts/scripts.js" defer></script>
+</head>
+<p>Hello! My name is Tove and I made this website to showcase some of my work and what I do, and also you can buy some of my work! Email me if you have questions or suggestions</p>
+
+<button onClick="alertButton()">Buy</button>
+<body>
+    <!-- overlay for mobile -->
+    <div id="overlay">
+        <div>
+            <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
+        </div>
+        <div class="overlay-text">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="about.html">About</a>
+            <a href="order.html" class="order-nav">Order</a>
+        </div>
+
+    </div>
+    <header>
+        <nav class="nav full-nav">
+            <div>
+                <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="alvins logo" style="width: 1.5rem;"
+                    loading="lazy">
+            </div>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="about.html">About</a>
+                <a href="order.html" class="order-nav">Order</a>
+            </div>
+        </nav>
+
+        <!-- mobile -->
+        <nav class="nav mobile-nav">
+            <div>
+                <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="alvins logo" style="width: 1.5rem;">
+            </div>
+            <div>
+                <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="hero-container">
+            <img class="hero-image" src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" width="353.75" height="354"
+                alt="pizza going into the oven">
+            <div class="hero-text">
+                <h1>Alvin's Pizzeria</h1>
+                <a href="order.html" class="hero-btn">Order</a>
+            </div>
+        </div>
+        <div class="red-spacer"></div>
+
+        <!-- pizza grid -->
+        <div class="pizzas">
+            <h2>Pizza Favorites</h2>
+            <div class="pizza-grid">
+                <div class="pizza-child">
+                    <h4>Pepperoni Pizza $14.99</h4>
+                    <img src="images\scan_erilar19_2024-09-11-15-35-45.jpeg" alt="pepperoni pizza" loading="lazy"
+                        style="width: 100%;">
+                    <button class="add-to-cart">Add to Cart</button>
+                    <div class="add-selected">
+                        <button><i class="fa-solid fa-minus"></i></button>
+                        <h4>0</h4>
+                        <button><i class="fa-solid fa-plus"></i></button>
+
+                    </div>
+                </div>
+                <div class="pizza-child">
+                    <h4>Supreme Pizza $14.99</h4>
+                    <img src="images\scan_erilar19_2024-09-11-15-33-28.jpeg" alt="supreme pizza" loading="lazy"
+                        style="width: 100%;">
+                    <button class="add-to-cart">Add to Cart</button>
+                    <div class="add-selected">
+                        <button><i class="fa-solid fa-minus"></i></button>
+                        <h4>0</h4>
+                        <button><i class="fa-solid fa-plus"></i></button>
+
+                    </div>
+                </div>
+                <div class="pizza-child">
+                    <h4>Cheese Pizza $14.99</h4>
+                    <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="cheese pizza" loading="lazy"
+                        style="width: 100%;">
+                    <button class="add-to-cart">Add to Cart</button>
+                    <div class="add-selected">
+                        <button><i class="fa-solid fa-minus"></i></button>
+                        <h4>0</h4>
+                        <button><i class="fa-solid fa-plus"></i></button>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- footer -->
+    <footer>
+        <div>
+            <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" loading="lazy">
+        </div>
+        <div>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="menu.html">Menu</a>
+                <a href="about.html">About</a>
+                <a href="order.html">Order</a>
+            </div>
+            <div>
+                <h4>Copyright 2023 Alvin's Pizzeria</h4>
+            </div>
+        </div>
+        <div>
+            <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins instagram logo" style="width: 10%;" loading="lazy">
+            <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins facebook logo" style="width: 10%;" loading="lazy">
+        </div>
+    </footer>
+</body>
+<script src="app.js"></script>
+<script src="app.css"></script>
+</html>
+
