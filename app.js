@@ -1,16 +1,16 @@
 
 const express = require('express')
-const path = require('path')
-
 const app = express()
-const port = process.env.PORT || 5000
+
+const path = require('path')
+const port = process.env.PORT || 4000
 
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
   })
-  
+
 app.listen(port, ()=>{
     console.log(`listening on port ${port}`)
 })
@@ -22,9 +22,9 @@ app.listen(port, ()=>{
 // const homeLogic = readFileSync('./app.js')
 
 
-// function alertButton(){
-//     alert("Köpa? Det går inte än:( testa att swisha mig direkt istället:)")
-// }
+function alertButton(){
+    alert("Köpa? Det går inte än:( testa att swisha mig direkt istället:)")
+}
 
 // const server = http.createServer((req, res) => {
 //     // console.log(req.method)
