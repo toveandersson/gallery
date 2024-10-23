@@ -29,7 +29,7 @@
 }
 
 #changeColorBtn {
-    margin: .5rem;
+    margin: 0rem;
     border: none;
     font-size: 1rem;
     background-color: rgb(var(--main-bg-color-rgba),var(--main-bg-color-rgba),var(--main-bg-color-rgba),.5);
@@ -145,7 +145,7 @@ mark {
 #overlay div:nth-child(1){
     position: absolute;
     left: 80%;
-    top: 0%;
+    top: 5%;
 }
 
 .overlay-text{
