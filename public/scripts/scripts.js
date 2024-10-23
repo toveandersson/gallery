@@ -1,4 +1,16 @@
-const night = false;
+
+const button = document.getElementById('changeColorBtn');
+
+document.body.classList.add('lightmode'); // Add the default lightmode class on load
+
+const sun= document.getElementById("sun");
+sun.style.display = "none";
+const moon= document.getElementById("moon");
+moon.style.display = "block";
+const sun2= document.getElementById("sun-m");
+sun2.style.display = "none";
+const moon2= document.getElementById("moon-m");
+moon2.style.display = "block";
 
 function on() {
     // display overlay
@@ -6,7 +18,7 @@ function on() {
     turnOn.style.display = "block";
     //turn off vertical scroll
     const overflow = document.querySelector("body");
-    overflow.style.overflow = "hidden";
+    overflow.style.overflow = "";
 }
 
 function off() {
@@ -18,22 +30,24 @@ function off() {
     overflow.style.overflow = ""; //do nothing
 }
 
-const button = document.getElementById('changeColorBtn');
-
-document.body.classList.add('lightmode'); // Add the default lightmode class on load
-
-button.addEventListener('click', () => {
+function nightmode() {
     const body = document.body;
-
-    // Toggle between lightmode and nightmode classes
     if (body.classList.contains('lightmode')) {
         body.classList.remove('lightmode');
         body.classList.add('nightmode');
+        moon.style.display = "none";
+        sun.style.display = "block";
+        moon2.style.display = "none";
+        sun2.style.display = "block";
     } else {
         body.classList.remove('nightmode');
         body.classList.add('lightmode');
+        sun.style.display = "none";
+        moon.style.display = "block";
+        sun2.style.display = "none";
+        moon2.style.display = "block";
     }
-});
+};
 
 
 // let elem = document.querySelector('i');

@@ -23,7 +23,8 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
         <script src="scripts/scripts.js" defer></script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1565266297398690" crossorigin="anonymous"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1565266297398690"
+        crossorigin="anonymous"></script>
 </head>
 <!--<p>Hello! My name is Tove and I made this website to showcase some of my work and what I do, and also you can buy some of my work! Email me if you have questions or suggestions</p>-->
 
@@ -36,10 +37,10 @@
             <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
         </div>
         <div class="overlay-text">
-            <a href="index.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="about.html">About</a>
-            <a href="order.html" class="order-nav">Order</a>
+            <a href="index.html"><mark>Home</mark></a>
+            <a href="menu.html"><mark>Menu</mark></a>
+            <a href="about.html"><mark>About</mark></a>
+            <a href="order.html"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
         </div>
 
     </div>
@@ -48,9 +49,10 @@
     <div class="stuff">
             <nav class="nav full-nav">
                 <div>
-                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;">
-                    <button id="changeColorBtn">
-                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"> 
+                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;"loading="lazy">
+                    <button id="changeColorBtn" onclick="nightmode()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
                     </button>
                 </div>
                 <div>
@@ -65,11 +67,10 @@
             <nav class="nav mobile-nav">
                 <div>
                     <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;">
-                    <!--</button id="changeColorBtn">NIGHTMODE</button>-->
-                    <button id="changeColorBtn">
-                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"> 
+                    <button id="changeColorBtn" onclick="nightmode()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
                     </button>
-
                 </div>
                 <div>
                     <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
@@ -134,19 +135,18 @@
     </main>
 
     <!-- footer -->
-</footer>
-        <div>
-            <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" loading="lazy">
-        </div>
+     <div>
+        <h2>  ^^</h2>
+        <h4>    *</h4>
+     </div>
+<footer>
+    <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" >
         <div>
             <div>
                 <a href="index.html">Home</a>
                 <a href="menu.html">Menu</a>
                 <a href="about.html">About</a>
                 <a href="order.html">Order</a>
-            </div>
-            <div>
-                <h4></h4>
             </div>
         </div>
     </div>
@@ -158,4 +158,3 @@
 <script src="app.js"></script>
 <script src="app.css"></script>
 </html>
-

@@ -2,37 +2,38 @@
     font-family: "Font Awesome 6 Free";
 }
 :root {
-    --main-bg-color-r: #efcf43;
-    --main-bg-color-rgba-r: rgba(239, 207, 67, .8);
-    --h1-color-r: #876c15;
-    --text-color-r: #071705;
-    --bg-text-r: #071705;
-    --h2-text-color-r: white;
+    --yellow: #efcf43;
+    --yellow-rgb: rgba(239, 207, 67, .8);
+    --dark-yellow: #876c15;
+    --dark-text: #071705;
+    --another-dark-text: #071705;
+    --very-light: white;
 }
 
 .lightmode {
-    --main-bg-color: var(--main-bg-color-r);
-    --main-bg-color-rgba: var(--main-bg-color-rgba-r);
-    --h1-color: var(--h1-color-r);
-    --text-color: var(--text-color-r);
-    --bg-text: var(--bg-text-r);
-    --h2-text-color: var(--bg-text-r)
+    --main-bg-color: var(--yellow);
+    --main-bg-color-rgba: var(--yellow-rgb);
+    --h1-color: var(--dark-yellow);
+    --text-color: var(--dark-text);
+    --bg-text: var(--another-dark-text);
+    --h2-text-color: var(--very-light)
 }
 
 .nightmode {
-    --main-bg-color: var(--text-color-r);
+    --main-bg-color: var(--dark-text);
     --main-bg-color-rgba: rgba(07,17,05,.8);
-    --h1-color: #876c15;
-    --text-color: var(--main-bg-color-r);
-    --bg-text: var(--h1-color-r);
-    --h2-text-color: var(--main-bg-color-r);
+    --h1-color: var(--dark-yellow);
+    --text-color: var(--yellow);
+    --bg-text: var(--dark-yellow);
+    --h2-text-color: var(--yellow);
 }
 
-button {
+#changeColorBtn {
     margin: .5rem;
     border: none;
     font-size: 1rem;
-    background-color: rgb(var(--main-bg-color-rgba),var(--main-bg-color-rgba),var(--main-bg-color-rgba),0);
+    background-color: rgb(var(--main-bg-color-rgba),var(--main-bg-color-rgba),var(--main-bg-color-rgba),.5);
+    z-index:10;
 }
 
 h2 {
@@ -117,16 +118,20 @@ body{
     }
 
     .mobile-nav {
-        padding: 0,
+        padding: 0;
     }
 
     .fa-bars {
-        padding: 0.5rem;
+        padding: 0rem;
+        font-size: 1.8rem;
     }
 }
 
 /* overlay */
 /* mobile overlay nav */
+mark {
+    background-color: HotPink;
+}
 
 #overlay {
     display: none;
@@ -134,7 +139,13 @@ body{
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,.7);
-    z-index: 2;
+    z-index: 5;
+}
+
+#overlay div:nth-child(1){
+    position: absolute;
+    left: 80%;
+    top: 0%;
 }
 
 .overlay-text{
@@ -142,7 +153,7 @@ body{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
+    background-color: var(--main-bg-color-rgba)
 }
 
 .overlay-text a {
@@ -150,16 +161,17 @@ body{
     color: var(--text-color);
     font-weight: 600;
     text-decoration: none;
-    font-size: 1.5rem;
-    padding: .5rem 2rem;
+    font-size: 2.2rem;
+    padding: .8rem 3rem;
     transition: all 200ms ease-in-out;
 }
 
 .fa-times{
-    font-size: 4rem;
+    font-size: 3rem;
     color: var(--h1-color);
     padding: 1rem;
     transition: all 200ms ease-in-out;
+    left: 90%;
 }
 
 .fa-times:hover {
@@ -228,7 +240,7 @@ body{
     margin: 1rem 5rem;
 }
 
-/* red spacer */
+/* yellow spacer */
 .red-spacer {
     width: 100%;
     height: 2.5rem;
@@ -313,6 +325,47 @@ body{
     }
 }
 
-.paintings h1 {
-    color: white;
+h1 {
+    color: var(--dark-text);
+}
+
+
+/* footer */
+
+footer {
+    background-color: var(--dark-yellow);
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.5);
+    z-index: 2;
+    justify-content: center;
+}
+
+footer div:nth-child(1) {
+    text-align: center;
+}
+
+footer div:nth-child(2) {
+    text-align: center;
+}
+
+footer div:nth-child(2) div:nth-child(1){
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+footer div:nth-child(2) div:nth-child(1) a{
+    text-decoration: none;
+    color: var(--text-color);
+    padding: .5rem;
+}
+
+footer div:nth-child(3) {
+    text-align: right;
+}
+
+footer div:nth-child(1) img, footer div:nth-child(3) img {
+padding: .5rem
 }
