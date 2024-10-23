@@ -1,0 +1,318 @@
+* {
+    font-family: "Font Awesome 6 Free";
+}
+:root {
+    --main-bg-color-r: #efcf43;
+    --main-bg-color-rgba-r: rgba(239, 207, 67, .8);
+    --h1-color-r: #876c15;
+    --text-color-r: #071705;
+    --bg-text-r: #071705;
+    --h2-text-color-r: white;
+}
+
+.lightmode {
+    --main-bg-color: var(--main-bg-color-r);
+    --main-bg-color-rgba: var(--main-bg-color-rgba-r);
+    --h1-color: var(--h1-color-r);
+    --text-color: var(--text-color-r);
+    --bg-text: var(--bg-text-r);
+    --h2-text-color: var(--bg-text-r)
+}
+
+.nightmode {
+    --main-bg-color: var(--text-color-r);
+    --main-bg-color-rgba: rgba(07,17,05,.8);
+    --h1-color: #876c15;
+    --text-color: var(--main-bg-color-r);
+    --bg-text: var(--h1-color-r);
+    --h2-text-color: var(--main-bg-color-r);
+}
+
+button {
+    margin: .5rem;
+    border: none;
+    font-size: 1rem;
+    background-color: rgb(var(--main-bg-color-rgba),var(--main-bg-color-rgba),var(--main-bg-color-rgba),0);
+}
+
+h2 {
+    color: var(--h2-text-color)
+}
+
+body{
+    background-color: var(--main-bg-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* ? */
+}
+
+.stuff {
+    position: relative;
+    height: .1rem; /* ?, relative unit */
+}
+
+.nav {
+    background-color: var(--main-bg-color-rgba);
+    color: var(--h1-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem;
+    position: fixed;    /* dependent on the position relative in "header" */
+    width: 100%;
+    height: 3rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+    z-index: 2;
+}
+
+.nav div:nth-child(1) {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    font-weight: bolder;
+}
+
+.nav div:nth-child(2) { /* targeting second div inside nav class (in html file). ind 1, actual second */
+    display: flex;
+    align-items: center;
+    padding-right: 1rem;
+    font-weight: bolder;
+    
+    margin: 0 1rem;
+}
+
+.nav div:nth-child(1) a:nth-child(-n+2) {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0 5rem;
+}
+
+.nav div:nth-child(2) a:nth-child(-n+3) {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0 1rem;
+}
+
+.order-nav{
+    align-self: center;
+    margin: 0.5rem;
+    padding: .5rem 2rem;
+    background-color: var(--h1-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+@media (min-width: 801px) {
+    .mobile-nav {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .full-nav {
+        display: none;
+    }
+
+    .mobile-nav {
+        padding: 0,
+    }
+
+    .fa-bars {
+        padding: 0.5rem;
+    }
+}
+
+/* overlay */
+/* mobile overlay nav */
+
+#overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.7);
+    z-index: 2;
+}
+
+.overlay-text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+.overlay-text a {
+    display: block;
+    color: var(--text-color);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.5rem;
+    padding: .5rem 2rem;
+    transition: all 200ms ease-in-out;
+}
+
+.fa-times{
+    font-size: 4rem;
+    color: var(--h1-color);
+    padding: 1rem;
+    transition: all 200ms ease-in-out;
+}
+
+.fa-times:hover {
+    animation: rotateAnimation 200ms ease-in-out;
+}
+.fa-solid:hover{
+    animation: rotate180Animation 450ms cubic-bezier(.3,-0.96,.43,1.18);
+}
+/*animation*/
+@keyframes rotateAnimation {
+    0%{
+        transform: rotate(0deg)
+    }
+    100%{
+        transform: rotate(90deg)
+    }
+}
+@keyframes rotate180Animation {
+    0%{
+        transform: rotate(0deg)
+    }
+    100%{
+        transform: rotate(180deg)
+    }
+}
+
+/*hero style image*/
+.hero-container {
+    position: relative;
+    color: white;
+}
+
+.hero-image {
+    height: auto;
+    width: 100%;
+    display: block;
+}
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 20vw; /*view width*/
+    transform: translate(-50%, -50%);
+    text-align: left;   
+}
+
+@media (max-width: 800px){
+    .hero-text {
+        left: 30vw;
+    }
+}
+
+.hero-btn {
+    margin: 0.0rem 5rem;
+    padding: .5rem 2rem;
+    background-color: var(--main-bg-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    margin: 1rem 5rem;
+}
+
+/* red spacer */
+.red-spacer {
+    width: 100%;
+    height: 2.5rem;
+    background-color: var(--h1-color);
+} 
+
+/* painting elements */
+
+.paintings h2, h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--h2-text-color)
+}
+
+.painting-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+    padding: 0 1rem 1rem 1rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.painting-child {
+    display: grid;
+    grid-template-columns: repeat(1);
+    justify-items: center;
+    grid-gap: .5rem;
+    background-color: var(--main-bg-color);
+    border-radius: .5rem;
+    padding: .9rem .5rem;
+    img {
+        border-radius: .5rem;
+    }
+}
+
+.painting-child h4 {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--h1-color);
+}
+
+.painting-child h4:nth-child(1) {
+    font-size: 1.5rem;
+}
+
+.add-to-cart {
+    font-size: 1.25rem;
+    width: 50%;
+    background-color: var(--h1-color);
+    border-radius: 1.5rem;
+    border: none;
+    padding: .5rem 0;
+    color: var(--h2-text-color);
+}
+
+.add-selected {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    text-align: center;
+}
+
+.add-selected button {
+    margin: .25rem;
+    border-radius: .5rem;
+    background-color: var(--h1-color);
+}
+
+.fa-minus, .fa-plus {
+    font-size: 1rem;
+}
+
+@media(max-width: 768px){
+    .painting-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .painting-child {
+        width: 70%;
+        margin: auto;
+    }
+}
+
+.paintings h1 {
+    color: white;
+}
