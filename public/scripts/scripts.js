@@ -39,6 +39,7 @@ function nightmode() {
         sun.style.display = "block";
         moon2.style.display = "none";
         sun2.style.display = "block";
+        hideMarks('pinkMark', 'mark-hidden', true);
     } else {
         body.classList.remove('nightmode');
         body.classList.add('lightmode');
@@ -46,8 +47,23 @@ function nightmode() {
         moon.style.display = "block";
         sun2.style.display = "none";
         moon2.style.display = "block";
+        hideMarks('pinkMark', 'mark-hiddem', false);
     }
 };
+
+function hideMarks(className, hiddenClass, shouldHide) {
+    const markElements = document.getElementsByClassName(className);
+    for (let i = 0; i < markElements.length; i++) {
+        if (shouldHide) {
+            markElements[i].classList.remove('show-mark');
+            markElements[i].classList.add(hiddenClass);
+        } else {
+            markElements[i].classList.remove(hiddenClass);
+            markElements[i].classList.add('show-mark');
+        }
+    }
+}
+
 
 
 // let elem = document.querySelector('i');
