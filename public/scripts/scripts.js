@@ -1,16 +1,69 @@
-
+//let { posters } = require('./scripts/postersData');
+//import posters from './scripts/postersData.js';
+//import posters from './scripts/postersData.js';
+// const express = require('express')
+// const app = express()
+let nightmodeVar = localStorage.getItem("nightmode") ?? true;
+console.log("nightmode: ",nightmodeVar);
 const button = document.getElementById('changeColorBtn');
 
-document.body.classList.add('lightmode'); // Add the default lightmode class on load
-
+const body = document.body;
 const sun= document.getElementById("sun");
-sun.style.display = "none";
 const moon= document.getElementById("moon");
-moon.style.display = "block";
 const sun2= document.getElementById("sun-m");
-sun2.style.display = "none";
 const moon2= document.getElementById("moon-m");
-moon2.style.display = "block";
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM fully loaded and parsed.");
+    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
+    setNightMode();
+    addCartItems();
+    // Fetch data from the server
+    fetch('/posters')
+        .then(response => response.json())
+        .then(postersData => {
+            postersData.forEach((poster) => {
+                if (poster.available === false){ return; }
+                
+                const imgBg = document.createElement('div');
+                imgBg.setAttribute('class', 'imgBg');
+
+                const div_card = document.createElement('div');
+                div_card.setAttribute('class', 'poster-child');
+
+                const image = document.createElement('img');
+                image.setAttribute('class', 'thumbnail');
+                image.setAttribute('id', 'image');
+
+                const poster_flex = document.createElement('div');
+                poster_flex.setAttribute('class', 'poster-flex')
+
+                const title = document.createElement('h3');
+                title.setAttribute('id', 'title');
+                title.setAttribute('class', 'poster-flex-child')
+
+                const add = document.createElement('button');
+                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
+                add.setAttribute('id', 'add-button-id')
+                add.setAttribute('onclick', 'addToCart(this.id)')
+                
+                add.id = poster.id;
+                title.innerHTML = poster.name;
+                image.src = poster.image;
+
+                imgBg.appendChild(image);
+                div_card.appendChild(imgBg);
+                div_card.appendChild(poster_flex);
+                poster_flex.appendChild(title);
+                poster_flex.appendChild(add);
+
+                posterGrid.appendChild(div_card);
+            });
+        })
+        .catch(error => console.error('Error fetching posters:', error));
+});
+
+let shoppingCart = [];
 
 function on() {
     // display overlay
@@ -30,26 +83,55 @@ function off() {
     overflow.style.overflow = ""; //do nothing
 }
 
-function nightmode() {
-    const body = document.body;
-    if (body.classList.contains('lightmode')) {
-        body.classList.remove('lightmode');
-        body.classList.add('nightmode');
-        moon.style.display = "none";
-        sun.style.display = "block";
-        moon2.style.display = "none";
-        sun2.style.display = "block";
-        hideMarks('pinkMark', 'mark-hidden', true);
-    } else {
-        body.classList.remove('nightmode');
-        body.classList.add('lightmode');
-        sun.style.display = "none";
-        moon.style.display = "block";
-        sun2.style.display = "none";
-        moon2.style.display = "block";
-        hideMarks('pinkMark', 'mark-hiddem', false);
+function setNightMode(){
+    console.log("set night mode function, nightmode: ",nightmodeVar);
+    if (nightmodeVar === "true"){
+        console.log("nightmode: ",nightmodeVar);
+        console.log("nu blir det mörkt");
+        dark();
     }
-};
+    else{
+        light();
+        console.log("nu blir det ljust");
+    }
+    //nightmodeVar ? dark() : light();
+}
+
+function nightmodeSwitch() {
+    console.log("nightmode switch");
+    if (nightmodeVar === false) {
+        dark();
+    }
+    else if (nightmodeVar === true){
+        light();
+    }
+}
+
+function light() {
+    body.classList.remove('nightmode');
+    body.classList.add('lightmode');
+    sun.style.display = "none";
+    moon.style.display = "block";
+    sun2.style.display = "none";
+    moon2.style.display = "block";
+    hideMarks('pinkMark', 'mark-hidden', false);
+    nightmodeVar = false;
+    console.log("turning light: ",nightmodeVar);
+    localStorage.setItem("nightmode", nightmodeVar);
+}
+
+function dark() {   
+    body.classList.remove('lightmode');
+    body.classList.add('nightmode');
+    moon.style.display = "none";
+    sun.style.display = "block";
+    moon2.style.display = "none";
+    sun2.style.display = "block";
+    hideMarks('pinkMark', 'mark-hidden', true);
+    nightmodeVar = true;
+    console.log("turning dark: ",nightmodeVar);
+    localStorage.setItem("nightmode", nightmodeVar);
+}
 
 function hideMarks(className, hiddenClass, shouldHide) {
     const markElements = document.getElementsByClassName(className);
@@ -64,24 +146,234 @@ function hideMarks(className, hiddenClass, shouldHide) {
     }
 }
 
+document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
 
+function addToCart(posterId) {
+    shoppingCart.push(posterId);
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    console.log(JSON.parse(localStorage.getItem("shoppingCart")));
+}
 
-// let elem = document.querySelector('i');
-// let start;
-
-// function debug(timestamp) {
-//   if (start === undefined)
-//     start = timestamp;
-//   const elapsed = timestamp - start;
-//   let rect = elem.getBoundingClientRect();
-//   document.body.insertAdjacentHTML("beforeBegin",'<d style="top:'+(rect.y + rect.height/2)+'px;left:'+(rect.x + rect.width/2)+'px;"></d>')
-
-//   if (elapsed < 20000) { 
-//     window.requestAnimationFrame(debug);
-//   }
+// function removeFromCart(posterId) {
+//     shoppingCart.splice(posterId, 1);
+//     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+//     console.log(JSON.parse(localStorage.getItem("shoppingCart")));
 // }
 
-// document.querySelector("button").addEventListener("click",function() {
-//   elem.classList.add("start");
-//   window.requestAnimationFrame(debug);
-// })
+function removeFromCart(posterId) {
+    shoppingCart.splice(posterId, 1);
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    clearCart();
+    addCartItems();
+}
+
+function clearCartData() {
+    shoppingCart = [];
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    clearCart();
+}
+
+function clearCart() {
+    const list = document.getElementsByClassName('cart-item');
+    for (let i = list.length - 1; i >= 0; i--) {
+        console.log(list[i].id);
+        list[i].remove();
+    }
+}
+
+// items to order 
+function addCartItems() {
+    const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+    JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
+        shoppingCart.push(itemId);
+    })
+    // Fetch data from the server
+    fetch('/posters')
+        .then(response => response.json())
+        .then(postersData => {
+            let i = 0;
+            shoppingCart.forEach((itemId) => {
+                const itemPoster = postersData[itemId - 1];
+                
+                const imgBg = document.createElement('div');
+                imgBg.setAttribute('class', 'imgBg');
+
+                const div_card = document.createElement('div');
+                div_card.setAttribute('class', 'cart-item');
+
+                const image = document.createElement('img');
+                image.setAttribute('class', 'thumbnail');
+                image.setAttribute('id', 'image');
+
+                const title = document.createElement('h3');
+                title.setAttribute('id', 'title');
+
+                const remove = document.createElement('button');
+                remove.setAttribute('class', 'fa-minus remove-button');
+                remove.setAttribute('id', 'remove-button-id');
+                remove.setAttribute('onclick', 'removeFromCart(this.id)');
+                
+                // Add event listener for each remove button
+                remove.addEventListener('click', () => removeFromCart(itemId, div_card));
+
+                
+                remove.id = i;
+                title.innerHTML = itemPoster.name;
+                image.src = itemPoster.image;
+
+                imgBg.appendChild(image);
+                div_card.appendChild(imgBg);
+                div_card.appendChild(title);
+                div_card.appendChild(remove);
+
+                itemGrid.appendChild(div_card);
+                i++;
+            });
+        })
+        .catch(error => console.error('Error fetching posters:', error));
+};
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+//     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
+//         shoppingCart.push(itemId);
+//     })
+//     // Fetch data from the server
+//     fetch('/posters')
+//         .then(response => response.json())
+//         .then(postersData => {
+//             let i = 0;
+//             shoppingCart.forEach((itemId) => {
+//                 const itemPoster = postersData[itemId - 1];
+                
+//                 const div_card = document.createElement('div');
+//                 div_card.setAttribute('class', 'cart-item');
+
+//                 const image = document.createElement('img');
+//                 image.setAttribute('class', 'thumbnail');
+//                 image.setAttribute('id', 'image');
+
+//                 const title = document.createElement('h3');
+//                 title.setAttribute('id', 'title');
+
+//                 const remove = document.createElement('button');
+//                 remove.setAttribute('class', 'fa-minus remove-button');
+//                 remove.setAttribute('id', 'remove-button-id');
+//                 remove.setAttribute('onclick', 'removeFromCart(this.id)');
+                
+//                 // Add event listener for each remove button
+//                 remove.addEventListener('click', () => removeFromCart(itemId, div_card));
+
+//                 const center = document.createElement('center');
+                
+//                 remove.id = i;
+//                 title.innerHTML = itemPoster.name;
+//                 image.src = itemPoster.image;
+
+//                 center.appendChild(image);
+//                 div_card.appendChild(center);
+//                 div_card.appendChild(title);
+//                 div_card.appendChild(remove);
+
+//                 itemGrid.appendChild(div_card);
+//                 i++;
+//             });
+//         })
+//         .catch(error => console.error('Error fetching posters:', error));
+// });
+function showSwish() {
+    const swishDiv = document.getElementsByClassName('swish-div');
+    for (let i = 0; i < swishDiv.length; i++) {
+        swishDiv[i].style.display = 'block';
+        console.log(swishDiv[i]);
+        console.log(swishDiv[i].style.display);
+    }
+    console.log('hello');
+};
+
+const form = document.querySelector("form");
+
+// Select elements representing alerts for name, email, and phone
+const nameAlert = document.getElementById("nameAlert");
+const emailAlert = document.getElementById("emailAlert");
+const phoneAlert = document.getElementById("phoneAlert");
+
+//Add event listener for form submission
+form.addEventListener("submit", (event) => {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+    showSwish();
+    // If form validation passes, reset the form
+    if (validateForm()) {
+        form.reset();
+    }
+});
+
+// Add event listener for input events within the form
+form.addEventListener("input", (event) => {
+    // Retrieve the element that triggered the event
+    const target = event.target;
+    // console.log(target);
+    
+    // Check if the event was triggered by the name input field
+    if (target.id === 'name') {
+        // console.log(target.id)
+        // Show or hide the name alert based on whether the name input has a value
+        nameAlert.style.display = target.value ? "none" : "block";        
+    } 
+    // Check if the event was triggered by the email input field
+    else if (target.id === 'email') {
+        // Call the validateEmail function with the value of the email input field
+        validateEmail(target.value);
+    } 
+    // Check if the event was triggered by the phone input field
+    else if (target.id === 'phone') {
+        // Call the validatePhone function with the value of the phone input field
+        validatePhone(target.value);
+    }
+});
+
+// Function to validate email format using regular expression
+function validateEmail(email) {
+    // Regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Check if the email matches the regex pattern
+    const isValid = emailRegex.test(email);
+    console.log(isValid);
+    // Show or hide the email alert based on the validity of the email
+    emailAlert.style.display = email ? (isValid ? "none" : "block") : "block";
+    // Return whether the email is valid
+    return isValid;
+}
+
+// Function to validate phone format using regular expression
+function validatePhone(phone) {
+    // Regular expression to validate phone format (e.g., xxx-xxx-xxxx)
+    const phoneRegex =  /^((([+]46)\s*((1|7)[0236]))|(0(1|7)[0236]))\s*(([-]|())\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*|([0-9]\s*([-]|()))\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*[0-9]\s*)$/;
+    // Check if the phone number matches the regex pattern
+    ///^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+    //const isValid = (phone.length === 10);
+    const isValid = phoneRegex.test(phone);
+    // Show or hide the phone alert based on the validity of the phone number
+    phoneAlert.style.display = phone ? (isValid ? "none" : "block") : "block";
+    // Return whether the phone number is valid
+    return isValid;
+}
+
+// Function to validate the entire form
+function validateForm() {
+    // Get the values of name, email, and phone input fields
+    const name = document.getElementById('name').value;
+    const emailVal = document.getElementById('email').value;
+    const phoneVal = document.getElementById('phone').value;
+
+    // Show or hide the name alert based on whether the name input has a value
+    nameAlert.style.display = name ? "none" : "block";
+
+    // Validate the email and phone inputs
+    const isValidEmailValue = validateEmail(emailVal);
+    const isValidPhoneValue = validatePhone(phoneVal);
+
+    // Return true if all inputs are valid, otherwise false
+    return name && isValidEmailValue && isValidPhoneValue;
+}

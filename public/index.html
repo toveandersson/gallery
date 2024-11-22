@@ -21,24 +21,25 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+        
+        <script src="app.js" defer></script>
         <script src="scripts/scripts.js" defer></script>
+        <script src="scripts/postersData.js" defer></script>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1565266297398690"
         crossorigin="anonymous"></script>
 </head>
-<!--<p>Hello! My name is Tove and I made this website to showcase some of my work and what I do, and also you can buy some of my work! Email me if you have questions or suggestions</p>-->
 
 <!--<button onClick="alertButton()">Buy</button>-->
 
 <body>
     <!-- overlay for mobile -->
     <div id="overlay">
-        <div>
+        <div class="close-button">
             <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
         </div>
         <div class="overlay-text">
             <a href="index.html"><mark>Home</mark></a>
-            <a href="menu.html"><mark>Posters</mark></a>
+            <a href="posters.html"><mark>Posters</mark></a>
             <a href="about.html"><mark>About</mark></a>
             <a href="order.html"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
         </div>
@@ -48,33 +49,31 @@
     <main>
     <div class="header">
             <nav class="nav full-nav">
-                <div>
+                <div id="left-side">
                     <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;"loading="lazy">
-                    <button id="changeColorBtn" onclick="nightmode()">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
                         <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
                         <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
                     </button>
                 </div>
-                <div>
+                <div id="right-side">
                     <a href="index.html"><mark class="pinkMark">Home</mark></a>
                     <a href="posters.html"><mark class="pinkMark">Posters</mark></a>
                     <a href="about.html"><mark class="pinkMark">About</mark></a>
                     <a href="order.html"><mark class="pinkMark">Order</mark></a>
-
-
                 </div>
             </nav>
 
             <!-- mobile -->
             <nav class="nav mobile-nav">
-                <div>
+                <div id="left-side">
                     <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;">
-                    <button id="changeColorBtn" onclick="nightmode()">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
                         <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
                         <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
                     </button>
                 </div>
-                <div>
+                <div id="right-side">
                     <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
                 </div>
             </nav>
@@ -88,47 +87,26 @@
                 <a href="posters.html" class="hero-btn"margin: 1rem>???</a>
             </div>
         </div>
-        <div class="red-spacer"></div> 
+        <div class="spacer"></div> 
         
         <!-- painting grid -->
         <div class="paintings">
             <h2>Posters</h2>
             <div class="painting-grid">
                 <div class="painting-child">
+                    <img src='images/grandma_og.jpg', alt="pepperoni pizza" loading="lazy"
+                    style="width: 100%;">
                     <h4>Grandma</h4>
-                    <img src="images\scan_erilar19_2024-09-11-15-35-45.jpeg" alt="pepperoni pizza" loading="lazy"
-                        style="width: 100%;">
-                    <button class="add-to-cart">Add to Cart</button>
-                    <div class="add-selected">
-                        <button><i class="fa-solid fa-minus"></i></button>
-                        <h4>0</h4>
-                        <button><i class="fa-solid fa-plus"></i></button>
-
-                    </div>
                 </div>
                 <div class="painting-child">
+                    <img src="/images/floral.jpg" alt="supreme pizza" loading="lazy"
+                    style="width: 100%;">
                     <h4>Floral</h4>
-                    <img src="images\scan_erilar19_2024-09-11-15-33-28.jpeg" alt="supreme pizza" loading="lazy"
-                        style="width: 100%;">
-                    <button class="add-to-cart">Add to Cart</button>
-                    <div class="add-selected">
-                        <button><i class="fa-solid fa-minus"></i></button>
-                        <h4>0</h4>
-                        <button><i class="fa-solid fa-plus"></i></button>
-
-                    </div>
                 </div>
                 <div class="painting-child">
-                    <h4>Sunny</h4>
                     <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="cheese pizza" loading="lazy"
-                        style="width: 100%;">
-                    <button class="add-to-cart">Add to Cart</button>
-                    <div class="add-selected">
-                        <button><i class="fa-solid fa-minus"></i></button>
-                        <h4>0</h4>
-                        <button><i class="fa-solid fa-plus"></i></button>
-
-                    </div>
+                    style="width: 100%;">
+                    <h4>Sunny</h4>
                 </div>
 
             </div>
@@ -137,10 +115,6 @@
     </main>
 
     <!-- footer -->
-     <div>
-        <h2>  ^^</h2>
-        <h4>    *</h4>
-     </div>
 <footer>
     <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" loading="lazy" >
         <div>
@@ -160,3 +134,14 @@
 <script src="app.js"></script>
 <script src="app.css"></script>
 </html>
+
+<!-- 
+
+<button class="add-to-cart">Add to Cart</button>
+<div class="add-selected">
+    <button><i class="fa-solid fa-minus"></i></button>
+    <h4>0</h4>
+    <button><i class="fa-solid fa-plus"></i></button>
+
+</div> 
+-->

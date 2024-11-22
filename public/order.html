@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial=1.0">
-    <meta name="description" content="Alvin's Pizzeria">
-    <meta name="keywords" content="pizza restuarant, pizza near me">
-    <meta name="author" content="Kalman Web Design">
-    <title>Alvin's Pizzeria Order</title>
+    <meta name="description" content="Tove's gallery">
+    <meta name="keywords" content="">
+    <meta name="author" content="Tove Andersson">
+    <title>Tove's Gallery Order</title>
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,78 +25,96 @@
 <body>
     <!-- overlay for mobile -->
     <div id="overlay">
-        <div>
+        <div class="close-button">
             <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
         </div>
         <div class="overlay-text">
-            <a href="index.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="about.html">About</a>
-            <a href="order.html" class="order-nav">Order</a>
+            <a href="index.html"><mark>Home</mark></a>
+            <a href="posters.html"><mark>Posters</mark></a>
+            <a href="about.html"><mark>About</mark></a>
+            <a href="order.html"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
         </div>
 
     </div>
-    <header>
-        <nav class="nav full-nav">
-            <div>
-                <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 1.5rem;"
-                    loading="lazy">
-            </div>
-            <div>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="order.html" class="order-nav">Order</a>
-            </div>
-        </nav>
-
-        <!-- mobile -->
-        <nav class="nav mobile-nav">
-            <div>
-                <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 1.5rem;">
-            </div>
-            <div>
-                <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
-            </div>
-        </nav>
-    </header>
 
     <main>
-        <div class="red-spacer"></div>
+    <div class="header">
+            <nav class="nav full-nav">
+                <div id="left-side">
+                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;"loading="lazy">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <a href="index.html"><mark class="pinkMark">Home</mark></a>
+                    <a href="posters.html"><mark class="pinkMark">Posters</mark></a>
+                    <a href="about.html"><mark class="pinkMark">About</mark></a>
+                    <a href="order.html"><mark class="pinkMark">Order</mark></a>
+                </div>
+            </nav>
+
+            <!-- mobile -->
+            <nav class="nav mobile-nav">
+                <div id="left-side">
+                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+                </div>
+            </nav>
+        </div> 
+
+        <div class="hero-container">
+            <img class="hero-image" src="images\Gustav_Klimt_046.jpg" width="353.75" height="354"
+                alt="painting">
+            <div class="hero-text">
+                <h1>Tove's paintings</h1>
+                <a href="posters.html" class="hero-btn"margin: 1rem>???</a>
+            </div>
+        </div>
+
+        <div class="spacer"></div> 
+
 
         <!-- form -->
         <div>
             <h1>Order</h1>
             <div class="order">
-                <form>
+                <form action="" method="POST" id="form">
                     <div class="form1">
-                        <div>
-                            <h3>Alvin's Pizzeria</h3>
-                            <h3>231979 Austin, TX</h3>
-                            <div>
-                                <input type="radio" id="pickup" name="pick" value="1">
-                                <label for="pickup">Pickup</label>
-                            </div>
-                            <div>
-                                <input type="radio" id="dine-in" name="pick" value="1">
-                                <label for="dine-in">Dine-in</label>
-                            </div>
-                        </div>
                         <div>
                             <h3>Order Details</h3>
                         </div>
+                        <div>
+                            <h3>Items:</h3>
+                        </div>
                     </div>
+                    
+                    <div class= "shopping-cart" ></div>
+
+                    <button id="clear-cart-btn">Clear</button>
+                    
                     <hr class="form-hr">
                     <div class="form-input">
                         <h3>Info</h3>
                         <div>
                             <label for="name">Name:</label>
+                            <span id="nameAlert">Name is required</span>
                             <input type="text" id="name" name="name" placeholder="John Smith">
+
                             <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" placeholder="johnsmith@gmail.com">
+                            <span id="emailAlert">Email is unvalid</span>
+                            <input type="text" id="email" name="email" placeholder="johnsmith@gmail.com">
+
                             <label for="phone">Phone number:</label>
-                            <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                placeholder="123-456-7890">
+                            <span id="phoneAlert">Phonenumber is unvalid</span>
+                            <input type="text" id="phone" name="phone" placeholder="123-456-7890">  <!--pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"-->
                         </div>
 
                     </div>
@@ -104,9 +122,9 @@
                     <div class="form-input">
                         <h3>Payment</h3>
                         <div>
-                            <label for="cardname">Carholder Name:</label>
+                            <label for="address">Shipping adress:</label>
                             <input type="text" id="cardname" name="cardname" placeholder="John Smith">
-                            <label for="address">Cardholder Address</label>
+                            <label for="address2"></label>
                             <input type="text" id="address" name="address" placeholder="johnsmith@gmail.com">
                             <label for="card">Card number:</label>
                             <input type="number" id="card" name="card" placeholder="4111 1111 1111 1111">
@@ -114,9 +132,21 @@
                             <input type="number" id="cvv" name="cvv" placeholder="411">
                         </div>
                     </div>
-                    <div class="form-btn">
+                    <h4>Receive updates when the content updates</h4>
+                            <div>
+                                <input type="radio" id="pickup" name="pick" value="1">
+                                <label for="pickup">yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="dine-in" name="pick" value="1">
+                                <label for="dine-in">no</label>
+                            </div>
+                    <div class="form-btn">  
                         <button type="reset" value="Reset">Cancel</button>
                         <button type="submit" value="Submit">Submit</button>
+                    </div>
+                    <div class="swish-div" style="display: none;">
+                        <img src="images/swish-QR-small.png" alt="alvins owner" loading="lazy" style="width: 30%; margin: 3rem;">
                     </div>
                 </form>
 
@@ -127,25 +157,21 @@
 
     <!-- footer -->
     <footer>
-        <div>
-            <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 10%;" loading="lazy">
-        </div>
-        <div>
+        <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" loading="lazy" >
             <div>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="order.html">Order</a>
-            </div>
-            <div>
-                <h4>Copyright 2023 Alvin's Pizzeria</h4>
+                <div>
+                    <a href="index.html">Home</a>
+                    <a href="posters.html">Posters</a>
+                    <a href="about.html">About</a>
+                    <a href="order.html">Order</a>
+                </div>
             </div>
         </div>
-        <div>
-            <img src="images/alvins_instagram.png" alt="alvins instagram logo" style="width: 10%;" loading="lazy">
-            <img src="images/Alvins_facebook.png" alt="alvins facebook logo" style="width: 10%;" loading="lazy">
-        </div>
-    </footer>
-</body>
-
-</html>
+                <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins instagram logo" style="width: 10%;" loading="lazy">
+                <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins facebook logo" style="width: 10%;" loading="lazy">
+            </div>
+        </footer>
+    </body>
+    <script src="app.js"></script>
+    <script src="app.css"></script>
+    </html>

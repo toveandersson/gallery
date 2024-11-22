@@ -26,95 +26,92 @@
 <body>
     <!-- overlay for mobile -->
     <div id="overlay">
-        <div>
+        <div class="close-button">
             <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
         </div>
         <div class="overlay-text">
-            <a href="index.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="about.html">About</a>
-            <a href="order.html" class="order-nav">Order</a>
+            <a href="index.html"><mark>Home</mark></a>
+            <a href="posters.html"><mark>Posters</mark></a>
+            <a href="about.html"><mark>About</mark></a>
+            <a href="order.html"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
         </div>
 
     </div>
-    <header>
-        <nav class="nav full-nav">
-            <div>
-                <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 1.5rem;"
-                    loading="lazy">
-            </div>
-            <div>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="order.html" class="order-nav">Order</a>
-            </div>
-        </nav>
-
-        <!-- mobile -->
-        <nav class="nav mobile-nav">
-            <div>
-                <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 1.5rem;" load="lazy">
-            </div>
-            <div>
-                <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
-            </div>
-        </nav>
-    </header>
 
     <main>
-        <div class="red-spacer"></div>
+    <div class="header">
+            <nav class="nav full-nav">
+                <div id="left-side">
+                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;"loading="lazy">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <a href="index.html"><mark class="pinkMark">Home</mark></a>
+                    <a href="posters.html"><mark class="pinkMark">Posters</mark></a>
+                    <a href="about.html"><mark class="pinkMark">About</mark></a>
+                    <a href="order.html"><mark class="pinkMark">Order</mark></a>
+                </div>
+            </nav>
+
+            <!-- mobile -->
+            <nav class="nav mobile-nav">
+                <div id="left-side">
+                    <img src="images\scan_erilar19_2024-09-11-15-35-17.jpeg" alt="painting" style="width: 2rem;">
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
+                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+                </div>
+            </nav>
+        </div>
+
+        <div class="spacer"></div> 
+        <div class="spacer"></div> 
+        <div class="spacer"></div> 
 
         <!-- about -->
         <div>
-            <h1>About Alvin's</h1>
+            <h1>About</h1>
             <div class="about">
-                <img src="images/alvins_pizza_restuarant_owner.png " alt="alvins owner" loading="lazy"
+                <img src="" alt="there may have been a picture of me here" 
                     style="width: 85%;">
                 <div class="about-child2">
                     <div>
-                        <h2>Our Mission</h2>
+                        <h2>about me and this project</h2>
                         <p>
-                            At Alvin's, we pride ourselves on staying true
-                            to the culinary heritage of Italy. Our pizzas
-                            are crafted using traditional techniques and
-                            recipes passed down through generations,
-                            ensuring an unparalleled dining experience
-                            that captures the essence of Italy in every bite.
+                            Hello! My name is Tove and I am running this small business, you can always email me if you have any questions or suggestions! 
+                            <!--I also guarantee your money back if something should go wrong with your order.-->
                         </p>
-                        <a href="order.html">Order</a>
                     </div>
-
                 </div>
-
             </div>
         </div>
-
-
 
     </main>
 
     <!-- footer -->
     <footer>
-        <div>
-            <img src="images/alvins_pizza_resturant_logo.png" alt="alvins logo" style="width: 10%;" loading="lazy">
-        </div>
-        <div>
+        <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins logo" style="width: 10%;" loading="lazy" >
             <div>
-                <a href="index.html">Home</a>
-                <a href="menu.html">Menu</a>
-                <a href="about.html">About</a>
-                <a href="order.html">Order</a>
-            </div>
-            <div>
-                <h4>Copyright 2023 Alvin's Pizzeria</h4>
+                <div>
+                    <a href="index.html">Home</a>
+                    <a href="posters.html">Posters</a>
+                    <a href="about.html">About</a>
+                    <a href="order.html">Order</a>
+                </div>
             </div>
         </div>
-        <div>
-            <img src="images/alvins_instagram.png" alt="alvins instagram logo" style="width: 10%;" loading="lazy">
-            <img src="images/Alvins_facebook.png" alt="alvins facebook logo" style="width: 10%;" loading="lazy">
-        </div>
-    </footer>
-</body>
-
-</html>
+                <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins instagram logo" style="width: 10%;" loading="lazy">
+                <img src="images\scan_erilar19_2024-09-11-15-34-46.jpeg" alt="alvins facebook logo" style="width: 10%;" loading="lazy">
+            </div>
+        </footer>
+    </body>
+    <script src="app.js"></script>
+    <script src="app.css"></script>
+    </html>
