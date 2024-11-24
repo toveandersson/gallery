@@ -74,7 +74,6 @@ function on() {
     const overflow = document.querySelector("body");
     overflow.style.overflow = "";
 }
-
 function off() {
     // display overlay
     const turnOff = document.getElementById("overlay");
@@ -83,7 +82,6 @@ function off() {
     const overflow = document.querySelector("body");
     overflow.style.overflow = ""; //do nothing
 }
-
 function setNightMode(){
     console.log("set night mode function, nightmode: ",nightmodeVar);
     if (nightmodeVar === "true"){
@@ -97,7 +95,6 @@ function setNightMode(){
     }
     //nightmodeVar ? dark() : light();
 }
-
 function nightmodeSwitch() {
     console.log("nightmode switch");
     if (nightmodeVar === false) {
@@ -107,7 +104,6 @@ function nightmodeSwitch() {
         light();
     }
 }
-
 function light() {
     body.classList.remove('nightmode');
     body.classList.add('lightmode');
@@ -120,7 +116,6 @@ function light() {
     console.log("turning light: ",nightmodeVar);
     localStorage.setItem("nightmode", nightmodeVar);
 }
-
 function dark() {   
     body.classList.remove('lightmode');
     body.classList.add('nightmode');
@@ -133,7 +128,6 @@ function dark() {
     console.log("turning dark: ",nightmodeVar);
     localStorage.setItem("nightmode", nightmodeVar);
 }
-
 function hideMarks(className, hiddenClass, shouldHide) {
     const markElements = document.getElementsByClassName(className);
     for (let i = 0; i < markElements.length; i++) {
@@ -146,43 +140,12 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-
 document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
-
 function addToCart(posterId) {
     shoppingCart.push(posterId);
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     console.log(JSON.parse(localStorage.getItem("shoppingCart")));
 }
-
-// function removeFromCart(posterId) {
-//     shoppingCart.splice(posterId, 1);
-//     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-//     console.log(JSON.parse(localStorage.getItem("shoppingCart")));
-// }
-
-function removeFromCart(posterId) {
-    shoppingCart.splice(posterId, 1);
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    clearCart();
-    addCartItems();
-}
-
-function clearCartData() {
-    shoppingCart = [];
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    clearCart();
-}
-
-function clearCart() {
-    const list = document.getElementsByClassName('cart-item');
-    for (let i = list.length - 1; i >= 0; i--) {
-        console.log(list[i].id);
-        list[i].remove();
-    }
-}
-
-// items to order 
 function addCartItems() {
     const itemGrid = document.getElementsByClassName('shopping-cart')[0];
     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
@@ -234,54 +197,24 @@ function addCartItems() {
         .catch(error => console.error('Error fetching posters:', error));
 };
 
-// document.addEventListener("DOMContentLoaded", () => {
-//     const itemGrid = document.getElementsByClassName('shopping-cart')[0];
-//     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
-//         shoppingCart.push(itemId);
-//     })
-//     // Fetch data from the server
-//     fetch('/posters')
-//         .then(response => response.json())
-//         .then(postersData => {
-//             let i = 0;
-//             shoppingCart.forEach((itemId) => {
-//                 const itemPoster = postersData[itemId - 1];
-                
-//                 const div_card = document.createElement('div');
-//                 div_card.setAttribute('class', 'cart-item');
-
-//                 const image = document.createElement('img');
-//                 image.setAttribute('class', 'thumbnail');
-//                 image.setAttribute('id', 'image');
-
-//                 const title = document.createElement('h3');
-//                 title.setAttribute('id', 'title');
-
-//                 const remove = document.createElement('button');
-//                 remove.setAttribute('class', 'fa-minus remove-button');
-//                 remove.setAttribute('id', 'remove-button-id');
-//                 remove.setAttribute('onclick', 'removeFromCart(this.id)');
-                
-//                 // Add event listener for each remove button
-//                 remove.addEventListener('click', () => removeFromCart(itemId, div_card));
-
-//                 const center = document.createElement('center');
-                
-//                 remove.id = i;
-//                 title.innerHTML = itemPoster.name;
-//                 image.src = itemPoster.image;
-
-//                 center.appendChild(image);
-//                 div_card.appendChild(center);
-//                 div_card.appendChild(title);
-//                 div_card.appendChild(remove);
-
-//                 itemGrid.appendChild(div_card);
-//                 i++;
-//             });
-//         })
-//         .catch(error => console.error('Error fetching posters:', error));
-// });
+function removeFromCart(posterId) {
+    shoppingCart.splice(posterId, 1);
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    clearCart();
+    addCartItems();
+}
+function clearCartData() {
+    shoppingCart = [];
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    clearCart();
+}
+function clearCart() {
+    const list = document.getElementsByClassName('cart-item');
+    for (let i = list.length - 1; i >= 0; i--) {
+        console.log(list[i].id);
+        list[i].remove();
+    }
+}
 function showSwish() {
     const swishDiv = document.getElementsByClassName('swish-div');
     for (let i = 0; i < swishDiv.length; i++) {
@@ -293,12 +226,10 @@ function showSwish() {
 };
 
 const form = document.querySelector("form");
-
 // Select elements representing alerts for name, email, and phone
 const nameAlert = document.getElementById("nameAlert");
 const emailAlert = document.getElementById("emailAlert");
 const phoneAlert = document.getElementById("phoneAlert");
-
 //Add event listener for form submission
 form.addEventListener("submit", (event) => {
     // Prevent the default form submission behavior
@@ -309,7 +240,6 @@ form.addEventListener("submit", (event) => {
         form.reset();
     }
 });
-
 // Add event listener for input events within the form
 form.addEventListener("input", (event) => {
     // Retrieve the element that triggered the event
@@ -333,7 +263,6 @@ form.addEventListener("input", (event) => {
         validatePhone(target.value);
     }
 });
-
 // Function to validate email format using regular expression
 function validateEmail(email) {
     // Regular expression to validate email format
@@ -346,7 +275,6 @@ function validateEmail(email) {
     // Return whether the email is valid
     return isValid;
 }
-
 // Function to validate phone format using regular expression
 function validatePhone(phone) {
     // Regular expression to validate phone format (e.g., xxx-xxx-xxxx)
@@ -360,7 +288,6 @@ function validatePhone(phone) {
     // Return whether the phone number is valid
     return isValid;
 }
-
 // Function to validate the entire form
 function validateForm() {
     // Get the values of name, email, and phone input fields

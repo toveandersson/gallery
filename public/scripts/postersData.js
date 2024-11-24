@@ -18,7 +18,7 @@ const postersData = [
       available: true
     },
     {
-      id: 10,
+      id: 3,
       name: 'Grasshopper',
       image:
         'images/grasshopper.jpg',
@@ -28,7 +28,7 @@ const postersData = [
       available: true
     },
     {
-      id: 16,
+      id: 4,
       name: 'Snarl',
       image: 
       'images/noLash.jpg',
@@ -56,7 +56,7 @@ const postersData = [
       available: true
     },
     {
-      id: 11,
+      id: 7,
       name: 'Deco',
       image:
         'images/scan_erilar19_2024-10-24-15-22-53 - Copy.jpeg',
@@ -65,7 +65,7 @@ const postersData = [
       available: true
     },
     {
-      id: 4,
+      id: 8,
       name: 'Snailing',
       image:
         'images/scan_erilar19_2024-10-24-15-22-53.jpeg',
@@ -74,7 +74,7 @@ const postersData = [
       available: true
     },
     {
-      id: 12,
+      id: 9,
       name: 'Wave',
       image:
       'images/scan_erilar19_2024-10-24-15-12-18.jpeg',
@@ -83,7 +83,7 @@ const postersData = [
       available: true
     },
     {
-      id: 8,
+      id: 10,
       name: 'Fro-fro',
       image:
         'images/scan_erilar19_2024-10-24-15-20-10 - Copy.jpeg',
@@ -92,7 +92,7 @@ const postersData = [
       available: true
     },
     {
-      id: 7,
+      id: 11,
       name: 'Meeting',
       image:
         'images/scan_erilar19_2024-10-24-15-17-41.jpeg',
@@ -101,7 +101,7 @@ const postersData = [
       available: true
     },
     {
-      id: 15,
+      id: 12,
       name: 'Cozy',
       image:
         'images/scan_erilar19_2024-10-24-15-25-02 - Copy.jpeg',
@@ -110,7 +110,7 @@ const postersData = [
       available: true
     },
     {
-      id: 25,
+      id: 13,
       name: 'Hello',
       image:
         'images/scan_erilar19_2024-11-18-16-56-27.jpeg',
@@ -119,7 +119,7 @@ const postersData = [
       available: true
     },
     {
-      id: 24,
+      id: 14,
       name: 'Circus',
       image:
         'images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
@@ -128,7 +128,7 @@ const postersData = [
       available: true
     },
     {
-      id: 18,
+      id: 15,
       name: 'Gnarl',
       image:
         'images/scan_erilar19_2024-10-24-15-25-37.jpeg',
@@ -137,7 +137,7 @@ const postersData = [
       available: true
     },
     {
-      id: 26,
+      id: 16,
       name: 'Pink',
       image:
       'images/scan_erilar19_2024-11-18-16-53-58.jpeg',
@@ -146,7 +146,7 @@ const postersData = [
       available: true
     },
     {
-      id: 13,
+      id: 17,
       name: 'Literal',
       image:
         'images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
@@ -155,7 +155,7 @@ const postersData = [
       available: true
     },
     {
-      id: 3,
+      id: 18,
       name: 'Floral',
       image:
       '/images/floral.jpg',
@@ -164,7 +164,7 @@ const postersData = [
       available: true
     },
     {
-      id: 26,
+      id: 19,
       name: 'Jpeg',
       image:
         'images/scan_erilar19_2024-11-18-16-56-27 - Copy.jpeg',
@@ -173,7 +173,7 @@ const postersData = [
       available: true
     },
     {
-      id: 26,
+      id: 20,
       name: 'Emma',
       image:
         'images/scan_erilar19_2024-11-18-16-57-06.jpeg',
@@ -182,7 +182,7 @@ const postersData = [
       available: true
     },
     {
-      id: 9,
+      id: 21,
       name: 'Ponyo',
       image:
       'images/scan_erilar19_2024-10-24-15-20-10.jpeg',
@@ -191,7 +191,7 @@ const postersData = [
       available: true
     },
     {
-      id: 14,
+      id: 22,
       name: 'Bundle',
       image:
         'images/scan_erilar19_2024-10-24-15-23-48.jpeg',
@@ -200,7 +200,7 @@ const postersData = [
       available: false
     },
     {
-      id: 17,
+      id: 23,
       name: 'Pastor',
       image:
         'images/scan_erilar19_2024-10-24-15-25-37 - Copy.jpeg',
@@ -209,7 +209,7 @@ const postersData = [
       available: false
     },
     {
-      id: 19,
+      id: 24,
       name: 'Scifi',
       image:
         'images/scan_erilar19_2024-10-24-15-26-54 - Copy.jpeg',
@@ -218,7 +218,7 @@ const postersData = [
       available: false
     },
     {
-      id: 20,
+      id: 25,
       name: 'Tiger',
       image:
         'images/scan_erilar19_2024-10-24-15-26-54.jpeg',
@@ -227,7 +227,7 @@ const postersData = [
       available: false
     },
     {
-      id: 21,
+      id: 26,
       name: 'Stock',
       image:
         'images/scan_erilar19_2024-10-24-15-27-26 - Copy.jpeg',
@@ -236,7 +236,7 @@ const postersData = [
       available: false
     },
     {
-      id: 22,
+      id: 27,
       name: 'Features',
       image:
         'images/scan_erilar19_2024-10-24-15-27-26.jpeg',
@@ -245,7 +245,7 @@ const postersData = [
       available: false
     },
     {
-      id: 23,
+      id: 28,
       name: 'Creature',
       image:
         'images/scan_erilar19_2024-10-24-15-28-24.jpeg',  
