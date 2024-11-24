@@ -14,11 +14,12 @@ const sun2= document.getElementById("sun-m");
 const moon2= document.getElementById("moon-m");
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully loaded and parsed.");
-    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     setNightMode();
-    addCartItems();
-    // Fetch data from the server
+    if (document.body.dataset.page === 'order')
+        addCartItems();
+    if (document.body.dataset.page ==! 'posters')
+        return;
+    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     fetch('/posters')
         .then(response => response.json())
         .then(postersData => {

@@ -110,30 +110,21 @@ const postersData = [
       available: true
     },
     {
+      id: 25,
+      name: 'Hello',
+      image:
+        'images/scan_erilar19_2024-11-18-16-56-27.jpeg',
+      price: 10.99,
+      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
+      available: true
+    },
+    {
       id: 24,
       name: 'Circus',
       image:
         'images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
-      available: true
-    },
-    {
-      id: 3,
-      name: 'Floral',
-      image:
-      '/images/floral.jpg',
-      price: 39.95,
-      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
-      available: true
-    },
-    {
-      id: 13,
-      name: 'Literal',
-      image:
-        'images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
-      price: 39.95,
-      desc: `vinterslöja, genomskåda, borra, se igenom, täckmantel`,
       available: true
     },
     {
@@ -155,19 +146,28 @@ const postersData = [
       available: true
     },
     {
-      id: 26,
-      name: 'Jpeg',
+      id: 13,
+      name: 'Literal',
       image:
-        'images/scan_erilar19_2024-11-18-16-56-27 - Copy.jpeg',
-      price: 10.99,
+        'images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
+      price: 39.95,
+      desc: `vinterslöja, genomskåda, borra, se igenom, täckmantel`,
+      available: true
+    },
+    {
+      id: 3,
+      name: 'Floral',
+      image:
+      '/images/floral.jpg',
+      price: 39.95,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
     },
     {
-      id: 25,
-      name: 'Hello',
+      id: 26,
+      name: 'Jpeg',
       image:
-        'images/scan_erilar19_2024-11-18-16-56-27.jpeg',
+        'images/scan_erilar19_2024-11-18-16-56-27 - Copy.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true

@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }))
 // parse json
 app.use(express.json())
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 10000;
 
 app.listen(port, () =>
     console.log(`hello port ${port}...`)
