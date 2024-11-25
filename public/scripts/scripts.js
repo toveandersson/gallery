@@ -3,7 +3,8 @@
 //import posters from './scripts/postersData.js';
 // const express = require('express')
 // const app = express()
-let nightmodeVar = localStorage.getItem("nightmode") ?? true;
+let shoppingCart = [];
+let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
 console.log("nightmode: ",nightmodeVar);
 const button = document.getElementById('changeColorBtn');
 
@@ -15,10 +16,17 @@ const moon2= document.getElementById("moon-m");
 
 document.addEventListener("DOMContentLoaded", () => {
     setNightMode();
-    if (document.body.dataset.page === 'order')
+    //let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) ?? [];
+
+    if (document.body.dataset.page === 'order'){
         addCartItems();
-    if (document.body.dataset.page ==! 'posters')
+        document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
+    }
+    if (document.body.dataset.page !== 'posters'){
+        console.log("return",document.body.dataset.page);
         return;
+    }
+    console.log("hej",document.body.dataset.page);
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     fetch('/posters')
         .then(response => response.json())
@@ -63,8 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error('Error fetching posters:', error));
 });
-
-let shoppingCart = [];
 
 function on() {
     // display overlay
@@ -140,13 +146,17 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
+
 function addToCart(posterId) {
     shoppingCart.push(posterId);
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     console.log(JSON.parse(localStorage.getItem("shoppingCart")));
 }
 function addCartItems() {
+    const list = JSON.parse(localStorage.getItem("shoppingCart"))
+    list.forEach((item)=>{
+        console.log(item);
+    })
     const itemGrid = document.getElementsByClassName('shopping-cart')[0];
     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
         shoppingCart.push(itemId);
