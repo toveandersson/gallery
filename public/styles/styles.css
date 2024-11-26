@@ -321,6 +321,8 @@ body {
     font-size: 2.5rem;
     text-align: center;
     color: var(--h2-text-color);
+    margin-bottom: 0rem;
+    margin-top: 1rem;
 }
 
 .painting-grid {
@@ -383,11 +385,11 @@ body {
     object-fit: contain;                  /* Maintains the image aspect ratio within the square */
 }
 .painting-grid-posters {
-    padding-top: 10rem;
+    padding-top: 3rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr)); /* Ensure equal column widths */
     grid-gap: 2rem;                                  /* Space between items */
-    padding: 1rem 1rem 15rem 1rem;
+    padding: 1rem 1rem 10rem 1rem;
     max-width: 1400px;                               /* Limit grid width */
     margin: auto;
     box-sizing: border-box;                          /* Include padding in width */
