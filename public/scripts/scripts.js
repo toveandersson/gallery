@@ -16,14 +16,16 @@ const moon2= document.getElementById("moon-m");
 
 document.addEventListener("DOMContentLoaded", () => {
     setNightMode();
+    getShoppingCart();
     //let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) ?? [];
 
     if (document.body.dataset.page === 'order'){
+        console.log("order: go to add cart");
         addCartItems();
         document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
     }
     if (document.body.dataset.page !== 'posters'){
-        console.log("return",document.body.dataset.page);
+        console.log("return, on ",document.body.dataset.page);
         return;
     }
     console.log("hej",document.body.dataset.page);
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const title = document.createElement('h3');
                 title.setAttribute('id', 'title');
-                title.setAttribute('class', 'poster-flex-child')
+                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left')
 
                 const add = document.createElement('button');
                 add.setAttribute('class', 'fa-plus poster-flex-child add-button');
@@ -90,7 +92,7 @@ function off() {
 }
 function setNightMode(){
     console.log("set night mode function, nightmode: ",nightmodeVar);
-    if (nightmodeVar === "true"){
+    if (nightmodeVar === true){
         console.log("nightmode: ",nightmodeVar);
         console.log("nu blir det mörkt");
         dark();
@@ -152,15 +154,17 @@ function addToCart(posterId) {
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     console.log(JSON.parse(localStorage.getItem("shoppingCart")));
 }
-function addCartItems() {
-    const list = JSON.parse(localStorage.getItem("shoppingCart"))
-    list.forEach((item)=>{
-        console.log(item);
-    })
-    const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+
+function getShoppingCart(){
     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
         shoppingCart.push(itemId);
+        console.log("item to add to list before populating it: ", itemId);
     })
+}
+function addCartItems() {
+    console.log("adding updated list to cart ", shoppingCart);
+    const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+    
     // Fetch data from the server
     fetch('/posters')
         .then(response => response.json())
@@ -187,9 +191,8 @@ function addCartItems() {
                 remove.setAttribute('id', 'remove-button-id');
                 remove.setAttribute('onclick', 'removeFromCart(this.id)');
                 
+                //remove.addEventListener('click', () => removeFromCart(itemId, div_card));
                 // Add event listener for each remove button
-                remove.addEventListener('click', () => removeFromCart(itemId, div_card));
-
                 
                 remove.id = i;
                 title.innerHTML = itemPoster.name;
@@ -211,6 +214,7 @@ function removeFromCart(posterId) {
     shoppingCart.splice(posterId, 1);
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     clearCart();
+    console.log("removed from cart now add: ");
     addCartItems();
 }
 function clearCartData() {
@@ -223,6 +227,7 @@ function clearCart() {
     for (let i = list.length - 1; i >= 0; i--) {
         console.log(list[i].id);
         list[i].remove();
+        console.log("clearing");
     }
 }
 function showSwish() {
@@ -235,44 +240,44 @@ function showSwish() {
     console.log('hello');
 };
 
-const form = document.querySelector("form");
+//const form = document.querySelector("form");
 // Select elements representing alerts for name, email, and phone
 const nameAlert = document.getElementById("nameAlert");
 const emailAlert = document.getElementById("emailAlert");
 const phoneAlert = document.getElementById("phoneAlert");
 //Add event listener for form submission
-form.addEventListener("submit", (event) => {
-    // Prevent the default form submission behavior
-    event.preventDefault();
-    showSwish();
-    // If form validation passes, reset the form
-    if (validateForm()) {
-        form.reset();
-    }
-});
+// form.addEventListener("submit", (event) => {
+//     // Prevent the default form submission behavior
+//     event.preventDefault();
+//     showSwish();
+//     // If form validation passes, reset the form
+//     if (validateForm()) {
+//         form.reset();
+//     }
+// });
 // Add event listener for input events within the form
-form.addEventListener("input", (event) => {
-    // Retrieve the element that triggered the event
-    const target = event.target;
-    // console.log(target);
+// form.addEventListener("input", (event) => {
+//     // Retrieve the element that triggered the event
+//     const target = event.target;
+//     // console.log(target);
     
-    // Check if the event was triggered by the name input field
-    if (target.id === 'name') {
-        // console.log(target.id)
-        // Show or hide the name alert based on whether the name input has a value
-        nameAlert.style.display = target.value ? "none" : "block";        
-    } 
-    // Check if the event was triggered by the email input field
-    else if (target.id === 'email') {
-        // Call the validateEmail function with the value of the email input field
-        validateEmail(target.value);
-    } 
-    // Check if the event was triggered by the phone input field
-    else if (target.id === 'phone') {
-        // Call the validatePhone function with the value of the phone input field
-        validatePhone(target.value);
-    }
-});
+//     // Check if the event was triggered by the name input field
+//     if (target.id === 'name') {
+//         // console.log(target.id)
+//         // Show or hide the name alert based on whether the name input has a value
+//         nameAlert.style.display = target.value ? "none" : "block";        
+//     } 
+//     // Check if the event was triggered by the email input field
+//     else if (target.id === 'email') {
+//         // Call the validateEmail function with the value of the email input field
+//         validateEmail(target.value);
+//     } 
+//     // Check if the event was triggered by the phone input field
+//     else if (target.id === 'phone') {
+//         // Call the validatePhone function with the value of the phone input field
+//         validatePhone(target.value);
+//     }
+// });
 // Function to validate email format using regular expression
 function validateEmail(email) {
     // Regular expression to validate email format
@@ -299,19 +304,19 @@ function validatePhone(phone) {
     return isValid;
 }
 // Function to validate the entire form
-function validateForm() {
-    // Get the values of name, email, and phone input fields
-    const name = document.getElementById('name').value;
-    const emailVal = document.getElementById('email').value;
-    const phoneVal = document.getElementById('phone').value;
+// function validateForm() {
+//     // Get the values of name, email, and phone input fields
+//     const name = document.getElementById('name').value;
+//     const emailVal = document.getElementById('email').value;
+//     const phoneVal = document.getElementById('phone').value;
 
-    // Show or hide the name alert based on whether the name input has a value
-    nameAlert.style.display = name ? "none" : "block";
+//     // Show or hide the name alert based on whether the name input has a value
+//     nameAlert.style.display = name ? "none" : "block";
 
-    // Validate the email and phone inputs
-    const isValidEmailValue = validateEmail(emailVal);
-    const isValidPhoneValue = validatePhone(phoneVal);
+//     // Validate the email and phone inputs
+//     const isValidEmailValue = validateEmail(emailVal);
+//     const isValidPhoneValue = validatePhone(phoneVal);
 
-    // Return true if all inputs are valid, otherwise false
-    return name && isValidEmailValue && isValidPhoneValue;
-}
+//     // Return true if all inputs are valid, otherwise false
+//     return name && isValidEmailValue && isValidPhoneValue;
+// }
