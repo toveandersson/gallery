@@ -5,7 +5,7 @@ const postersData = [
       image:
         'images/scan_erilar19_2024-09-11-15-35-17.jpg',
       price: 10.99,
-      desc: `vinterslöja, vintertäcke`,
+      desc: `snuva, vinterslöja, vintertäcke`,
       available: true
     },
     {
@@ -14,7 +14,7 @@ const postersData = [
       image:
         '/images/scan_erilar19_2024-09-11-15-34-46.jpeg',
       price: 29.98,
-      desc: `sola sig`,
+      desc: `sunny, sola sig`,
       available: true
     },
     {
@@ -165,28 +165,29 @@ const postersData = [
     },
     {
       id: 19,
-      name: 'Jpeg',
-      image:
-        'images/scan_erilar19_2024-11-18-16-56-27 - Copy.jpeg',
-      price: 10.99,
-      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
-      available: false
+      name: 'Snarl V2',
+      image: 
+      'images/snarl_og.jpeg',
+        //'images/snarl_og.jpeg',
+      price: 9.99,
+      desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
+      available: true
     },
     {
       id: 20,
-      name: 'Emma',
+      name: 'Ponyo',
       image:
-        'images/scan_erilar19_2024-11-18-16-57-06.jpeg',
-      price: 10.99,
+      'images/scan_erilar19_2024-10-24-15-20-10.jpeg',
+      price: 39.95,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
     },
     {
       id: 21,
-      name: 'Ponyo',
+      name: 'Emma',
       image:
-      'images/scan_erilar19_2024-10-24-15-20-10.jpeg',
-      price: 39.95,
+        'images/scan_erilar19_2024-11-18-16-57-06.jpeg',
+      price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
     },
@@ -255,14 +256,13 @@ const postersData = [
     },
     {
       id: 29,
-      name: 'Snarl V2',
-      image: 
-      'images/snarl_og.jpeg',
-        //'images/snarl_og.jpeg',
-      price: 9.99,
-      desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
-      available: true
-    },
+      name: 'Jpeg',
+      image:
+        'images/scan_erilar19_2024-11-18-16-56-27 - Copy.jpeg',
+      price: 10.99,
+      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
+      available: false
+    }
   ]
   const people = [
     { id: 1, name: 'john' },
