@@ -93,16 +93,17 @@
                 <form id="form">       <!--  action="" method="POST"  -->
                     <div class="form1">
                         <div>
-                            <h3>Order Details</h3>
+                            <h3>Order Details</h3> 
                         </div>
+                        <h4 style="justify-self: end; margin: 0;"> free shipping over 120kr!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
                         <div>
                             <h3>Items:</h3>
                         </div>
                     </div>
-                    
                     <div class= "shopping-cart" ></div>
-
                     <button id="clear-cart-btn">Clear</button>
+                    <h4 id="price"></h4>
+                    <h4 id= "total-price"></h4>
                     
                     <hr class="form-hr">
                     <div class="form-input">
@@ -110,11 +111,11 @@
                         <div>
                             <label for="name">Name:</label>
                             <span id="nameAlert">Name is required</span>
-                            <input type="text" id="name" name="name" placeholder="John Smith">
+                            <input type="text" id="name" name="name" placeholder="Tove Andersson">
 
                             <label for="email">Email:</label>
                             <span id="emailAlert">Email is unvalid</span>
-                            <input type="text" id="email" name="email" placeholder="johnsmith@gmail.com">
+                            <input type="text" id="email" name="email" placeholder="toveandersson@gmail.com">
 
                             <label for="phone">Phone number:</label>
                             <span id="phoneAlert">Phonenumber is unvalid</span>
@@ -127,9 +128,9 @@
                         <h3>Payment</h3>
                         <div>
                             <label for="address">Shipping adress:</label>
-                            <input type="text" id="cardname" name="cardname" placeholder="John Smith">
+                            <input type="text" id="cardname" name="cardname" placeholder="Tove Andersson">
                             <label for="address2"></label>
-                            <input type="text" id="address" name="address" placeholder="johnsmith@gmail.com">
+                            <input type="text" id="address" name="address" placeholder="toveandersson@gmail.com">
                             <label for="card">Card number:</label>
                             <input type="number" id="card" name="card" placeholder="4111 1111 1111 1111">
                             <label for="cvv">CVV:</label>

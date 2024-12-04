@@ -19,3 +19,11 @@ app.listen(port, () =>
 app.get('/posters', (req, res) => {
   res.json(posters);
 });
+
+app.get('/posters/:posterID', (req, res) => {
+  const {posterID} = req.params;
+  const singlePoster = posters.find(
+    (poster) => poster.id === Number(posterID)
+  )
+  res.json(singlePoster);
+});

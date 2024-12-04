@@ -3,9 +3,9 @@
 //import posters from './scripts/postersData.js';
 // const express = require('express')
 // const app = express()
-let shoppingCart = [];
+let shoppingCart = []; 
+localStorage.getItem("shoppingCart") ?? localStorage.setItem("shoppingCart", shoppingCart);
 let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
-console.log("nightmode: ",nightmodeVar);
 const button = document.getElementById('changeColorBtn');
 
 const body = document.body;
@@ -17,7 +17,6 @@ const moon2= document.getElementById("moon-m");
 document.addEventListener("DOMContentLoaded", () => {
     setNightMode();
     getShoppingCart();
-    //let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) ?? [];
 
     if (document.body.dataset.page === 'order'){
         console.log("order: go to add cart");
@@ -26,6 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
+        return;
+    }
+    if (document.body.dataset.page === 'product'){
+        console.log("product ",document.body.dataset.page);
+        fetch('/singlePoster')
+            .then(response => response.json())
+            .catch(error => console.error('Error fetching poster:', error));
         return;
     }
     console.log("hej",document.body.dataset.page);
@@ -156,6 +162,7 @@ function addToCart(posterId) {
 }
 
 function getShoppingCart(){
+    if (localStorage.getItem("shoppingCart") !== null)
     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
         shoppingCart.push(itemId);
         console.log("item to add to list before populating it: ", itemId);
@@ -164,6 +171,9 @@ function getShoppingCart(){
 function addCartItems() {
     console.log("adding updated list to cart ", shoppingCart);
     const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+
+    document.getElementById('price').innerText = `Price: ${shoppingCart.length * 60} kr\u2003\u2003\u2003${shoppingCart.length * 60 > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
+    document.getElementById('total-price').innerText = `Total price: ${shoppingCart.length * 60 +(shoppingCart.length * 60 > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
     
     // Fetch data from the server
     fetch('/posters')
