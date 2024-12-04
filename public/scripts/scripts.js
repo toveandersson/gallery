@@ -4,7 +4,8 @@
 // const express = require('express')
 // const app = express()
 let shoppingCart = []; 
-localStorage.getItem("shoppingCart") ?? localStorage.setItem("shoppingCart", shoppingCart);
+!localStorage.getItem("shoppingCart") ?? localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart)); 
+
 let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
 const button = document.getElementById('changeColorBtn');
 
@@ -162,7 +163,6 @@ function addToCart(posterId) {
 }
 
 function getShoppingCart(){
-    if (localStorage.getItem("shoppingCart") !== null)
     JSON.parse(localStorage.getItem("shoppingCart")).forEach((itemId)=>{
         shoppingCart.push(itemId);
         console.log("item to add to list before populating it: ", itemId);
