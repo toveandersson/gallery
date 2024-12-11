@@ -5,6 +5,8 @@ const posters = require('./public/scripts/postersData')
 
 // static assets
 app.use(express.static('./public'))
+//app.use('/posters/:posterID', express.static('./public'));
+
 // parse form data
 app.use(express.urlencoded({ extended: false }))
 // parse json
@@ -20,10 +22,16 @@ app.get('/posters', (req, res) => {
   res.json(posters);
 });
 
-app.get('/posters/:posterID', (req, res) => {
+app.get('posters/:posterID', (req, res) => {
   const {posterID} = req.params;
   const singlePoster = posters.find(
     (poster) => poster.id === Number(posterID)
   )
-  res.json(singlePoster);
+  if (singlePoster) {
+    //res.json(singlePoster);
+    res.sendFile(__dirname + '/public/product.html'); 
+    //res.sendFile(__dirname + '/public/styles/styles.css');
+  } else {
+    res.status(404).send('Poster not found');
+  }
 });

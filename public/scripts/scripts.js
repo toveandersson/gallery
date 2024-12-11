@@ -4,9 +4,8 @@
 // const express = require('express')
 // const app = express()
 let shoppingCart = []; 
-if (!localStorage.getItem("shoppingCart")) {
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart)); // Save an empty array as a JSON string
-}
+localStorage.getItem("shoppingCart") || localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+
 console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
 
 
@@ -28,18 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
         addCartItems();
         document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
     }
+    if (document.body.dataset.page === 'product'){
+        console.log("product!!!");
+    }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
         return;
     }
-    if (document.body.dataset.page === 'product'){
-        console.log("product ",document.body.dataset.page);
-        fetch('/singlePoster')
-            .then(response => response.json())
-            .catch(error => console.error('Error fetching poster:', error));
-        return;
-    }
-    console.log("hej",document.body.dataset.page);
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     fetch('/posters')
         .then(response => response.json())
@@ -57,6 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 image.setAttribute('class', 'thumbnail');
                 image.setAttribute('id', 'image');
 
+                const link = document.createElement('a'); // Create a link
+                //link.href = `/posters/${poster.id}`; // Set correct route
+                link.href= "/product.html";
+                link.setAttribute('class', 'poster-link')
+
                 const poster_flex = document.createElement('div');
                 poster_flex.setAttribute('class', 'poster-flex')
 
@@ -73,7 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.innerText = poster.id;
                 image.src = poster.image;
 
-                imgBg.appendChild(image);
+                link.appendChild(image); // Wrap the image in the link
+                imgBg.appendChild(link);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
                 poster_flex.appendChild(title);

@@ -31,7 +31,7 @@ const postersData = [
       id: 4,
       name: 'Snarl',
       image: 
-      'images/snarl_og_noLash copy.jpg',
+      'images/snarl_og.jpeg',
         //'images/snarl_og.jpeg',
       price: 9.99,
       desc: `snorkel, virrvarr, snirkla sig`,
@@ -48,7 +48,7 @@ const postersData = [
     },
     {
       id: 6,
-      name: 'Grandma',
+      name: 'Tant grädde',
       image:
         'images/grandma_og.jpg',
       price: 9.99,
@@ -138,11 +138,12 @@ const postersData = [
     },
     {
       id: 16,
-      name: 'Pink',
-      image:
-      'images/scan_erilar19_2024-11-18-16-53-58.jpeg',
-      price: 10.99,
-      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
+      name: 'Snarl V2',
+      image: 
+      'images/snarl_og_noLash copy.jpg',
+        //'images/snarl_og.jpeg',
+      price: 9.99,
+      desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
       available: true
     },
     {
@@ -165,12 +166,11 @@ const postersData = [
     },
     {
       id: 19,
-      name: 'Snarl V2',
-      image: 
-      'images/snarl_og.jpeg',
-        //'images/snarl_og.jpeg',
-      price: 9.99,
-      desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
+      name: 'Pink',
+      image:
+      'images/scan_erilar19_2024-11-18-16-53-58.jpeg',
+      price: 10.99,
+      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
     },
     {

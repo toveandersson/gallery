@@ -441,6 +441,7 @@ body {
     position: relative;
     width: 100%;
     height: 3rem;
+    max-width: 1350px;
 }
 
 .poster-flex-child {
@@ -449,6 +450,9 @@ body {
     border-radius: .5rem;
     background-color: var(--light);
     cursor: context-menu;
+    font-size: calc(1rem + 0.5vw);
+    word-wrap: break-word;         /* Break words when necessary */
+    overflow-wrap: break-word;     /* Break long words */
 }
 
 .add-button {
@@ -465,6 +469,10 @@ body {
 
 .fa-minus, .fa-plus {
     font-size: 1rem;
+}
+
+.poster-link {
+    cursor:auto;
 }
 
 @media(max-width: 768px){
