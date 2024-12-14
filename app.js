@@ -7,6 +7,7 @@ const postersData = require('./public/scripts/postersData')
 // static assets
 app.use(express.static('./public'))
 //app.use('/posters/:posterID', express.static('./public'));
+// Redirect trailing slashes
 
 // parse form data
 app.use(express.urlencoded({ extended: false }))
@@ -42,7 +43,7 @@ app.get('/', (req, res, next) => {
 // Route for dynamic poster pages
 app.get('/posters/:posterID', (req, res) => {
   const { posterID } = req.params;
-  const singlePoster = postersData.find((poster) => poster.id === Number(posterID)-1);
+  const singlePoster = postersData.find((poster) => poster.id === Number(posterID));
   if (singlePoster) {
       res.sendFile(path.join(__dirname, 'public', 'product', 'product.html'));
   } else {
