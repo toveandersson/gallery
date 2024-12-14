@@ -3,7 +3,7 @@ const postersData = [
       id: 1,
       name: 'Snuva',
       image:
-        'images/scan_erilar19_2024-09-11-15-35-17.jpg',
+        '/images/scan_erilar19_2024-09-11-15-35-17.jpg',
       price: 10.99,
       desc: `snuva, vinterslöja, vintertäcke`,
       available: true
@@ -21,7 +21,7 @@ const postersData = [
       id: 3,
       name: 'Grasshopper',
       image:
-        'images/grasshopper.jpg',
+        '/images/grasshopper.jpg',
         //'images/scan_erilar19_2024-10-24-15-21-53.jpeg'
       price: 29.98,
       desc: `gräshoppa, intellektuell`,
@@ -31,7 +31,7 @@ const postersData = [
       id: 4,
       name: 'Snarl',
       image: 
-      'images/snarl_og.jpeg',
+      '/images/snarl_og.jpeg',
         //'images/snarl_og.jpeg',
       price: 9.99,
       desc: `snorkel, virrvarr, snirkla sig`,
@@ -41,7 +41,7 @@ const postersData = [
       id: 5,
       name: 'Eklekticism',
       image:
-        'images/scan_erilar19_2024-10-24-15-17-41 - Copy.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-17-41 - Copy.jpeg',
       price: 29.98,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -50,7 +50,7 @@ const postersData = [
       id: 6,
       name: 'Tant grädde',
       image:
-        'images/grandma_og.jpg',
+        '/images/grandma_og.jpg',
       price: 9.99,
       desc: `tant grädde, tant grå, tant grädde och lin`,
       available: true
@@ -59,7 +59,7 @@ const postersData = [
       id: 7,
       name: 'Deco',
       image:
-        'images/scan_erilar19_2024-10-24-15-22-53 - Copy.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-22-53 - Copy.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -68,7 +68,7 @@ const postersData = [
       id: 8,
       name: 'Snailing',
       image:
-        'images/scan_erilar19_2024-10-24-15-22-53.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-22-53.jpeg',
       price: 9.99,
       desc: `skruva sig`,
       available: true
@@ -77,7 +77,7 @@ const postersData = [
       id: 9,
       name: 'Wave',
       image:
-      'images/scan_erilar19_2024-10-24-15-12-18.jpeg',
+      '/images/scan_erilar19_2024-10-24-15-12-18.jpeg',
       price: 39.95,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -86,7 +86,7 @@ const postersData = [
       id: 10,
       name: 'Fro-fro',
       image:
-        'images/scan_erilar19_2024-10-24-15-20-10 - Copy.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-20-10 - Copy.jpeg',
       price: 9.99,
       desc: `aspect ratio: 15:20 `,
       available: true
@@ -95,7 +95,7 @@ const postersData = [
       id: 11,
       name: 'Meeting',
       image:
-        'images/scan_erilar19_2024-10-24-15-17-41.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-17-41.jpeg',
       price: 10.99,
       desc: `möte, doodle meeting    aspect ratio: 15:21  (can it be 14.8:21 dock, äkta a5 storleken)`,
       available: true
@@ -104,7 +104,7 @@ const postersData = [
       id: 12,
       name: 'Cozy',
       image:
-        'images/scan_erilar19_2024-10-24-15-25-02 - Copy.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-25-02 - Copy.jpeg',
       price: 10.99,
       desc: `bebop,   aspect ratio: 15:20`,
       available: true
@@ -113,7 +113,7 @@ const postersData = [
       id: 13,
       name: 'Hello',
       image:
-        'images/scan_erilar19_2024-11-18-16-56-27.jpeg',
+        '/images/scan_erilar19_2024-11-18-16-56-27.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -122,7 +122,7 @@ const postersData = [
       id: 14,
       name: 'Circus',
       image:
-        'images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
+        '/images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
       price: 10.99,
       desc: `chroma`,
       available: true
@@ -131,7 +131,7 @@ const postersData = [
       id: 15,
       name: 'Gnarl',
       image:
-        'images/scan_erilar19_2024-10-24-15-25-37.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-25-37.jpeg',
       price: 29.98,
       desc: `fönsterslickare, windowlicker`,
       available: true
@@ -140,7 +140,7 @@ const postersData = [
       id: 16,
       name: 'Snarl V2',
       image: 
-      'images/snarl_og_noLash copy.jpg',
+      '/images/snarl_og_noLash copy.jpg',
         //'images/snarl_og.jpeg',
       price: 9.99,
       desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
@@ -150,7 +150,7 @@ const postersData = [
       id: 17,
       name: 'Literal',
       image:
-        'images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
+        '/images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
       price: 39.95,
       desc: `vinterslöja, genomskåda, borra, se igenom, täckmantel`,
       available: true
@@ -168,7 +168,7 @@ const postersData = [
       id: 19,
       name: 'Pink',
       image:
-      'images/scan_erilar19_2024-11-18-16-53-58.jpeg',
+      '/images/scan_erilar19_2024-11-18-16-53-58.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -177,7 +177,7 @@ const postersData = [
       id: 20,
       name: 'Ponyo',
       image:
-      'images/scan_erilar19_2024-10-24-15-20-10.jpeg',
+      '/images/scan_erilar19_2024-10-24-15-20-10.jpeg',
       price: 39.95,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true
@@ -186,7 +186,7 @@ const postersData = [
       id: 21,
       name: 'Emma',
       image:
-        'images/scan_erilar19_2024-11-18-16-57-06.jpeg',
+        '/images/scan_erilar19_2024-11-18-16-57-06.jpeg',
       price: 10.99,
       desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
       available: true

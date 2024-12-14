@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-const posters = require('./public/scripts/postersData')
+const path = require('path');
+const postersData = require('./public/scripts/postersData')
 //const path = require('path')
 
 // static assets
@@ -18,20 +19,47 @@ app.listen(port, () =>
     console.log(`hello port ${port}...`)
 );
 
-app.get('/posters', (req, res) => {
-  res.json(posters);
+app.get('/postersData', (req, res) => {
+  res.json(postersData);
 });
 
-app.get('posters/:posterID', (req, res) => {
-  const {posterID} = req.params;
-  const singlePoster = posters.find(
-    (poster) => poster.id === Number(posterID)
-  )
+// Serve folders as routes
+app.get('/:folderName', (req, res, next) => {
+  const folderName = req.params.folderName;
+  const filePath = path.join(__dirname, 'public', folderName, `${folderName}.html`);
+  res.sendFile(filePath, (err) => {
+    if (err) next(); // Continue to 404 handler if not found
+  });
+});
+
+app.get('/', (req, res, next) => {
+  const filePath = path.join(__dirname, 'public', 'home', `index.html`);
+  res.sendFile(filePath, (err) => {
+    if (err) next(); // Continue to 404 handler if not found
+  });
+});
+
+// Route for dynamic poster pages
+app.get('/posters/:posterID', (req, res) => {
+  const { posterID } = req.params;
+  const singlePoster = postersData.find((poster) => poster.id === Number(posterID)-1);
   if (singlePoster) {
-    //res.json(singlePoster);
-    res.sendFile(__dirname + '/public/product.html'); 
-    //res.sendFile(__dirname + '/public/styles/styles.css');
+      res.sendFile(path.join(__dirname, 'public', 'product', 'product.html'));
   } else {
-    res.status(404).send('Poster not found');
+      res.status(404).send('Poster not found');
   }
 });
+
+// app.get('posters/:posterID', (req, res) => {
+//   const {posterID} = req.params;
+//   const singlePoster = postersData.find(
+//     (poster) => poster.id === Number(posterID)
+//   )
+//   if (singlePoster) {
+//     //res.json(singlePoster);
+//     res.sendFile(__dirname + '/public/product.html'); 
+//     //res.sendFile(__dirname + '/public/styles/styles.css');
+//   } else {
+//     res.status(404).send('Poster not found');
+//   }
+// });

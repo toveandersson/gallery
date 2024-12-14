@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-    fetch('/posters')
+    fetch('/postersData')
         .then(response => response.json())
         .then(postersData => {
             postersData.forEach((poster) => {
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 image.setAttribute('id', 'image');
 
                 const link = document.createElement('a'); // Create a link
-                //link.href = `/posters/${poster.id}`; // Set correct route
-                link.href= "/product.html";
+                link.href = `/posters/${poster.id}`; // Set correct route
+                //link.href= "/product.html";
                 link.setAttribute('class', 'poster-link')
 
                 const poster_flex = document.createElement('div');
@@ -184,7 +184,7 @@ function addCartItems() {
     document.getElementById('total-price').innerText = `Total price: ${shoppingCart.length * 60 +(shoppingCart.length * 60 > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
     
     // Fetch data from the server
-    fetch('/posters')
+    fetch('/postersData')
         .then(response => response.json())
         .then(postersData => {
             let i = 0;

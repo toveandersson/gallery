@@ -4,28 +4,28 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial=1.0">
-        <link rel="stylesheet" href="./normalize.css" />
-        <link rel="stylesheet" href="./styles.css" />
 
         <meta name="description" content="Gallery">
         <meta name="keywords" content="TA, art, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
         <meta name="author" content="Tove Andersson">
         <title>Tabloom</title>
-        <link rel="icon" type="image/png" href="images\LargerPosters\tabloom_icon.png">
+        <link rel="icon" type="image/png" href="/images\LargerPosters\tabloom_icon.png">
         <!-- google fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
         <!-- stylesheet -->
-        <link href="styles/styles.css" rel="stylesheet">
+        <link rel="stylesheet" href="../styles/normalize.css">
+        <link rel="stylesheet" href="../styles/styles.css">
         <!-- font awesome cdn -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
-        <script src="app.js" defer></script>
-        <script src="scripts/scripts.js" defer></script>
-        <script src="scripts/postersData.js" defer></script>
+        <script src="../app.js" defer></script>
+        <script src="../scripts/scripts.js" defer></script>
+        <script src="../scripts/postersData.js" defer></script>
+        
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1565266297398690"
         crossorigin="anonymous"></script>
 </head>
@@ -36,59 +36,50 @@
         <div class="close-button">
             <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
         </div>
-        <div class="overlay-text"> 
-            <a href="index.html"><mark>Home</mark></a>
-            <a href="posters.html"><mark>Posters</mark></a>
-            <a href="about.html"><mark>About</mark></a>
-            <a href="order.html"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
+        <div class="overlay-text">
+            <a href="/home"><mark>Home</mark></a>
+            <a href="/posters"><mark>Posters</mark></a>
+            <a href="/about"><mark>About</mark></a>
+            <a href="/order"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
         </div>
 
     </div>
 
     <main>
-    <div class="header">
+        <div class="header">
             <nav class="nav full-nav">
                 <div id="left-side">
-                    <a href="index.html">
-                        <img src="images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
+                    <a href="/home">
+                        <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
-                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
+                        <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
                     </button>
                 </div>
                 <div id="right-side">
-                    <a href="index.html"><mark class="pinkMark">Home</mark></a>
-                    <a href="posters.html"><mark class="pinkMark">Posters</mark></a>
-                    <a href="about.html"><mark class="pinkMark">About</mark></a>
-                    <a href="order.html"><mark class="pinkMark">Order</mark></a>
+                    <a href="/home"><mark class="pinkMark">Home</mark></a>
+                    <a href="/posters"><mark class="pinkMark">Posters</mark></a>
+                    <a href="/about"><mark class="pinkMark">About</mark></a>
+                    <a href="/order"><mark class="pinkMark">Order</mark></a>
                 </div>
             </nav>
 
             <!-- mobile -->
             <nav class="nav mobile-nav">
                 <div id="left-side">
-                    <a href="index.html">
-                        <img src="images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
+                    <a href="/home">
+                        <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
-                        <img src="images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
+                        <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
                     </button>
                 </div>
                 <div id="right-side">
                     <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
                 </div>
             </nav>
-        </div> 
-
-        <div class="hero-container">
-            <img class="hero-image" src="images\Gustav_Klimt_046.jpg" width="353.75" height="354"
-                alt="painting">
-            <div class="hero-text">
-                <h1>Tove's paintings</h1>
-                <a href="posters.html" class="hero-btn"margin: 1rem>???</a>
-            </div>
         </div>
 
         <div class="spacer"></div> 
@@ -96,7 +87,7 @@
 
         <!-- form -->
         <div>
-            <h1>Order</h1>
+            <h1 style="padding-top: 2rem;">Order</h1>
             <div class="order">
                 <form id="form">       <!--  action="" method="POST"  -->
                     <div class="form1">
@@ -159,7 +150,7 @@
                         <button type="submit" value="Submit">Submit</button>
                     </div>
                     <div class="swish-div" style="display: none;">
-                        <img src="images/swish-QR-small.png" alt="alvins owner" loading="lazy" style="width: 30%; margin: 3rem;">
+                        <img src="/images/swish-QR-small.png" alt="swish code" loading="lazy" style="width: 30%; margin: 3rem;">
                     </div>
                 </form>
 
@@ -170,7 +161,7 @@
 
     <!-- footer -->
     <footer>
-        <img src="images\LargerPosters\fro-fro_bg.png" alt="poster" style="width: 10%;" loading="lazy">
+        <img src="/images\LargerPosters\fro-fro_bg.png" alt="poster" style="width: 10%;" loading="lazy">
             <div>
                 <div>
                     <a href="index.html">Home</a>
@@ -180,7 +171,7 @@
                 </div>
             </div>
         </div>
-            <img src="images\LargerPosters\grasshopper_bg.png" alt="poster" style="width: 10%;" loading="lazy">
+            <img src="/images\LargerPosters\grasshopper_bg.png" alt="poster" style="width: 10%;" loading="lazy">
         </footer>
     </body>
     <script src="app.js"></script>
