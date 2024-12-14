@@ -491,7 +491,7 @@ h2 {
 }
 
 .poster-link {
-    cursor:auto;
+    /* cursor:auto; */
 }
 
 @media(max-width: 768px){
