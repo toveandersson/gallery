@@ -580,12 +580,25 @@ padding: .5rem
 }
 
 /* about */
-.about {
+.about  {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     justify-items: center;
     margin: 0 auto 2rem;
     max-width: 1200px;
+}
+
+.product {
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    justify-items: center;
+    justify-self: center;
+    margin:2rem;
+    max-width: 1200px;
+}
+
+#product-img{
+    padding-bottom: 2rem;
 }
 
 .about img {

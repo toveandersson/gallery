@@ -5,7 +5,7 @@ const postersData = [
       image:
         '/images/scan_erilar19_2024-09-11-15-35-17.jpg',
       price: 10.99,
-      desc: `snuva, vinterslöja, vintertäcke`,
+      desc: `snuva, vinterslöja, vintertäcke, slägga sig`,
       available: true
     },
     {
@@ -19,12 +19,12 @@ const postersData = [
     },
     {
       id: 3,
-      name: 'Grasshopper',
+      name: 'Gräshoppa',
       image:
         '/images/grasshopper.jpg',
         //'images/scan_erilar19_2024-10-24-15-21-53.jpeg'
       price: 29.98,
-      desc: `gräshoppa, intellektuell`,
+      desc: `gräshoppa, intellektuell, grasshopper, anstränga sig, slöa sig, `,
       available: true
     },
     {
@@ -43,7 +43,7 @@ const postersData = [
       image:
         '/images/scan_erilar19_2024-10-24-15-17-41 - Copy.jpeg',
       price: 29.98,
-      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
+      desc: `Bedöva sig, beröva sig, begrava sig, belamra`,
       available: true
     },
     {
@@ -66,11 +66,11 @@ const postersData = [
     },
     {
       id: 8,
-      name: 'Snailing',
+      name: 'Skruva sig',
       image:
         '/images/scan_erilar19_2024-10-24-15-22-53.jpeg',
       price: 9.99,
-      desc: `skruva sig`,
+      desc: `skruva sig, snailing`,
       available: true
     },
     {
@@ -102,7 +102,7 @@ const postersData = [
     },
     {
       id: 12,
-      name: 'Cozy',
+      name: 'Bebop',
       image:
         '/images/scan_erilar19_2024-10-24-15-25-02 - Copy.jpeg',
       price: 10.99,
@@ -111,20 +111,20 @@ const postersData = [
     },
     {
       id: 13,
-      name: 'Hello',
+      name: 'Pigeon',
       image:
         '/images/scan_erilar19_2024-11-18-16-56-27.jpeg',
       price: 10.99,
-      desc: `I'm baby direct trade farm-to-table hell of, YOLO readymade raw denim venmo whatever organic gluten-free kitsch schlitz irony af flexitarian.`,
+      desc: `Pigon`,
       available: true
     },
     {
       id: 14,
-      name: 'Circus',
+      name: 'Chroma',
       image:
         '/images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
       price: 10.99,
-      desc: `chroma`,
+      desc: `chroma, circus`,
       available: true
     },
     {

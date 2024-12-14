@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (document.body.dataset.page === 'product'){
         console.log("product!!!");
+        showProductInfo();
     }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
@@ -227,6 +228,19 @@ function addCartItems() {
         })
         .catch(error => console.error('Error fetching posters:', error));
 };
+
+function showProductInfo() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
+  
+    if (posterData) {
+      document.getElementById('product-img').src = posterData.image;
+      document.getElementById('product-title').textContent = posterData.name;
+      //document.getElementById('product-desc').textContent = posterData.desc;
+      document.getElementById('product-desc').textContent = '[description]';
+    }
+  }
+
 
 function removeFromCart(posterId) {
     shoppingCart.splice(posterId, 1);

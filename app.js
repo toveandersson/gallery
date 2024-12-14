@@ -39,17 +39,18 @@ app.get('/', (req, res, next) => {
     if (err) next(); // Continue to 404 handler if not found
   });
 });
-
-// Route for dynamic poster pages
 app.get('/posters/:posterID', (req, res) => {
   const { posterID } = req.params;
   const singlePoster = postersData.find((poster) => poster.id === Number(posterID));
   if (singlePoster) {
-      res.sendFile(path.join(__dirname, 'public', 'product', 'product.html'));
+      // Pass poster data as query parameters
+      const queryString = new URLSearchParams(singlePoster).toString();
+      res.redirect(`/product/product.html?${queryString}`);
   } else {
       res.status(404).send('Poster not found');
   }
 });
+
 
 // app.get('posters/:posterID', (req, res) => {
 //   const {posterID} = req.params;
