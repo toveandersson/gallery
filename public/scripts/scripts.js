@@ -48,14 +48,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 const div_card = document.createElement('div');
                 div_card.setAttribute('class', 'poster-child');
 
+                // Create the image element
                 const image = document.createElement('img');
                 image.setAttribute('class', 'thumbnail');
                 image.setAttribute('id', 'image');
+                image.src = poster.image;
 
-                const link = document.createElement('a'); // Create a link
-                link.href = `/posters/${poster.id}`; // Set correct route
-                //link.href= "/product.html";
-                link.setAttribute('class', 'poster-link')
+                // Create an invisible overlay
+                const overlay = document.createElement('div');
+                overlay.setAttribute('class', 'image-overlay');
+
+                // Create a link to wrap the image
+                const link = document.createElement('a');
+                link.href = `/posters/${poster.id}`;
+                link.setAttribute('class', 'poster-link');
 
                 const poster_flex = document.createElement('div');
                 poster_flex.setAttribute('class', 'poster-flex')
@@ -71,10 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 add.id = poster.id;
                 title.innerText = poster.id;
-                image.src = poster.image;
 
                 link.appendChild(image); // Wrap the image in the link
                 imgBg.appendChild(link);
+                imgBg.appendChild(overlay); // Add the overlay over the image
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
                 poster_flex.appendChild(title);
