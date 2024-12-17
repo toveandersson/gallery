@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 add.setAttribute('onclick', 'addToCart(this.id)')
                 
                 add.id = poster.id;
-                title.innerText = poster.id;
+                title.innerText = poster.name;
 
                 link.appendChild(image); // Wrap the image in the link
                 imgBg.appendChild(link);
