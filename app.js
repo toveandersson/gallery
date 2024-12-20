@@ -13,11 +13,11 @@ app.use(express.static('./public'))
 app.use(express.urlencoded({ extended: false }))
 // parse json
 app.use(express.json())
-
+// Middleware to sanitize image paths in postersData
 const port = process.env.PORT || 1000;
 
 app.listen(port, () =>
-    console.log(`hello port ${port}...`)
+  console.log(`hello port ${port}...`)
 );
 
 app.get('/postersData', (req, res) => {
