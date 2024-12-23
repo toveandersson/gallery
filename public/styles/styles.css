@@ -300,10 +300,18 @@ h2 {
 .hero-text {
     position: absolute;
     top: 50%;
-    left: 20vw; /*view width*/
+    left: 50%;
+    /* left: 20vw; */
+     /*view width*/
     transform: translate(-50%, -50%);
-    text-align: left;   
+    text-align: center;   
 }
+
+.hero-text h1 {  
+    color: var(--bg-text);
+
+}
+
 
 .hero-btn {
     margin: 0.0rem 5rem;
@@ -320,16 +328,6 @@ h2 {
     font-size: 3rem;
     margin: 1rem 5rem;
 }
-
-@media (max-width: 800px){
-    .hero-text {
-        left: 30vw;
-    }
-    .hero-btn {
-        left: 30vw;
-    }
-}
-
 /* spacer */
 
 .spacer {
@@ -370,7 +368,7 @@ h2 {
     grid-gap: .5rem;
     background-color: var(--main-bg-color);
     border-radius: .5rem;
-    padding: .9rem .5rem;
+    padding: 0rem .5rem 0rem .5rem;
     img {
         border-radius: .5rem;
         pointer-events: none;
