@@ -103,19 +103,19 @@ h2 {
 
 @media(max-width: 568px){
     html {
-        font-size: 70%;
+        font-size: 60%;
     }
 }
 
-@media(max-width: 300px){
+@media(max-width: 380px){
+    html {
+        font-size: 40%;
+    }
+}
+
+@media(max-width: 280px){
     html {
         font-size: 30%;
-    }
-}
-
-@media(max-width: 250px){
-    html {
-        font-size: 15%;
     }
 }
 
@@ -299,7 +299,7 @@ h2 {
 
 .hero-text {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     /* left: 20vw; */
      /*view width*/
