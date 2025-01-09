@@ -600,12 +600,13 @@ padding: .5rem
 
 .about-street {
     display: grid;
-    grid-template-columns: 3fr 4fr;
+    grid-template-columns: 20fr 31fr;
     align-items: center;
-    padding: 3rem;
+    padding: 2.5rem 2.5rem 1.5rem 2.5rem;
 }
 
 .subgrid-street {
+    padding: 0rem;
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(2, minmax(max-content, 25%));
@@ -619,7 +620,7 @@ padding: .5rem
     grid-template-columns: repeat(1,1fr);
     justify-items: center;
     justify-self: center;
-    margin:2rem;
+    margin: 2rem;
     max-width: 1200px;
 }
 
@@ -692,15 +693,15 @@ padding: .5rem
     font-family: 'Open Sans';
 }
 
-
+@media(max-width: 1000px){
+    .about-street {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
 @media(max-width: 768px){
     .about {
         grid-template-columns: repeat(1, 1fr);
         grid-gap: 1rem;
-    }
-
-    .about-child2 {
-        /* padding-bottom: 3rem; */
     }
 }
 
