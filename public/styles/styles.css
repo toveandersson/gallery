@@ -613,6 +613,7 @@ padding: .5rem
     align-items: stretch;
     grid-auto-rows: minmax(1rem, auto);
     align-self: center;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .product {
@@ -643,6 +644,7 @@ padding: .5rem
 
 .about-child2-street {
     padding: 1rem;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .about-child2-street div:nth-child(1) {
@@ -656,6 +658,7 @@ padding: .5rem
     color: var(--h2-text-color);
     border-radius: .5rem;
     background-color: var(--dark-yellow);
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .about-child2 div p {
@@ -670,6 +673,7 @@ padding: .5rem
     margin-block-start: 0em;
     margin-block-end: 0em;
     text-align: left;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 .about-child2 div h2 {
@@ -690,7 +694,9 @@ padding: .5rem
     text-decoration: none;
     border: none;
     color: var(--h2-text-color);
-    font-family: 'Open Sans';
+    font-family: 'Sofia Sans', sans-serif;
+    /* font-size: 1.6rem; */
+    font-style: italic;
 }
 
 @media(max-width: 1000px){
