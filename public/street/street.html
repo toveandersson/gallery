@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="sv">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial=1.0">
+        
+        <meta name="description" content="Gallery">
+        <meta name="keywords" content="TA, art, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
+        <meta name="author" content="Tove Andersson">
+        <title>Tabloom</title>
+        <link rel="icon" type="image/png" href="/images\LargerPosters\tabloom_icon.png">
+        <!-- google fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
+        <!-- stylesheet -->
+        <link rel="stylesheet" href="../styles/normalize.css">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <!-- font awesome cdn -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+        <script src="../app.js" defer></script>
+        <script src="../scripts/scripts.js" defer></script>
+        <script src="../scripts/postersData.js" defer></script>
+
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1565266297398690"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- overlay for mobile -->
+    <div id="overlay">
+        <div class="close-button">
+            <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
+        </div>
+        <div class="overlay-text">
+            <a href="/home"><mark>Home</mark></a>
+            <a href="/posters"><mark>Posters</mark></a>
+            <a href="/about"><mark>About</mark></a>
+            <a href="/order"> <mark>Order</mark></a>   <!--class="order-nav">     (in between of html and mark, no a in the end?)-->
+        </div>
+
+    </div>
+
+    <main>
+        <div class="header">
+            <nav class="nav full-nav">
+                <div id="left-side">
+                    <a href="/home">
+                        <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
+                    </a>
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun"> 
+                        <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <a href="/home"><mark class="pinkMark">Home</mark></a>
+                    <a href="/posters"><mark class="pinkMark">Posters</mark></a>
+                    <a href="/about"><mark class="pinkMark">About</mark></a>
+                    <a href="/order"><mark class="pinkMark">Order</mark></a>
+                </div>
+            </nav>
+
+            <!-- mobile -->
+            <nav class="nav mobile-nav">
+                <div id="left-side">
+                    <a href="/home">
+                        <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
+                    </a>
+                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                        <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"id="sun-m"> 
+                        <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" id="moon-m"> 
+                    </button>
+                </div>
+                <div id="right-side">
+                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+                </div>
+            </nav>
+        </div>
+
+        <!-- about -->
+        <div class="paintings">
+            <div class="about-street">
+                <div class="about-child2-street">
+                    <img src= "\images\IMG_4228.JPG" alt="image of us" style="width: 100%; pointer-events: none; ">
+                </div>
+                <div class="subgrid-street">
+                    <div class="about-child2-street">
+                        <div>
+                            <h3 style="font-size: 1.5rem; margin-block-end: 0em;">Hello!</h3>
+                            <p>
+                                We are Tove and Ellen, sitting closest to the camera in this picture. We are musicians and have just started playing on the streets. 
+                                We like to play a variation of genres and instruments, now we play lots of our favorite jazz, 70s folk and bossa songs.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="about-child2-street">
+                        <div>
+                            <p>
+                                Since you have found this page we assume that you have seen us on playing on the street :-D
+                                If you want to book us to play we would love to hear from you, please email us at <a href= "toveama@gmail.com">toveama@gmail.com</a>
+                            </p>
+                            <p style="text-align: left;">
+                                And if you want to tip us here is a link to our Revolut account: <a href= "https://revolut.me/toveandersson" >revolut.me/toveandersson</a> thank you!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="about-child2-street">
+                        <div>
+                            <p>
+                                You could also support us by buying posters or earrings from my (Tove's) small business, on this website. It's all handmade with recycled materials 
+                                and environment-friendly printing. 
+                            </p>
+                            <p>We have a limited storage with posters and earrings with us on our busking trips, so you can also come up to us 
+                                between our sets or songs. Our sets are usually around 25 min long, pay in cash or Revolut. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="info-text" style="padding-left:2rem; padding-bottom: 2rem; padding-right: 2rem;">
+            <div>
+                <h3 style="font-size: 1.5rem; padding-top: .5rem; margin: 0rem; color:var(--text-color);"></h3>
+                <p style="font-size: 1.4rem; margin-bottom: .5rem; color: var(--text-color);">
+                    NOTE that this the website has no link to this page, since it is specific for our street performances, so if you would like to save information on this 
+                    please remember the url tove.dev/street and search for it in a webbrowser, or save this page. We appriciate your intrest!
+                </p>
+            </div>
+        </div>      
+    </div>
+
+    </main>
+
+    <!-- footer -->
+    <footer>
+        <img src="/images\LargerPosters\grandma_bg.png" alt="poster" style="width: 10%;" loading="lazy">
+            <div>
+                <div>
+                    <a href="/home">Home</a>
+                    <a href="/posters">Posters</a>
+                    <a href="/about">About</a>
+                    <a href="/order">Order</a>
+                </div>
+            </div>
+        </div>
+            <img src="/images\LargerPosters\sunny_bg.png" alt="poster" style="width: 10%;" loading="lazy">
+        </div>
+        </footer>
+    </body>
+    <script src="app.js"></script>
+    <script src="app.css"></script>
+    </html>

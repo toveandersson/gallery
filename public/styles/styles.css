@@ -598,6 +598,22 @@ padding: .5rem
     max-width: 1200px;
 }
 
+.about-street {
+    display: grid;
+    grid-template-columns: 3fr 4fr;
+    align-items: center;
+    padding: 3rem;
+}
+
+.subgrid-street {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, minmax(max-content, 25%));
+    align-items: stretch;
+    grid-auto-rows: minmax(1rem, auto);
+    align-self: center;
+}
+
 .product {
     display: grid;
     grid-template-columns: repeat(1,1fr);
@@ -624,10 +640,35 @@ padding: .5rem
     background-color: var(--dark-yellow);
 }
 
+.about-child2-street {
+    padding: 1rem;
+}
+
+.about-child2-street div:nth-child(1) {
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    /* text-align: center; */
+    align-self: center;
+    align-content: center;
+    justify-items: center;
+    color: var(--h2-text-color);
+    border-radius: .5rem;
+    background-color: var(--dark-yellow);
+}
+
 .about-child2 div p {
     text-align: left;
     font-size: 1.4rem;
     padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.about-child2-street div p {
+    padding: 1.2rem;
+    font-size: 1.4rem;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    text-align: left;
 }
 
 .about-child2 div h2 {
@@ -642,7 +683,13 @@ padding: .5rem
     border-radius: 1.5rem;
     font-size: 1.5rem;
     text-decoration: none;
-    align-self: center;
+}
+
+.about-child2-street div a {
+    text-decoration: none;
+    border: none;
+    color: var(--h2-text-color);
+    font-family: 'Open Sans';
 }
 
 
