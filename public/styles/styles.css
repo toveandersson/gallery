@@ -500,9 +500,9 @@ h2 {
     font-size: 1rem;
 }
 
-.poster-link {
+/* .poster-link { */
     /* cursor:auto; */
-}
+
 
 @media(max-width: 768px){
     .painting-grid {
@@ -605,6 +605,12 @@ padding: .5rem
     padding: 2.5rem 2.5rem 1.5rem 2.5rem;
 }
 
+.subgrid-street-left {
+    padding: 0rem;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    max-width: 1200px;
+}
 .subgrid-street {
     padding: 0rem;
     display: grid;
@@ -697,6 +703,7 @@ padding: .5rem
     font-family: 'Sofia Sans', sans-serif;
     /* font-size: 1.6rem; */
     font-style: italic;
+    color: var(--dark-text);
 }
 
 @media(max-width: 1000px){
