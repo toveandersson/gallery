@@ -242,8 +242,8 @@ function showProductInfo() {
     if (posterData) {
       document.getElementById('product-img').src = posterData.image;
       document.getElementById('product-title').textContent = posterData.name;
-      //document.getElementById('product-desc').textContent = posterData.desc;
-      document.getElementById('product-desc').textContent = '[description] (image resolution is reduced)';
+      document.getElementById('product-desc').textContent = posterData.desc;
+    //   document.getElementById('product-desc').textContent = '[description] (image resolution is reduced)';
     }
   }
 

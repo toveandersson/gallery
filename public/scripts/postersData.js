@@ -6,7 +6,8 @@ const postersData = [
         '/images/scan_erilar19_2024-09-11-15-35-17.jpg',
       image: "/images/ImgReducedSize/snuva_reduced_size2.jpg",
       price: 10.99,
-      desc: `snuva, vinterslöja, vintertäcke, slägga sig`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // `snuva, vinterslöja, vintertäcke, slägga sig`
       available: true
     },
     {
@@ -16,7 +17,8 @@ const postersData = [
         '/images/scan_erilar19_2024-09-11-15-34-46.jpeg',
       image: "/images/ImgReducedSize/sunny_reduced_size.jpg",
       price: 29.98,
-      desc: `sunny, sola sig`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `sunny, sola sig`,
       available: true
     },
     {
@@ -27,7 +29,8 @@ const postersData = [
         //'images/scan_erilar19_2024-10-24-15-21-53.jpeg'
       image: "/images/ImgReducedSize/grasshopper_reduced_size.jpg",
       price: 29.98,
-      desc: `gräshoppa, intellektuell, grasshopper, anstränga sig, slöa sig, `,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `gräshoppa, intellektuell, grasshopper, anstränga sig, slöa sig, `,
       available: true
     },
     {
@@ -38,7 +41,8 @@ const postersData = [
         //'images/snarl_og.jpeg',
       image: "/images/ImgReducedSize/snarl_reduced_size.jpg",
       price: 9.99,
-      desc: `snorkel, virrvarr, snirkla sig, förundra sig`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `snorkel, virrvarr, snirkla sig, förundra sig`,
       available: true
     },
     {
@@ -48,7 +52,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-17-41 - Copy.jpeg',
       image: "/images/ImgReducedSize/genomskåda_reduced_size.jpg",
       price: 29.98,
-      desc: `Bedöva sig, beröva sig, begrava sig, belamra, genomskåda dig, Eklekticism, beskåda`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `Bedöva sig, beröva sig, begrava sig, belamra, genomskåda dig, Eklekticism, beskåda`,
       available: true
     },
     {
@@ -58,7 +63,8 @@ const postersData = [
         '/images/grandma_og.jpg',
       image:"/images/ImgReducedSize/grandma_reduced_size.jpg",
       price: 9.99,
-      desc: `tant grädde, tant grå, tant grädde och lin`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `tant grädde, tant grå, tant grädde och lin`,
       available: true
     },
     {
@@ -68,7 +74,7 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-22-53 - Copy.jpeg',
       image: "/images/ImgReducedSize/modern_reduced_size.jpg",
       price: 10.99,
-      desc: ``,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       available: true
     },
     {
@@ -78,7 +84,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-22-53.jpeg',
       image: "/images/ImgReducedSize/snailing_reduced_size.jpg",
       price: 9.99,
-      desc: `skruva sig, snailing`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `skruva sig, snailing`,
       available: true
     },
     {
@@ -88,7 +95,7 @@ const postersData = [
       '/images/scan_erilar19_2024-10-24-15-12-18.jpeg',
       image: "/images/ImgReducedSize/blue_reduced_size.jpg",
       price: 39.95,
-      desc: `Wave, våg`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       available: true
     },
     {
@@ -98,7 +105,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-20-10 - Copy.jpeg',
       image: "/images/ImgReducedSize/fro-fro_reduced_size.jpg",
       price: 9.99,
-      desc: `aspect ratio: 15:20, fråga sig, undrande, Fro-fro`,
+      desc: "Avaliable in 15x20cm and 17x23cm. FSC certified, thick paper.",
+      // desc: `aspect ratio: 15:20, fråga sig, undrande, Fro-fro`,
       available: true
     },
     {
@@ -108,7 +116,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-17-41.jpeg',
       image: "/images/ImgReducedSize/meeting_reduced_size.jpg",
       price: 10.99,
-      desc: `möte, möta sig, doodle meeting,  aspect ratio: 15:21  (kan den vara 14.8:21 dock, äkta a5 storleken)`,
+      desc: "Avaliable in 15x21cm and 20x28cm. FSC certified, thick paper.",
+      // desc: `möte, möta sig, doodle meeting,  aspect ratio: 15:21  (kan den vara 14.8:21 dock, äkta a5 storleken)`,
       available: true
     },
     {
@@ -118,7 +127,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-25-02 - Copy.jpeg',
       image: "/images/ImgReducedSize/bebop_reduced_size.jpg",
       price: 10.99,
-      desc: `bebop,   aspect ratio: 15:20`,
+      desc: "Avaliable in 15x20cm and 17x23cm. FSC certified, thick paper.",
+      // desc: `bebop,   aspect ratio: 15:20`,
       available: true
     },
     {
@@ -128,7 +138,8 @@ const postersData = [
         '/images/scan_erilar19_2024-11-18-16-56-27.jpeg',
       image: "/images/ImgReducedSize/pigeon_reduced_size.jpg",
       price: 10.99,
-      desc: `Pigon`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `Pigon`,
       available: true
     },
     {
@@ -138,7 +149,8 @@ const postersData = [
         '/images/scan_erilar19_2024-11-18-16-53-58 - Copy.jpeg',
       image: "/images/ImgReducedSize/chroma_reduced_size.jpg",
       price: 10.99,
-      desc: `chroma, circus`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `chroma, circus`,
       available: true
     },
     {
@@ -148,7 +160,8 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-25-37.jpeg',
       image: "/images/ImgReducedSize/gnarl_reduced_size.jpg",
       price: 29.98,
-      desc: `fönsterslickare, windowlicker, belamra`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `fönsterslickare, windowlicker, belamra`,
       available: true
     },
     {
@@ -159,7 +172,8 @@ const postersData = [
         //'images/snarl_og.jpeg',
       image: "/images/ImgReducedSize/snarlV2_reduced_size.jpg",
       price: 9.99,
-      desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `snorkel, virrvarr, snirkla sig, snorkla sig`,
       available: true
     },
     {
@@ -169,17 +183,19 @@ const postersData = [
         '/images/scan_erilar19_2024-10-24-15-23-48 - Copy.jpeg',
       image: "/images/ImgReducedSize/literal_reduced_size.jpg",
       price: 39.95,
-      desc: `vinterslöja, genomskåda, borra, se igenom, täckmantel, månsken`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `vinterslöja, genomskåda, borra, se igenom, täckmantel, månsken`,
       available: true
     },
     {
       id: 18,
-      name: 'Betänketid',
+      name: 'Floral',
       imageOg:
       '/images/floral.jpg',
       image: "/images/ImgReducedSize/floral_reduced_size.jpg",
       price: 39.95,
-      desc: `Floral`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `Floral, Betänketid`,
       available: true
     },
     {
@@ -189,7 +205,8 @@ const postersData = [
       '/images/scan_erilar19_2024-11-18-16-53-58.jpeg',
       image: "/images/ImgReducedSize/pink_reduced_size.jpg",
       price: 10.99,
-      desc: `Pink, beröva sig, Diskbänksrealism`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `Pink, beröva sig, Diskbänksrealism`,
       available: true
     },
     {
@@ -199,7 +216,8 @@ const postersData = [
       '/images/scan_erilar19_2024-10-24-15-20-10.jpeg',
       image: "/images/ImgReducedSize/ponyo_reduced_size.jpg",
       price: 39.95,
-      desc: `rannsaka sig, snarlik, Ponyo`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `rannsaka sig, snarlik, Ponyo`,
       available: true
     },
     {
@@ -209,7 +227,8 @@ const postersData = [
         '/images/scan_erilar19_2024-11-18-16-57-06.jpeg',
       image: "/images/ImgReducedSize/emma_reduced_size.jpg",
       price: 10.99,
-      desc: `tillrättavisa, stirra sig, rannsakan, emma`,
+      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      // desc: `tillrättavisa, stirra sig, rannsakan, emma`,
       available: true
     },
     {
