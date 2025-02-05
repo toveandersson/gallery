@@ -524,20 +524,38 @@ h2 {
     .painting-grid {
         grid-template-columns: repeat(1, 1fr);
     }
-
     .painting-child {
         width: 70%;
         margin: auto;
     }
-
     .painting-grid-posters {
         padding: 1rem 0.5rem 5rem 0.5rem;
         grid-gap: 0.5rem;
     }
-
     .poster-child {
         border-radius: 0rem;
     }
+    .inner-flex {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-items: center;
+        position: relative;
+    }
+    .poster-flex {
+        justify-content: center;
+    }
+    .product-select {
+        font-size: 1rem;
+    }
+    .inner-flex > *:first-child {
+        margin-right: 1rem;
+    }
+    
+    .inner-flex > *:last-child {
+        margin-left: 1rem;
+    }
+    
 }
 
 /* footer */
@@ -732,6 +750,9 @@ padding: .5rem
     }
 }
 @media(max-width: 768px){
+    .shopping-cart {
+        grid-template-columns: repeat(3, 1fr);
+    }
     .about {
         grid-template-columns: repeat(1, 1fr);
         grid-gap: 1rem;

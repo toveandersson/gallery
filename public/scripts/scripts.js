@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("return, on ",document.body.dataset.page);
         return;
     }
+    
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     fetch('/postersData')
         .then(response => response.json())
@@ -106,21 +107,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Get the select element
                 selectSizes.innerHTML = ""; // Clear previous options
 
-                for (const [size, quantity] of Object.entries(sizes)) {
-                    console.log(`Size: ${size}, Quantity: ${quantity}`);
-
-                    // Create a new <option> element for each size
-                    const option = document.createElement('option');
-                    option.setAttribute('value', size);
-                    option.textContent = `${size}`;
-
-                    // Disable the option if the quantity is 0 or less
-                    if (quantity <= 0) {
-                        option.setAttribute('disabled', true);
+                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
+                    for (const [size, quantity] of Object.entries(sizes)) {
+                        console.log(`Size: ${size}, Quantity: ${quantity}`);
+                
+                        // Create a new <option> element for each size
+                        const option = document.createElement('option');
+                        option.setAttribute('value', size);
+                        option.textContent = `${size}`;
+                
+                        // Disable the option if the quantity is 0 or less
+                        if (quantity <= 0) {
+                            option.setAttribute('disabled', true);
+                        }
+                
+                        // Append the option to the <select> dropdown
+                        selectSizes.appendChild(option);
                     }
-
-                    // Append the option to the <select> dropdown
-                    selectSizes.appendChild(option);
                 }
 
                  
@@ -144,9 +147,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 posterGrid.appendChild(div_card);
             });
+            
+            window.addEventListener('resize', moveChild);
+            moveChild(); // Run once on page load
         })
         .catch(error => console.error('Error fetching posters:', error));
 });
+
+function moveChild() {
+    const children = document.getElementsByClassName('inner-flex');
+    const desktopParents = document.getElementsByClassName('poster-flex');
+    const mobileParents = document.getElementsByClassName('poster-child');
+
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (window.innerWidth <= 768) {
+            if (mobileParents[i]) mobileParents[i].appendChild(child); // Move to mobile parent
+        } else {
+            if (desktopParents[i]) desktopParents[i].appendChild(child); // Move to desktop parent
+        }
+    }
+}
+
+// Run on page load and when window resizes
+window.addEventListener('resize', moveChild);
 
 function on() {
     // display overlay
@@ -356,6 +380,7 @@ function clearCart() {
         console.log("clearing");
     }
 }
+
 function showSwish() {
     const swishDiv = document.getElementsByClassName('swish-div');
     for (let i = 0; i < swishDiv.length; i++) {
