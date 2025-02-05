@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 price_text.style = 'margin: 0rem;';
 
                 const selectSizes = document.createElement('select');
+                selectSizes.setAttribute('type', 'select');
                 selectSizes.setAttribute('class', 'product-select');
                 selectSizes.style = "background-color: var(--h2-text-color);";
 
