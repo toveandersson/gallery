@@ -71,14 +71,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.setAttribute('class', 'poster-flex-child .poster-flex-child-left')
 
                 const add = document.createElement('button');
+                add.setAttribute('type', 'button')
                 add.setAttribute('class', 'fa-plus poster-flex-child add-button');
                 add.setAttribute('id', 'add-button-id')
                 add.setAttribute('onclick', 'addToCart(this.id)')
                 
                 const inner_flex = document.createElement('div');
-                poster_flex.setAttribute('class', 'inner-flex');
+                inner_flex.setAttribute('class', 'inner-flex');
 
                 const price_text = document.createElement('h2');
+                price_text.style = 'margin: 0rem;';
 
                 const selectSizes = document.createElement('select');
                 selectSizes.setAttribute('class', 'product-select');

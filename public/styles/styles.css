@@ -474,6 +474,13 @@ h2 {
     max-width: 1350px;
 }
 
+.inner-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .poster-flex-child {
     padding: 1rem;
     margin: .25rem;
@@ -485,7 +492,9 @@ h2 {
     overflow-wrap: break-word;     /* Break long words */
 }
 
+/* denna används, oklart om andra två add gör det? */
 .add-button {
+    
     padding: 1rem;
     font-weight: 900;
     cursor: pointer;
@@ -500,10 +509,11 @@ h2 {
     background-color: var(--h1-color);
 }
 
-poster child, add button relative
+/* poster child, add button relative */
 
 .fa-minus, .fa-plus {
     font-size: 1rem;
+    text-decoration: none;
 }
 
 /* .poster-link { */
