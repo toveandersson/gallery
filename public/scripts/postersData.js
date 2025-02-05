@@ -6,9 +6,10 @@ const postersData = [
         '/images/scan_erilar19_2024-09-11-15-35-17.jpg',
       image: "/images/ImgReducedSize/snuva_reduced_size2.jpg",
       price: 10.99,
-      desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+      desc: `Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper. 240 g / ㎡`,
       // `snuva, vinterslöja, vintertäcke, slägga sig`
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1}
     },
     {
       id: 2,
@@ -19,7 +20,8 @@ const postersData = [
       price: 29.98,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `sunny, sola sig`,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 3,
@@ -31,7 +33,8 @@ const postersData = [
       price: 29.98,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `gräshoppa, intellektuell, grasshopper, anstränga sig, slöa sig, `,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 4,
@@ -43,7 +46,8 @@ const postersData = [
       price: 9.99,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `snorkel, virrvarr, snirkla sig, förundra sig`,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 5,
@@ -54,7 +58,8 @@ const postersData = [
       price: 29.98,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `Bedöva sig, beröva sig, begrava sig, belamra, genomskåda dig, Eklekticism, beskåda`,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 6,
@@ -65,7 +70,8 @@ const postersData = [
       price: 9.99,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `tant grädde, tant grå, tant grädde och lin`,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 7,
@@ -75,7 +81,8 @@ const postersData = [
       image: "/images/ImgReducedSize/modern_reduced_size.jpg",
       price: 10.99,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 8,
@@ -86,7 +93,8 @@ const postersData = [
       price: 9.99,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
       // desc: `skruva sig, snailing`,
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 9,
@@ -96,7 +104,8 @@ const postersData = [
       image: "/images/ImgReducedSize/blue_reduced_size.jpg",
       price: 39.95,
       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
-      available: true
+      available: true,
+      sizes: { '15x15cm': 2, '20x20cm': 1 }
     },
     {
       id: 10,
@@ -107,7 +116,8 @@ const postersData = [
       price: 9.99,
       desc: "Avaliable in 15x20cm and 17x23cm. FSC certified, thick paper.",
       // desc: `aspect ratio: 15:20, fråga sig, undrande, Fro-fro`,
-      available: true
+      available: true,
+      sizes: { '15x20cm': 2, '17x23cm': 1 }
     },
     {
       id: 11,
@@ -118,7 +128,8 @@ const postersData = [
       price: 10.99,
       desc: "Avaliable in 15x21cm and 20x28cm. FSC certified, thick paper.",
       // desc: `möte, möta sig, doodle meeting,  aspect ratio: 15:21  (kan den vara 14.8:21 dock, äkta a5 storleken)`,
-      available: true
+      available: true,
+      sizes: { '15x21cm': 2, '20x28cm': 1 }
     },
     {
       id: 12,
@@ -129,7 +140,8 @@ const postersData = [
       price: 10.99,
       desc: "Avaliable in 15x20cm and 17x23cm. FSC certified, thick paper.",
       // desc: `bebop,   aspect ratio: 15:20`,
-      available: true
+      available: true,
+      sizes: { '15x20cm': 2, '17x23cm': 1 }
     },
     {
       id: 13,
@@ -311,6 +323,7 @@ const postersData = [
     { id: 4, name: 'anna' },
     { id: 5, name: 'emma' },
   ]
+
 
   //export default posters
   module.exports = postersData 

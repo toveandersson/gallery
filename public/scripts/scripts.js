@@ -75,16 +75,69 @@ document.addEventListener("DOMContentLoaded", () => {
                 add.setAttribute('id', 'add-button-id')
                 add.setAttribute('onclick', 'addToCart(this.id)')
                 
+                const inner_flex = document.createElement('div');
+                poster_flex.setAttribute('class', 'inner-flex');
+
+                const price_text = document.createElement('h2');
+
+                const selectSizes = document.createElement('select');
+                selectSizes.setAttribute('class', 'product-select');
+                selectSizes.style = "background-color: var(--h2-text-color);";
+
+                selectSizes.addEventListener('change', (event) => {
+                    const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
+                    if (sizesIndex == 0){
+                        price_text.textContent = '45kr';
+                    }
+                    else if (sizesIndex >= 0){
+                        price_text.textContent = '60kr';
+                    }
+                 else {
+                        price_text.textContent = '45kr'; 
+                    }
+                });
+
+                //selectSizes options
+                const sizes = poster.sizes; // Extract sizes
+
+                // Get the select element
+                selectSizes.innerHTML = ""; // Clear previous options
+
+                for (const [size, quantity] of Object.entries(sizes)) {
+                    console.log(`Size: ${size}, Quantity: ${quantity}`);
+
+                    // Create a new <option> element for each size
+                    const option = document.createElement('option');
+                    option.setAttribute('value', size);
+                    option.textContent = `${size}`;
+
+                    // Disable the option if the quantity is 0 or less
+                    if (quantity <= 0) {
+                        option.setAttribute('disabled', true);
+                    }
+
+                    // Append the option to the <select> dropdown
+                    selectSizes.appendChild(option);
+                }
+
+                 
+                price_text.textContent = '45kr'; 
+                //add sizes to it
+
                 add.id = poster.id;
                 title.innerText = poster.name;
+                imgBg.style.backgroundColor = "#fdf8e5";
 
                 link.appendChild(image); // Wrap the image in the link
                 imgBg.appendChild(link);
                 imgBg.appendChild(overlay); // Add the overlay over the image
+                imgBg.appendChild(add);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
                 poster_flex.appendChild(title);
-                poster_flex.appendChild(add);
+                poster_flex.appendChild(inner_flex);
+                inner_flex.appendChild(price_text);
+                inner_flex.appendChild(selectSizes);
 
                 posterGrid.appendChild(div_card);
             });
@@ -238,15 +291,47 @@ function addCartItems() {
 function showProductInfo() {
     const urlParams = new URLSearchParams(window.location.search);
     const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
-  
+   
     if (posterData) {
       document.getElementById('product-img').src = posterData.image;
       document.getElementById('product-title').textContent = posterData.name;
       document.getElementById('product-desc').textContent = posterData.desc;
-    //   document.getElementById('product-desc').textContent = '[description] (image resolution is reduced)';
     }
-  }
+    const selectedPoster = postersData.find(poster => poster.id === Number(posterData.id));
+    const sizes = selectedPoster.sizes; // Directly extract sizes
 
+    for (const [size, quantity] of Object.entries(sizes)) {
+        console.log(`Size: ${size}, Quantity: ${quantity}`);
+        const option = document.createElement('option');
+        option.setAttribute('value', size);         
+        // option.setAttributeNS('required', true) ;                                                                                            
+        if (quantity <= 0){
+            option.setAttribute('disabled', true);
+        };
+        // if (firstTime){
+        //     option.selected = true;
+        //     firstTime = false;
+        // }
+        
+        option.innerHTML = size;
+        document.getElementById('product-select').appendChild(option);
+        
+        document.getElementById('product-select').addEventListener('change', (event) => {
+            const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
+            if (sizesIndex == 0){
+                document.getElementById('product-price').textContent = '45kr';
+            }
+            else if (sizesIndex >= 0){
+                document.getElementById('product-price').textContent = '60kr';
+            }
+            else {
+                document.getElementById('product-price').textContent = '45kr'; 
+            }
+        });
+        
+        document.getElementById('product-price').textContent = '45kr'; 
+    }
+}
 
 function removeFromCart(posterId) {
     shoppingCart.splice(posterId, 1);
