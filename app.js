@@ -20,6 +20,9 @@ app.use(express.urlencoded({ extended: false }))
 express.raw()
 app.use(express.json())
 
+console.log("Stripe URI:", process.env.STRIPE_URI ? "Loaded" : "Not Found");
+console.log("Webhook Secret:", process.env.STRIPE_WEBHOOK_SECRET ? "Loaded" : "Not Found");
+
 const port = process.env.PORT || 1000;
 
 const connectDB = (url) =>{
@@ -266,7 +269,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
   }
 
   console.log(`Received event of type: ${event.type}`);
-  
+
   // Handle the event
   switch (event.type) {
     case 'payment_intent.succeeded':
