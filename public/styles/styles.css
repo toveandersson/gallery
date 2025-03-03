@@ -58,6 +58,11 @@ mark {
     color: inherit; /* Ensures text color remains the same */
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
 /* --------------------------------------------- */
 
 h2 {
@@ -188,7 +193,7 @@ h2 {
     }
     
     #product-img {
-        width: 80%
+        width: 35%
     }
 }
 
@@ -208,7 +213,7 @@ h2 {
 
     
     #product-img {
-        width: 80%
+        width: 40%
     }
     
 }
@@ -305,11 +310,15 @@ h2 {
     /* left: 20vw; */
      /*view width*/
     transform: translate(-50%, -50%);
-    text-align: center;   
+    text-align: center;     
 }
 
 .hero-text h1 {  
-    color: var(--bg-text);
+    color: var(--yellow);
+    text-shadow: 
+    1px 1px 2px rgba(183, 106, 106, 0.5),
+    0 0 1em rgba(206,89,55,.2),
+    0 0 0.2em rgba(206,89,55,0.4);
 
 }
 
@@ -486,7 +495,7 @@ h2 {
     margin: .25rem;
     border-radius: .5rem;
     background-color: var(--light);
-    cursor: context-menu;
+    /* cursor: context-menu; */
     font-size: calc(1rem + 0.5vw);
     word-wrap: break-word;         /* Break words when necessary */
     overflow-wrap: break-word;     /* Break long words */
@@ -516,8 +525,11 @@ h2 {
     text-decoration: none;
 }
 
-/* .poster-link { */
-    /* cursor:auto; */
+.poster-link { 
+    cursor:pointer;
+    text-decoration: none;
+    color: var(--bg-text);
+}
 
 
 @media(max-width: 768px){
@@ -624,6 +636,14 @@ padding: .5rem
     img {
         border-radius: .5rem;
     }
+}
+
+.order-poster-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1350px;
 }
 
 /* about */
@@ -764,7 +784,17 @@ padding: .5rem
     padding-bottom: 10rem;
     padding-top: 2rem;
 }
-form  {
+form {
+    color: white;
+    /* width: 80%; */
+    background-color: var(--dark-yellow);
+    padding: .5rem;
+    border-radius: .5rem;
+    /* margin: auto; */
+    /* margin-bottom: 2rem;*/
+}
+
+.shopping-cart-div {
     color: white;
     width: 80%;
     background-color: var(--dark-yellow);
@@ -773,6 +803,16 @@ form  {
     margin: auto;
     margin-bottom: 2rem;
 }
+.checkout-btn-div{
+    color: white;
+    width: 80%;
+    background-color: var(--dark-yellow);
+    padding: 1.5rem;
+    border-radius: .5rem;
+    margin: auto;
+    margin-bottom: 2rem;
+}
+
 .form1 {
     display: grid;
     grid-template-columns: repeat(1, 1fr);

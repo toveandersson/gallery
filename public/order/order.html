@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -90,7 +90,7 @@
             <h1 style="padding-top: 2rem;">Order</h1>
             <div class="order">
                 <h4 style="justify-self: end; margin-right: 10rem; color: white;"> free shipping over 120kr!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
-                <form id="form">       <!--  action="" method="POST"  -->
+                <div class="shopping-cart-div">       <!--  action="" method="POST"  -->
                     <div class="form1">
                         <div>
                             <h2 style="font-weight: 300; font-size: 2rem;">Payment integration is under development, but will be operational in a couple of months or sooner. <br />
@@ -125,19 +125,8 @@
                     </div>
                     <hr class="form-hr">
                     <div class="form-input">
-                        <h3>Payment</h3>
-                        <div>
-                            <label for="address">Shipping adress:</label>
-                            <input type="text" id="cardname" name="cardname" placeholder="Tove Andersson">
-                            <label for="address2"></label>
-                            <input type="text" id="address" name="address" placeholder="toveandersson@gmail.com">
-                            <label for="card">Card number:</label>
-                            <input type="number" id="card" name="card" placeholder="4111 1111 1111 1111">
-                            <label for="cvv">CVV:</label>
-                            <input type="number" id="cvv" name="cvv" placeholder="411">
-                        </div>
                     </div>
-                    <h4>Receive updates when the content updates</h4>
+                    <h4>Receive email updates? (when there are big updates)</h4>
                             <div>
                                 <input type="radio" id="pickup" name="pick" value="1">
                                 <label for="pickup">yes</label>
@@ -146,16 +135,35 @@
                                 <input type="radio" id="dine-in" name="pick" value="1">
                                 <label for="dine-in">no</label>
                             </div>
-                    <div class="form-btn">  
-                        <p style="font-weight: 200; font-size: 1.2rem;"> Order function is not yet operational, please come back soon!   </p>
-                        <button type="reset" value="Reset">Cancel</button>
-                        <button  type="submit" value="Submit">Submit</button>
+                        </div>
+                    <div class="checkout-btn-div">
+                        <p style="margin-top: 0rem;">Select country and currency before checkout: </p>
+                        <div class="country-flex">
+                            <select id="country-select">
+                                <option value="SE">Sweden</option> <option value="FR">France</option>  <option value="DE">Germany</option><option value="DK">Denmark</option><option value="NO">Norway</option><option value="PL">Poland</option>
+                                <option value="CZ">Czech Republic</option><option value="BG">Bulgaria</option> <option value="RO">Romania</option> <option value="FI">Finland</option> <option value="IT">Italy</option> <option value="ES">Spain</option>
+                                <option value="NL">Netherlands</option> <option value="BE">Belgium</option> <option value="AT">Austria</option> <option value="IE">Ireland</option><option value="PT">Portugal</option><option value="GR">Greece</option><option value="LU">Luxembourg</option>
+                                <option value="SK">Slovakia</option><option value="SI">Slovenia</option><option value="LT">Lithuania</option><option value="LV">Latvia</option><option value="EE">Estonia</option><option value="MT">Malta</option><option value="HR">Croatia</option>
+                            </select>
+                            <select id="currency-select">
+                                <option value="sek">SEK</option><option value="eur">EUR</option><option value="dkk">DKK</option><option value="nok">NOK</option><option value="pln">PLN</option><option value="czk">CZK</option>
+                                <option value="bgn">BGN</option><option value="ron">RON</option><option value="gbp">GBP</option><option value="chf">CHF</option><option value="isk">ISK</option><option value="hrk">HRK</option>
+                            </select>
+                    
+                        </div>
+                        <div class="form-btn">  
+                            <!-- <p style="font-weight: 200; font-size: 1.2rem;"> It is not yet possible to order, please come back soon!   </p> -->
+                            <form id="checkout-form"action="/create-checkout-session" method="POST">
+                                <input type="hidden" name="amount" id="amount" value="500"> <!-- Replace with dynamic amount value -->
+                                <button type="submit" id="checkout-button">Proceed to checkout</button>
+                        </div>
+
                     </div>
+                    
                     <div class="swish-div" style="display: none;">
-                        <img src="/images/swish-QR-small.png" alt="swish code" loading="lazy" style="width: 30%; margin: 3rem;">
+                        <img src="/images\LargerPosters\swish-QR-small.png" alt="swish code" loading="lazy" style="width: 30%; margin: 3rem;">
                     </div>
                 </form>
-
             </div>
         </div>
         <div class="info-text" style="padding-left:2rem; padding-bottom: 2rem; padding-right: 2rem;">

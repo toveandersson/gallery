@@ -3,11 +3,22 @@
 //import posters from './scripts/postersData.js';
 // const express = require('express')
 // const app = express()
-let shoppingCart = []; 
-localStorage.getItem("shoppingCart") || localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-
+class CartItem {
+    constructor(id, name, price, size, quantity = 1) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.size = size;
+        this.quantity = quantity;
+    }
+}
+let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.quantity)) || [];
+//showSwish();
+localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+const shippingPrices = [18, 38];
+const posterPrices = [45, 60];
+const freeShippingMin = 120;
 console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
-
 
 let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
 const button = document.getElementById('changeColorBtn');
@@ -25,19 +36,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.body.dataset.page === 'order'){
         console.log("order: go to add cart");
         addCartItems();
-        document.getElementById('clear-cart-btn').addEventListener('click', clearCartData);
+        document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
+        addCheckoutButton();
     }
     if (document.body.dataset.page === 'product'){
-        console.log("product!!!");
+        console.log("productpage");
         showProductInfo();
     }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
         return;
     }
-    
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-    fetch('/postersData')
+    fetch('/getAllPosters')
         .then(response => response.json())
         .then(postersData => {
             postersData.forEach((poster) => {
@@ -59,6 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const overlay = document.createElement('div');
                 overlay.setAttribute('class', 'image-overlay');
 
+                const imageLink = document.createElement('a');
+                imageLink.href = `/posters/${poster.id}`;
+                //link.setAttribute('class', 'poster-link');
+
                 // Create a link to wrap the image
                 const link = document.createElement('a');
                 link.href = `/posters/${poster.id}`;
@@ -69,13 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const title = document.createElement('h3');
                 title.setAttribute('id', 'title');
-                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left')
+                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
 
                 const add = document.createElement('button');
-                add.setAttribute('type', 'button')
+                add.setAttribute('type', 'button');
                 add.setAttribute('class', 'fa-plus poster-flex-child add-button');
-                add.setAttribute('id', 'add-button-id')
-                add.setAttribute('onclick', 'addToCart(this.id)')
+                add.setAttribute('id', 'add-button-id');
+                add.setAttribute('onclick', 'addToCart(this.id)');
                 
                 const inner_flex = document.createElement('div');
                 inner_flex.setAttribute('class', 'inner-flex');
@@ -86,25 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const selectSizes = document.createElement('select');
                 selectSizes.setAttribute('type', 'select');
                 selectSizes.setAttribute('class', 'product-select');
+                selectSizes.setAttribute('id', `s${poster.id}`);
                 selectSizes.style = "background-color: var(--h2-text-color);";
 
-                selectSizes.addEventListener('change', (event) => {
-                    const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
-                    if (sizesIndex == 0){
-                        price_text.textContent = '45kr';
-                    }
-                    else if (sizesIndex >= 0){
-                        price_text.textContent = '60kr';
-                    }
-                 else {
-                        price_text.textContent = '45kr'; 
-                    }
-                });
-
-                //selectSizes options
+                
                 const sizes = poster.sizes; // Extract sizes
 
-                // Get the select element
                 selectSizes.innerHTML = ""; // Clear previous options
 
                 if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
@@ -126,21 +128,41 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                 
-                price_text.textContent = '45kr'; 
+                selectSizes.addEventListener('change', (event) => {
+                    const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
+                    if (sizesIndex == 0){
+                        price_text.textContent = posterPrices[0]+'kr';
+                    }
+                    else if (sizesIndex >= 0){
+                        price_text.textContent = posterPrices[1]+'kr';
+                    }
+                    else {
+                        price_text.textContent = posterPrices[0]+'kr'; 
+                    }
+                });
+
+                selectSizes.dispatchEvent(new Event('change'));
+                
+                if (!selectSizes.value) {
+                    price_text.textContent = 'no left';
+                    selectSizes.style.width = '30%';
+                    selectSizes.style.marginLeft = '0rem';
+                }
+
                 //add sizes to it
 
                 add.id = poster.id;
                 title.innerText = poster.name;
                 imgBg.style.backgroundColor = "#fdf8e5";
 
-                link.appendChild(image); // Wrap the image in the link
-                imgBg.appendChild(link);
+                imgBg.appendChild(imageLink);
+                imageLink.appendChild(image); // Wrap the image in the link
                 imgBg.appendChild(overlay); // Add the overlay over the image
                 imgBg.appendChild(add);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
-                poster_flex.appendChild(title);
+                poster_flex.appendChild(link);
+                link.appendChild(title);
                 poster_flex.appendChild(inner_flex);
                 inner_flex.appendChild(price_text);
                 inner_flex.appendChild(selectSizes);
@@ -167,6 +189,71 @@ function moveChild() {
             if (desktopParents[i]) desktopParents[i].appendChild(child); // Move to desktop parent
         }
     }
+}
+
+function addCheckoutButton(){
+    
+    // Dynamic country and currency select setup
+    const countryToCurrencyMap = {
+        'SE': 'sek', 'FR': 'eur', 'DE': 'eur', 'IT': 'eur', 'ES': 'eur',
+        'NL': 'eur', 'BE': 'eur', 'DK': 'dkk', 'FI': 'eur', 'NO': 'nok',
+        'PL': 'pln', 'AT': 'eur', 'IE': 'eur', 'PT': 'eur', 'GR': 'eur',
+        'LU': 'eur', 'CZ': 'czk', 'SK': 'eur', 'SI': 'eur',
+        'LT': 'eur', 'LV': 'eur', 'EE': 'eur', 'BG': 'bgn', 'RO': 'ron',
+        'HR': 'eur', 'CY': 'eur', 'MT': 'eur'
+    };
+    
+    const countrySelect = document.getElementById("country-select");
+    const currencySelect = document.getElementById("currency-select");
+    countrySelect.addEventListener('change', function() {
+        const selectedCountry = countrySelect.value;
+        const selectedCurrency = countryToCurrencyMap[selectedCountry];
+        currencySelect.value = selectedCurrency; // Update the currency select based on country
+    });
+    
+    // Initialize the currency select when the page loads
+    function initializeCurrencySelect() {
+        const defaultCountry = 'SE'; // Default country or fetched country code
+        const defaultCurrency = countryToCurrencyMap[defaultCountry];
+        countrySelect.value = defaultCountry; // Set default country
+        currencySelect.value = defaultCurrency; // Set default currency
+    }
+    
+    document.getElementById("checkout-button").addEventListener("click", async (event) => {
+        event.preventDefault(); // Prevent default form submission
+        
+        const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+        const amount_shipping = calculatePrices();
+        const country = countrySelect.value;
+        const currency = currencySelect.value;
+        document.documentElement.setAttribute('lang', country);
+        console.log('lang: ',document.documentElement.getAttribute('lang'));
+        //return; 
+        if (shoppingCart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+        console.log({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency});
+        if (country !== 'SE'){
+            amount_shipping = shippingPrices[1];
+        }
+    
+        const response = await fetch("/create-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency}),
+        });
+    
+        const data = await response.json();
+        if (data.url) {
+            window.location.href = data.url; // Redirect to Stripe checkout
+        } else {
+            console.error("Error creating checkout session:", data.error);
+        }
+    });
+    initializeCurrencySelect();
 }
 
 // Run on page load and when window resizes
@@ -248,72 +335,141 @@ function hideMarks(className, hiddenClass, shouldHide) {
 }
 
 function addToCart(posterId) {
-    shoppingCart.push(posterId);
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    console.log(JSON.parse(localStorage.getItem("shoppingCart")));
+    const selectedSize = document.getElementById(`s${posterId}`)?.value;
+    if (!selectedSize) {
+        alert("Please select a size before adding to cart!");
+        return;
+    }
+    fetch(`/getPosterWithId/${posterId}`)
+        .then(response => response.json())
+        .then(data => {
+            const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
+
+            if (foundItem) { foundItem.quantity++; } 
+            else {
+                let newItem = new CartItem(posterId, data.name, posterPrices[document.getElementById(`s${posterId}`).selectedIndex], selectedSize);
+                shoppingCart.push(newItem);
+            }
+
+            localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+        })
+        .catch(error => console.error("Error fetching poster:", error));
 }
+
 
 function getShoppingCart() {
     const storedCart = localStorage.getItem("shoppingCart");
     if (storedCart) {
-        JSON.parse(storedCart).forEach((itemId) => {
-            shoppingCart.push(itemId);
-            console.log("Item to add to list before populating it: ", itemId);
-        });
+        shoppingCart = JSON.parse(storedCart).map(item => 
+            new CartItem(item.id, item.name, item.price, item.size, item.quantity)
+        );
+    } else {
+        shoppingCart = [];
     }
 }
 
-function addCartItems() {
-    console.log("adding updated list to cart ", shoppingCart);
-    const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+function calculatePrices(){
+    let price = 0;
+    shoppingCart.forEach(item=>{
+        console.log('price: ',item.price,' quantity : ',item.quantity);
+        price += item.price * item.quantity;
+    })
+    let amount_shipping = price > freeShippingMin ? 0 : shippingPrices[0];
+    amount_shipping = Math.round(amount_shipping);
+    price = Math.round(price);
+    document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
+    document.getElementById('total-price').innerText = `Total price: ${price + amount_shipping} kr`;
 
-    document.getElementById('price').innerText = `Price: ${shoppingCart.length * 60} kr\u2003\u2003\u2003${shoppingCart.length * 60 > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
-    document.getElementById('total-price').innerText = `Total price: ${shoppingCart.length * 60 +(shoppingCart.length * 60 > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
-    
-    // Fetch data from the server
-    fetch('/postersData')
+    return amount_shipping;
+}
+
+function addCartItems() {
+    console.log("Adding updated list to cart:", shoppingCart);
+    calculatePrices();
+    const itemGrid = document.getElementsByClassName('shopping-cart')[0];
+    itemGrid.innerHTML = "";  // Clear previous items to prevent duplication
+    // document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
+    // document.getElementById('total-price').innerText = `Total price: ${price + (price > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
+    fetch('/getAllPosters')
         .then(response => response.json())
         .then(postersData => {
-            let i = 0;
-            shoppingCart.forEach((itemId) => {
-                const itemPoster = postersData[itemId - 1];
-                
+            shoppingCart.forEach(cartItem => {
+                const itemPoster = postersData.find(poster => Number(poster.id) === Number(cartItem.id));
+                if (!itemPoster) {
+                    console.warn("Poster not found for ID:", cartItem.id);
+                    return;
+                }
+
                 const imgBg = document.createElement('div');
                 imgBg.setAttribute('class', 'imgBg');
 
                 const div_card = document.createElement('div');
                 div_card.setAttribute('class', 'cart-item');
+                div_card.setAttribute('id', itemPoster.id);
 
                 const image = document.createElement('img');
                 image.setAttribute('class', 'thumbnail');
-                image.setAttribute('id', 'image');
-
-                const title = document.createElement('h3');
-                title.setAttribute('id', 'title');
-
-                const remove = document.createElement('button');
-                remove.setAttribute('class', 'fa-minus remove-button');
-                remove.setAttribute('id', 'remove-button-id');
-                remove.setAttribute('onclick', 'removeFromCart(this.id)');
-                
-                //remove.addEventListener('click', () => removeFromCart(itemId, div_card));
-                // Add event listener for each remove button
-                
-                remove.id = i;
-                title.innerHTML = itemPoster.name;
                 image.src = itemPoster.image;
 
+                const poster_flex = document.createElement('div');
+                poster_flex.setAttribute('class', 'order-poster-flex')
+
+                const title = document.createElement('h3');
+                title.innerText = `${itemPoster.name}`;
+                title.style.marginBottom = '0rem';
+
+                const quantityDiv = document.createElement("div");
+                quantityDiv.className = "quantity";
+
+                const quantityInput = document.createElement("input");
+                quantityInput.type = "number";
+                quantityInput.className = "input-box";
+                quantityInput.value = cartItem.quantity;
+                quantityInput.min = "1";
+                quantityInput.max = "10";
+
+                quantityInput.addEventListener("change", (event) => {
+                    cartItem.quantity = Number(event.target.value);
+                    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+                    calculatePrices();
+                });
+                
+                const size = document.createElement('h4');
+                size.innerText = cartItem.size;
+                size.style.margin = '0rem';
+                size.style.marginBottom = '1rem';
+                
+                const price = document.createElement('h4');
+                price.innerText = cartItem.price + 'kr';
+                
+                const remove = document.createElement('button');
+                remove.setAttribute('class', 'fa-minus remove-button');
+                remove.setAttribute('onclick', `removeFromCart(${cartItem.id}, '${cartItem.size}')`);
+                
                 imgBg.appendChild(image);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(title);
-                div_card.appendChild(remove);
-
+                div_card.appendChild(size);
+                div_card.appendChild(poster_flex);
+                quantityDiv.appendChild(quantityInput);
+                poster_flex.appendChild(quantityDiv);
+                poster_flex.appendChild(price);
+                poster_flex.appendChild(remove);
                 itemGrid.appendChild(div_card);
-                i++;
             });
         })
         .catch(error => console.error('Error fetching posters:', error));
-};
+}
+
+// document.getElementById('checkout-form').onsubmit = function() {
+//     const amount = calculateAmount();  // Your function to calculate the amount dynamically
+//     document.getElementById('amount').value = amount;
+// };
+
+function calculateAmount() {
+    //kolla så allt finns först
+    
+}
 
 function showProductInfo() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -322,7 +478,7 @@ function showProductInfo() {
     if (posterData) {
       document.getElementById('product-img').src = posterData.image;
       document.getElementById('product-title').textContent = posterData.name;
-      document.getElementById('product-desc').textContent = posterData.desc;
+      document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
     }
     const selectedPoster = postersData.find(poster => poster.id === Number(posterData.id));
     const sizes = selectedPoster.sizes; // Directly extract sizes
@@ -360,25 +516,35 @@ function showProductInfo() {
     }
 }
 
-function removeFromCart(posterId) {
-    shoppingCart.splice(posterId, 1);
+function removeFromCart(posterId, size) {
+    let idCartItems = Array.from(document.getElementsByClassName('cart-item'));
+    let filteredList = idCartItems.filter(item => Number(item.id) === posterId);
+    console.log('filtered list: ', filteredList);
+    
+    if (filteredList.length > 0) {
+        filteredList.forEach(item => {
+            for (const child of item.children) {
+                if (child.innerHTML === size) {
+                    console.log('child innerhtml: ',child.innerHTML);
+                    item.remove();
+                    return;
+                }
+            }
+        });
+    }
+    const removeCartItem = shoppingCart.find(item => Number(item.id) === Number(posterId) && item.size === size);
+    if (removeCartItem){
+        shoppingCart.splice(shoppingCart.indexOf(removeCartItem), 1);
+    }
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    clearCart();
-    console.log("removed from cart now add: ");
-    addCartItems();
+    calculatePrices();
 }
-function clearCartData() {
+
+function clearCart() {
+    Array.from(document.getElementsByClassName('cart-item')).forEach(item => item.remove());
     shoppingCart = [];
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-    clearCart();
-}
-function clearCart() {
-    const list = document.getElementsByClassName('cart-item');
-    for (let i = list.length - 1; i >= 0; i--) {
-        console.log(list[i].id);
-        list[i].remove();
-        console.log("clearing");
-    }
+    calculatePrices();
 }
 
 function showSwish() {
@@ -388,7 +554,6 @@ function showSwish() {
         console.log(swishDiv[i]);
         console.log(swishDiv[i].style.display);
     }
-    console.log('hello');
 };
 
 //const form = document.querySelector("form");

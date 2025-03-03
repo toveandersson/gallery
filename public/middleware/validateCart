@@ -1,0 +1,14 @@
+const validateCart = (req, res, next) => {
+    console.log("Validating cart before checkout...");
+    
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid amount" });
+    }
+
+    // Simulate running a frontend function by sending a response
+    // If you want actual frontend execution, you'd handle this before the request reaches the backend.
+    
+    next(); // Proceed to the checkout function
+};
