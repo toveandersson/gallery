@@ -20,9 +20,6 @@ app.use(express.urlencoded({ extended: false }))
 express.raw()
 app.use(express.json())
 
-console.log("Stripe URI:", process.env.STRIPE_URI ? "Loaded" : "Not Found");
-console.log("Webhook Secret:", process.env.STRIPE_WEBHOOK_SECRET ? "Loaded" : "Not Found");
-
 const port = process.env.PORT || 1000;
 
 const connectDB = (url) =>{
@@ -34,6 +31,8 @@ const start = async () =>{
     await connectDB(process.env.MONGO_URI)
     app.listen(port, console.log(`hello port ${port}...`)
     )
+    console.log("Stripe URI:", process.env.STRIPE_URI ? "Loaded" : "Not Found");
+    console.log("Webhook Secret:", process.env.STRIPE_WEBHOOK_SECRET ? "Loaded" : "Not Found");
 
   } catch (error) {
     console.log(error)
