@@ -4,13 +4,20 @@ const path = require('path');
 const mongoose = require('mongoose');
 const sendMail = require("./mailer"); // Import the mailer function
 const axios = require('axios');
-require('dotenv').config();
+//require('dotenv').config();
 
-const stripe = require('stripe')(process.env.STRIPE_URI);
+const STRIPE_KEY = process.env.STRIPE_URI;
+if (!STRIPE_KEY) {
+    console.error("Stripe API key is missing!");
+}
+const stripe = require('stripe')(STRIPE_KEY);
+
 //const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 // const lineItems = await stripe.checkout.sessions.listLineItems(
 //   'cs_test_a1enSAC01IA3Ps2vL32mNoWKMCNmmfUGTeEeHXI5tLCvyFNGsdG2UNA7mr'
 // );
+console.log("Stripe URI:", process.env.STRIPE_URI ? "Loaded" : "Not Found");
+
 
 const postersData = require('./public/scripts/postersData');
 const Poster = require('./public/models/Poster')
@@ -31,9 +38,6 @@ const start = async () =>{
     await connectDB(process.env.MONGO_URI)
     app.listen(port, console.log(`hello port ${port}...`)
     )
-    console.log("Stripe URI:", process.env.STRIPE_URI ? "Loaded" : "Not Found");
-    console.log("Webhook Secret:", process.env.STRIPE_WEBHOOK_SECRET ? "Loaded" : "Not Found");
-
   } catch (error) {
     console.log(error)
   }
@@ -157,7 +161,6 @@ app.get('/getAllPosters', getAllPosters);
                 
       //app.get('/create-checkout-session/:amount');
                 
-app.use(express.json()); // Middleware to parse JSON
 
 app.post('/create-checkout-session', async (req, res) => {
   const { cartItems, amount_shipping, country, currency } = req.body;
