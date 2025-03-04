@@ -14,9 +14,10 @@ class CartItem {
 }
 let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.quantity)) || [];
 //showSwish();
+
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 const shippingPrices = [18, 38];
-const posterPrices = [45, 60];
+const posterPrices = [45, 55];
 const freeShippingMin = 120;
 console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
 

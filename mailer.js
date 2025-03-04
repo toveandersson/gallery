@@ -4,8 +4,8 @@ require("dotenv").config(); // Ensure dotenv is properly loaded
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASSWORD // Ensure you are using an App Password
+    user: process.env.MAIL_SENDER_ADRESS,
+    pass: process.env.MAIL_SENDER_PASSWORD // Ensure you are using an App Password
   },
   tls: {
     rejectUnauthorized: false // Bypass self-signed certificate error
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async (to, subject, text) => {
   const mailOptions = {
-    from: process.env.MAIL_USER,
+    from: process.env.MAIL_SENDER_PASSWORD,
     to: to,
     subject: subject,
     text: text
