@@ -8,20 +8,25 @@ require('dotenv').config();
 
 const STRIPE_KEY = process.env.STRIPE_URI;
 if (!STRIPE_KEY) {
-    console.error("Stripe API key is missing!");
+  console.error("Stripe API key is missing!");
 }
 const stripe = require('stripe')(STRIPE_KEY);
 
 const endpointSecret = process.env.STRIPE_LIVE_WEBHOOK_SECRET;
 // const lineItems = await stripe.checkout.sessions.listLineItems(
-//   'cs_test_a1enSAC01IA3Ps2vL32mNoWKMCNmmfUGTeEeHXI5tLCvyFNGsdG2UNA7mr'
-// );
-const prices = require('./prices.json');
-const postersData = require('./public/scripts/postersData');
-const Poster = require('./public/models/Poster')
-app.use(express.static('./public'))
+  //   'cs_test_a1enSAC01IA3Ps2vL32mNoWKMCNmmfUGTeEeHXI5tLCvyFNGsdG2UNA7mr'
+  // );
+  const prices = require('./prices.json');
+  const postersData = require('./public/scripts/postersData');
+  const Poster = require('./public/models/Poster')
+  app.use(express.static('./public'))
 
 
+  app.use(express.urlencoded({ extended: false }))
+  app.use(express.json())
+  
+  const port = process.env.PORT || 4242;
+  
 app.post('/create-checkout-session', async (req, res) => {
   const { cartItems, amount_shipping, country, currency } = req.body;
   
@@ -42,7 +47,7 @@ app.post('/create-checkout-session', async (req, res) => {
           ? { minimum: { unit: 'business_day', value: 2 }, maximum: { unit: 'business_day', value: 10 } }
           : { minimum: { unit: 'business_day', value: 5 }, maximum: { unit: 'business_day', value: 20 } };
 
-      const countryToLocaleMap = {
+          const countryToLocaleMap = {
       'SE': 'sv', 'DK': 'da', 'NO': 'nb', 'FI': 'fi', 'DE': 'de',
       'FR': 'fr', 'IT': 'it', 'ES': 'es', 'NL': 'nl', 'BE': 'nl',
       'AT': 'de', 'IE': 'en', 'PT': 'pt', 'GR': 'el', 'LU': 'fr',
@@ -98,9 +103,6 @@ app.post('/create-checkout-session', async (req, res) => {
               },
               quantity: item.quantity,
           })),
-          metadata: {
-            sessionId: session.id
-          },
           mode: 'payment',
           success_url: `${process.env.BASE_URL}/success`,
           cancel_url: `${process.env.BASE_URL}/cancel`,
@@ -114,60 +116,6 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
-app.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
-  let event = request.body;
-  if (endpointSecret) {
-    const signature = request.headers['stripe-signature'];
-    try {
-      event = stripe.webhooks.constructEvent( request.body, signature, endpointSecret );
-    } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`, err.message);
-      return response.sendStatus(400);
-    }
-  }
-
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      //console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-      console.log("Sending email for poster:");
-      //const lineItems = await stripe.checkout.sessions.listLineItems(paymentIntent.session.id);
-      //console.log(lineItems);
-      sendMail(
-        process.env.MAIL_USER,
-        `Hello ${paymentIntent.shipping.name}!`,
-        `Total amount: ${paymentIntent.amount}`,
-        //`You have purchased: ${lineItems}`,
-        "Thank you :-)"
-        //`${metadata.sessionId.line_items}`
-      );
-      sendMail(
-        process.env.MAIL_USER,
-        `User information about ${paymentIntent.shipping.name}!`,
-        //`${JSON(paymentIntent.shipping.shipping_address_collection)}`
-      );
-      // Then define and call a method to handle the successful payment intent.
-      // handlePaymentIntentSucceeded(paymentIntent);
-      break;
-    case 'payment_method.attached':
-      const paymentMethod = event.data.object;
-      // Then define and call a method to handle the successful attachment of a PaymentMethod.
-      // handlePaymentMethodAttached(paymentMethod);
-      break;
-    default:
-      // Unexpected event type
-      console.log(`Unhandled event type ${event.type}.`);
-  }
-
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-});
-
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-
-const port = process.env.PORT || 4242;
 
 const connectDB = (url) =>{
   return mongoose.connect(url)
