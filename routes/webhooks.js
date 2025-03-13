@@ -44,14 +44,14 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             const session = await stripe.checkout.sessions.retrieve(sessionId, {
               expand: ['line_items']
             });
-            // sendMail(
-            //     process.env.MAIL_USER,
-            //     `Hello ${paymentIntent.shipping.name}!`,
-            //     `Total amount: ${paymentIntent.amount}`,
-            //     //`You have purchased: ${lineItems}`,
-            //     "Thank you :-)"
-            //     //`${metadata.sessionId.line_items}`
-            //   );
+            sendMail(
+                process.env.MAIL_USER,
+                `Hello ${paymentIntent.shipping.name}!`,
+                `Total amount: ${paymentIntent.amount}`,
+                `You have purchased: ${session.line_items}`,
+                "Thank you :-)"
+                //`${metadata.sessionId.line_items}`
+              );
   
             console.log("📦 Ordered Items:", session.line_items.data || "No items in the order.");
   
