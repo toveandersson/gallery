@@ -13,11 +13,8 @@ if (!STRIPE_KEY) {
 }
 const stripe = require('stripe')(STRIPE_KEY);
 
-const endpointSecret = process.env.STRIPE_LIVE_WEBHOOK_SECRET;
-
 router.post('/create-checkout-session', async (req, res) => {
   const { cartItems, amount_shipping, country, currency } = req.body;
-  
   console.log('Received:', cartItems, amount_shipping, country, currency);
 
   try {
@@ -51,18 +48,14 @@ router.post('/create-checkout-session', async (req, res) => {
   
     const axiosResponse = await axios.get(`https://v6.exchangerate-api.com/v6/${process.env.AXIOS_KEY}/latest/SEK`);
     const exchangeRates = axiosResponse.data.conversion_rates;
-    const sekToTarget = exchangeRates[selectedCurrency.toUpperCase()];
+    const sekToTarget = exchangeRates['SE'];
+    //const sekToTarget = exchangeRates[selectedCurrency.toUpperCase()];
 
-    const convertedShippingAmount = Math.round(amount_shipping * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()])); // Convert and round
-    console.log('converted: ', convertedShippingAmount);
-
-    if (!exchangeRates[selectedCurrency.toUpperCase()]) {
-      throw new Error(`Exchange rate for ${selectedCurrency} not found`);
-  }
+    const convertedShippingAmount = Math.round(amount_shipping * sekToTarget * (currencyDecimals['SE'])); // Convert and round
+    //const convertedShippingAmount = Math.round(amount_shipping * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()])); // Convert and round
+    //console.log('converted: ', convertedShippingAmount);
 
     const stripeLocale = countryToLocaleMap[country] || 'auto';
-    
- 
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({
           shipping_address_collection: { allowed_countries: Object.keys(countryCurrencyMap)},
@@ -75,7 +68,7 @@ router.post('/create-checkout-session', async (req, res) => {
                   shipping_rate_data: {
                       type: 'fixed_amount',
                       fixed_amount: {
-                          amount: convertedShippingAmount, // Amount in smallest unit (e.g., cents)
+                          amount: 2000, // Amount in smallest unit (e.g., cents) convertedShippingAmount
                           currency: selectedCurrency // Stripe will handle conversion automatically
                       },
                       display_name: 'Standard shipping',
@@ -86,13 +79,13 @@ router.post('/create-checkout-session', async (req, res) => {
           line_items: cartItems.map(item => ({
               price_data: {
                   currency: selectedCurrency,
-                  product_data: { name: item.name },
-                  unit_amount: Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()])),  // Stripe expects amounts in the smallest unit (e.g., cents)
+                  product_data: { name: item.name},
+                  unit_amount: 3000,  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
               },
               quantity: item.quantity,
           })),
           mode: 'payment',
-          success_url: `${process.env.BASE_URL}/success`,
+          success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.BASE_URL}/cancel`,
       });
 

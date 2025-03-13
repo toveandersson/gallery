@@ -12,27 +12,24 @@ if (!STRIPE_KEY) {
 }
 const stripe = require('stripe')(STRIPE_KEY);
 
-const endpointSecret = process.env.STRIPE_LIVE_WEBHOOK_SECRET;
 // const lineItems = await stripe.checkout.sessions.listLineItems(
   //   'cs_test_a1enSAC01IA3Ps2vL32mNoWKMCNmmfUGTeEeHXI5tLCvyFNGsdG2UNA7mr'
   // );
-const prices = require('./prices.json');
-const postersData = require('./public/scripts/postersData');
-const Poster = require('./public/models/Poster')
-app.use(express.static('./public'))
-const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
-const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
-console.log(checkoutRoutes);
-
-// Apply JSON and URL-encoded middleware only for checkout routes
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json()); // Only necessary for checkout routes
-
-// Use checkout routes for POST requests related to checkout
-app.use('/', checkoutRoutes); // Apply checkout routes
-
-// Webhook routes (no need for express.json() or express.urlencoded())
-app.use('/', webhookRoutes); // Apply webhook routes
+  app.use(express.static('./public'))
+  
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  
+  // ❌ Disable JSON parsing for webhooks (needed for Stripe)
+  app.use('/webhook', express.raw({ type: 'application/json' }));
+  
+  const prices = require('./prices.json');
+  const postersData = require('./public/scripts/postersData');
+  const Poster = require('./public/models/Poster')
+  const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
+  const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
+  app.use('/', checkoutRoutes); 
+  app.use('/', webhookRoutes); 
 
 //   const apiRoutes = require('./routes/api'); // Example for your other routes
 //   app.use('/api', apiRoutes);

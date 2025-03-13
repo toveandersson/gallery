@@ -234,6 +234,7 @@ function addCheckoutButton(){
             alert("Your cart is empty!");
             return;
         }
+
         console.log({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency});
         if (country !== 'SE'){
             amount_shipping = shippingPrices[1];
