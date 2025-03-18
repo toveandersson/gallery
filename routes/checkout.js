@@ -82,10 +82,10 @@ router.post('/create-checkout-session', async (req, res) => {
                   product_data: { name: item.name, images: [process.env.BASE_URL+ item.images]},
                   unit_amount: 3000,  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
               },
-              quantity: item.quantity,
-              metadata: {
-                images: [process.env.BASE_URL+ item.images],
-              }
+              quantity: item.quantity
+              // metadata: {
+              //   images: [process.env.BASE_URL+ item.images],
+              // }
           })),
           mode: 'payment',
           success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,  

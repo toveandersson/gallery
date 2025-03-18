@@ -81,10 +81,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               console.log("Customer email:", session.customer_details.email);
               console.log("Shipping Info:", session.shipping.adress);
               console.log("Shipping postal code:", session.shipping.adress.postal_code);
-              console.log("Purchased Items:", lineItems.data);
-              lineItems.forEach(item => {
-                console.log("item metadata", item.metadata);
-              });
+              console.log("Purchased Items:", lineItems[0].data);
+              // lineItems.forEach(item => {
+              //   console.log("item metadata", item.metadata);
+              // });
 
               sendMail(
               session.customer_details.email, 
