@@ -17,11 +17,12 @@ const stripe = require('stripe')(STRIPE_KEY);
   // );
   app.use(express.static('./public'))
   
+  // ❌ Disable JSON parsing for webhooks (needed for Stripe)
+  app.use('/webhook', express.raw({ type: 'application/json' }));
+  
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   
-  // ❌ Disable JSON parsing for webhooks (needed for Stripe)
-  app.use('/webhook', express.raw({ type: 'application/json' }));
   
   const prices = require('./prices.json');
   const postersData = require('./public/scripts/postersData');
