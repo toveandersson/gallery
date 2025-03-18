@@ -45,10 +45,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             `Total amount: ${paymentIntent.amount}`,
           );
         
-          res.json({ received: true });
+          response.json({ received: true });
         } catch (err) {
             console.error(`Intent error: ${err.message}`);
-            res.status(400).send(`Intent error: ${err.message}`);
+            response.status(400).send(`Intent error: ${err.message}`);
         }
       
         //console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
@@ -102,10 +102,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             );
               
               // Store order in your database here...
-          res.json({ received: true });
+              response.json({ received: true });
         } catch (err) {
             console.error(`Webhook Error: ${err.message}`);
-            res.status(400).send(`Webhook Error: ${err.message}`);
+            response.status(400).send(`Webhook Error: ${err.message}`);
         }
         break;
       default:
