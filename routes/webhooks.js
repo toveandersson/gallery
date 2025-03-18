@@ -71,14 +71,14 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
               sendMail(
               session.customer_details.email, 
-              `Hello ${session.customer_details.name}!`,
-              `Your purchase id: ${session.id}!`
+              'Hello '+session.customer_details.name+',',
+              'Your purchase id'+session.id,
               //`Purchase: ${JSON.stringify(lineItems, null, 2)}`
 
               `I will ship to this address:`,
               session.shipping_details?.address?.line1 || "No address provided! ",
               session.shipping_details?.address?.line2 || "",
-              `${session.shipping_details?.address?.postal_code || "No postal code provided! "} ${session.shipping_details?.address?.city || "No city provided!"}`,
+              session.shipping_details?.address?.postal_code + "  " || "No postal code provided! "+ session.shipping_details?.address?.city || "No city provided!",
               session.shipping_details?.address?.country || "Unknown",
               //`You have purchased: ${lineItems}`,
               "If some of the information here looks wrong, just answer back to this email and give me the right information.",
