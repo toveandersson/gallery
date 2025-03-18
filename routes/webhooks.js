@@ -70,7 +70,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
         // );
 
       break;
-      case 'checkout_session.completed':
+      case 'checkout.session.completed':
         try {
           const session = event.data.object;
               
