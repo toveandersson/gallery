@@ -75,16 +75,17 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
                 "",
                 "I will ship to this address:",
                 session.shipping_details.address.line1,
-                session.shipping_details.address.line2 || "", // Avoid 'undefined'
+                //session.shipping_details.address.line2 || "", // Avoid 'undefined'
                 `${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}`,
                 session.shipping_details.address.country,
                 "",
-                "If some of the information here looks wrong, just reply to this email with the correct information.",
+                "Please send me an email if anything above looks wrong and I will fix it!",
+                "Your package should have reached you in 2-10 business days, email me otherwise.",
                 "Thank you :-)"
               ].join("\n"); // Join array elements with new lines
               
               sendMail(session.customer_details.email, "Order Confirmation", message);
-              
+
             const adminMessage = [
               `New order from ${session.customer_details?.name || "Unknown Customer"}`,
               "",

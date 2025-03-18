@@ -81,8 +81,13 @@ router.post('/create-checkout-session', async (req, res) => {
                   currency: selectedCurrency,
                   product_data: { name: item.name, images: [process.env.BASE_URL+ item.images]},
                   unit_amount: 3000,  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
+                  metadata: {   // ✅ Add metadata here inside price_data
+                    custom_field: "Your custom value",
+                    images: process.env.BASE_URL + item.images  // Example metadata
+                }
               },
               quantity: item.quantity
+              
               // metadata: {
               //   images: [process.env.BASE_URL+ item.images],
               // }
