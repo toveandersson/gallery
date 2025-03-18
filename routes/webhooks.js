@@ -79,8 +79,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
                 `${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}`,
                 session.shipping_details.address.country,
                 "",
-                "Please send me an email if anything above looks wrong and I will fix it!",
-                "Your package should have reached you in 2-10 business days, email me otherwise.",
+                "Purchased items: ",
+                lineItems.map(item => item.description).join(", "),
+                "Please send me an email if anything above looks wrong!",
+                "Your package should have reached you in 2-10 business days.",
                 "Thank you :-)"
               ].join("\n"); // Join array elements with new lines
               
@@ -91,7 +93,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               "",
               `Shipping Address:\n${JSON.stringify(session.shipping_details.address, null, 2)}`,
               "",
-              `Purchased Items:\n${JSON.stringify(lineItems, null, 2)}`,
+              `Purchased Items:\n ${JSON.stringify(lineItems, null, 2)}`, 
               "",
               "Thank you :-)"
             ].join("\n");
