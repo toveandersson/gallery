@@ -69,32 +69,34 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               
               console.log("Session ID type:", typeof session.id);
 
-              sendMail(
-              session.customer_details.email, 
-              'Hello '+session.customer_details.name+',',
-              'Your purchase id: ',
-              session.id,
-              //`Purchase: ${JSON.stringify(lineItems, null, 2)}`
-              " ",
-              "I will ship to this address:",
-              session.shipping_details.address.line1,
-              session.shipping_details.address.line2,
-              session.shipping_details.address.postal_code + "  " + session.shipping_details?.address?.city,
-              session.shipping_details.address.country,
-              //`You have purchased: ${lineItems}`,
-              " ",
-              "If some of the information here looks wrong, just answer back to this email and give me the right information.",
-              "Thank you :-)"
-              //`${metadata.sessionId.line_items}`
-            );
-            sendMail(
-              process.env.MAIL_USER,
+              const message = [
+                `Hello ${session.customer_details.name}!`,
+                `Your purchase ID: ${session.id}`,
+                "",
+                "I will ship to this address:",
+                session.shipping_details.address.line1,
+                session.shipping_details.address.line2 || "", // Avoid 'undefined'
+                `${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}`,
+                session.shipping_details.address.country,
+                "",
+                "If some of the information here looks wrong, just reply to this email with the correct information.",
+                "Thank you :-)"
+              ].join("\n"); // Join array elements with new lines
+              
+              sendMail(session.customer_details.email, "Order Confirmation", message);
+              
+            const adminMessage = [
               `New order from ${session.customer_details?.name || "Unknown Customer"}`,
-              `Shipping Address: ${JSON.stringify(session.shipping_details.address, null, 2)}`,
-              "Purchased Items: "+JSON.stringify(lineItems, null, 2),
+              "",
+              `Shipping Address:\n${JSON.stringify(session.shipping_details.address, null, 2)}`,
+              "",
+              `Purchased Items:\n${JSON.stringify(lineItems, null, 2)}`,
+              "",
               "Thank you :-)"
-              //`${metadata.sessionId.line_items}`
-            );
+            ].join("\n");
+            
+            sendMail(process.env.MAIL_USER, "New Order Notification", adminMessage);
+            
               
               // Store order in your database here...
               response.json({ received: true });
