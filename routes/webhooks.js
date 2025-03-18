@@ -50,25 +50,6 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             console.error(`Intent error: ${err.message}`);
             response.status(400).send(`Intent error: ${err.message}`);
         }
-      
-        //console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-        //console.log("Sending email for poster:");
-        //const lineItems = await stripe.checkout.sessions.listLineItems(paymentIntent.session.id);
-        //console.log(lineItems);
-        // sendMail(
-        //   process.env.MAIL_USER,
-        //   `Hello ${paymentIntent.shipping.name}!`,
-        //   `Total amount: ${paymentIntent.amount}`,
-        //   //`You have purchased: ${lineItems}`,
-        //   "Thank you :-)"
-        //   //`${metadata.sessionId.line_items}`
-        // );
-        // sendMail(
-        //   process.env.MAIL_USER,
-        //   `User information about ${paymentIntent.shipping.name}!`,
-        //   //`${JSON(paymentIntent.shipping.shipping_address_collection)}`
-        // );
-
       break;
       case 'checkout.session.completed':
         try {
@@ -79,8 +60,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
   
               console.log("Session ID:", session.id);
               console.log("Customer email:", session.customer_details.email);
-              console.log("Shipping Info:", session.shipping.address);
-              console.log("Shipping postal code:", session.shipping.address.postal_code);
+              console.log("Shipping Info:", session.shipping_details.address);
+              console.log("Shipping postal code:", session.shipping_details.address.postal_code);
               console.log("Purchased Items:", lineItems[0].data);
               // lineItems.forEach(item => {
               //   console.log("item metadata", item.metadata);
@@ -92,10 +73,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               `Your purchase id: ${session.id}!`
               `Purchase: ${session.lineItems.data}`,
               `I will ship to this address:`,
-              session.shipping.address.line1,
-              session.shipping.address.line2,
-              session.shipping.address.postal_code +" "+session.shipping.address.city,
-              session.shipping.address.country,
+              session.shipping_details.address.line1,
+              session.shipping_details.address.line2,
+              session.shipping_details.address.postal_code +" "+session.shipping_details.address.city,
+              session.shipping_details.address.country,
               //`You have purchased: ${lineItems}`,
               "If some of the information here looks wrong, just answer back to this email and give me the right information.",
               "Thank you :-)"
@@ -103,10 +84,11 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             );
             sendMail(
               process.env.MAIL_USER,
-              `More info about ${session.shipping.name}!`,
-              `Shipping: ${session.shipping}`,
-              `Address: ${session.shipping.address}`,
-              `Postal code: ${session.shipping.address.postal_code}`,
+              `More info about ${session.shipping_details.name}!`,
+              `Shipping: ${session.shipping_details}`,
+              `Address: ${session.shipping_details.address}`,
+              `Postal code: ${session.shipping_details.address.postal_code}`,
+              `Purchase: ${session.lineItems.data}`,
               //`You have purchased: ${lineItems}`,
               "Thank you :-)"
               //`${metadata.sessionId.line_items}`
