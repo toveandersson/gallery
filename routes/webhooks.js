@@ -13,10 +13,12 @@ if (!STRIPE_KEY) {
 }
 const stripe = require('stripe')(STRIPE_KEY);
 
-const endpointSecret = process.env.STRIPE_LIVE_WEBHOOK_SECRET;
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 router.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
   console.log('in webhook!');
+  console.log('✅ Webhook request received:', request.headers);
+  console.log('🔹 Raw body:', request.body.toString()); // Log raw body
     let event = request.body;
     
     if (endpointSecret) {
@@ -29,40 +31,26 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
       }
     }
     
-    // console.log(event);
-    // console.log('id is this: ',event.id)
-    // console.log('data is this: ',event.data)
     switch (event.type) {
       case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
         try {
-          const urlParams = new URLSearchParams(window.location.search);
-          const sessionId = urlParams.get("session_id");
-          console.log("Session ID:", sessionId);
+          const paymentIntent = event.data.object;
+          const sessionId = paymentIntent.id; // This is the payment intent ID, not the checkout session ID
 
-          try {
-            const session = await stripe.checkout.sessions.retrieve(sessionId, {
-              expand: ['line_items']
-            });
-            sendMail(
-                process.env.MAIL_USER,
-                `Hello ${paymentIntent.shipping.name}!`,
-                `Total amount: ${paymentIntent.amount}`,
-                `You have purchased: ${session.line_items}`,
-                "Thank you :-)"
-                //`${metadata.sessionId.line_items}`
-              );
-  
-            console.log("📦 Ordered Items:", session.line_items.data || "No items in the order.");
-  
-          } catch (error) {
-              console.error("❌ Error retrieving line items:", error.message);
-          }
-
-        } catch (error) {
-            console.error("❌ Error retrieving session id:", error.message);
-        }
+          console.log("Payment Intent ID:", sessionId);
+          console.log("amount: ",paymentIntent.amount_received);
+          sendMail(
+            process.env.MAIL_USER,
+            `User info about ${paymentIntent.shipping.name}!`,
+            `Total amount: ${paymentIntent.amount}`,
+          );
         
+          res.json({ received: true });
+        } catch (err) {
+            console.error(`Intent error: ${err.message}`);
+            res.status(400).send(`Intent error: ${err.message}`);
+        }
+      
         //console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
         //console.log("Sending email for poster:");
         //const lineItems = await stripe.checkout.sessions.listLineItems(paymentIntent.session.id);
@@ -80,15 +68,45 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
         //   `User information about ${paymentIntent.shipping.name}!`,
         //   //`${JSON(paymentIntent.shipping.shipping_address_collection)}`
         // );
-        // Then define and call a method to handle the successful payment intent.
-        // handlePaymentIntentSucceeded(paymentIntent);
-        // Retrieve Checkout Session to get line items
 
       break;
-      case 'payment_method.attached':
-        const paymentMethod = event.data.object;
-        // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        // handlePaymentMethodAttached(paymentMethod);
+      case 'checkout_session.completed':
+        try {
+          const session = event.data.object;
+              
+              // Fetch line items using the session ID
+              const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+  
+              console.log("Session ID:", session.id);
+              console.log("Customer email:", session.customer_details.email);
+              console.log("Shipping Info:", session.shipping);
+              console.log("Purchased Items:", lineItems.data);
+
+              sendMail(
+              process.env.MAIL_USER, 
+              `Hello ${session.shipping.name}!`,
+              `Purchase: ${session.lineItems.data}`,
+              //`You have purchased: ${lineItems}`,
+              "Thank you :-)"
+              //`${metadata.sessionId.line_items}`
+            );
+            sendMail(
+              process.env.MAIL_USER,
+              `More info about ${session.shipping.name}!`,
+              `Shipping: ${session.shipping}`,
+              `Address: ${session.shipping.address}`,
+              `Postal code: ${session.shipping.address.postal_code}`,
+              //`You have purchased: ${lineItems}`,
+              "Thank you :-)"
+              //`${metadata.sessionId.line_items}`
+            );
+              
+              // Store order in your database here...
+          res.json({ received: true });
+        } catch (err) {
+            console.error(`Webhook Error: ${err.message}`);
+            res.status(400).send(`Webhook Error: ${err.message}`);
+        }
         break;
       default:
         // Unexpected event type

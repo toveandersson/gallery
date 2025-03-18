@@ -4,15 +4,16 @@
 // const express = require('express')
 // const app = express()
 class CartItem {
-    constructor(id, name, price, size, quantity = 1) {
+    constructor(id, name, price, size, images = [], quantity = 1) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.size = size;
+        this.images = images;
         this.quantity = quantity;
     }
 }
-let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.quantity)) || [];
+let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)) || [];
 //showSwish();
 
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
@@ -342,18 +343,24 @@ function addToCart(posterId) {
         alert("Please select a size before adding to cart!");
         return;
     }
+    
+    
     fetch(`/getPosterWithId/${posterId}`)
         .then(response => response.json())
         .then(data => {
             const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
+            const imagesArray = [data.image];
+            console.log("img array: ",imagesArray);
 
             if (foundItem) { foundItem.quantity++; } 
             else {
-                let newItem = new CartItem(posterId, data.name, posterPrices[document.getElementById(`s${posterId}`).selectedIndex], selectedSize);
+                let newItem = new CartItem(posterId, data.name, posterPrices[document.getElementById(`s${posterId}`).selectedIndex], selectedSize, imagesArray);
                 shoppingCart.push(newItem);
+                console.log('new item: ',newItem);
             }
 
             localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+            console.log('cart from storage: ',localStorage.getItem("shoppingCart"));
         })
         .catch(error => console.error("Error fetching poster:", error));
 }
@@ -363,7 +370,7 @@ function getShoppingCart() {
     const storedCart = localStorage.getItem("shoppingCart");
     if (storedCart) {
         shoppingCart = JSON.parse(storedCart).map(item => 
-            new CartItem(item.id, item.name, item.price, item.size, item.quantity)
+            new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)
         );
     } else {
         shoppingCart = [];
