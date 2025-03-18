@@ -41,7 +41,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
           console.log("amount: ",paymentIntent.amount_received);
           sendMail(
             process.env.MAIL_USER,
-            `User info about ${paymentIntent.shipping.name}!`,
+            `User info about ${paymentIntent.shipping.address.name}!`,
             `Total amount: ${paymentIntent.amount}`,
           );
         
@@ -79,14 +79,25 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
   
               console.log("Session ID:", session.id);
               console.log("Customer email:", session.customer_details.email);
-              console.log("Shipping Info:", session.shipping);
+              console.log("Shipping Info:", session.shipping.adress);
+              console.log("Shipping postal code:", session.shipping.adress.postal_code);
               console.log("Purchased Items:", lineItems.data);
+              lineItems.forEach(item => {
+                console.log("item metadata", item.metadata);
+              });
 
               sendMail(
-              process.env.MAIL_USER, 
-              `Hello ${session.shipping.name}!`,
+              session.customer_details.email, 
+              `Hello ${session.customer_details.name}!`,
+              `Your purchase id: ${session.id}!`
               `Purchase: ${session.lineItems.data}`,
+              `I will ship to this address:`,
+              session.shipping.adress.line1,
+              session.shipping.adress.line2,
+              session.shipping.adress.postal_code +" "+session.shipping.adress.city,
+              session.shipping.adress.country,
               //`You have purchased: ${lineItems}`,
+              "If some of the information here looks wrong, just answer back to this email and give me the right information.",
               "Thank you :-)"
               //`${metadata.sessionId.line_items}`
             );
