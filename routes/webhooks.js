@@ -55,28 +55,31 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
         try {
           const session = event.data.object;
               
-              // Fetch line items using the session ID
-              const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
-  
               console.log("Session ID:", session.id);
-              console.log("Customer email:", session.customer_details.email);
-              console.log("Shipping Info:", session.shipping_details.address);
+              console.log("Customer email:", session.customer_details?.email);
+              console.log("Shipping Info:", session.shipping_details?.address);
               console.log("Shipping postal code:", session.shipping_details.address.postal_code);
               //console.log("Purchased Items:", lineItems[0].data);
               // lineItems.forEach(item => {
-              //   console.log("item metadata", item.metadata);
-              // });
+                //   console.log("item metadata", item.metadata);
+                // });
+                
+              const lineItemsResponse = await stripe.checkout.sessions.listLineItems(session.id);
+              const lineItems = lineItemsResponse.data; // ✅ Extract the data array
+              
+              console.log("Session ID type:", typeof session.id);
 
               sendMail(
               session.customer_details.email, 
               `Hello ${session.customer_details.name}!`,
               `Your purchase id: ${session.id}!`
-              //`Purchase: ${session.lineItems.data}`,
+              //`Purchase: ${JSON.stringify(lineItems, null, 2)}`
+
               `I will ship to this address:`,
-              session.shipping_details.address.line1,
-              session.shipping_details.address.line2,
-              session.shipping_details.address.postal_code +" "+session.shipping_details.address.city,
-              session.shipping_details.address.country,
+              session.shipping_details?.address?.line1 || "No address provided! ",
+              session.shipping_details?.address?.line2 || "",
+              `${session.shipping_details?.address?.postal_code || "No postal code provided! "} ${session.shipping_details?.address?.city || "No city provided!"}`,
+              session.shipping_details?.address?.country || "Unknown",
               //`You have purchased: ${lineItems}`,
               "If some of the information here looks wrong, just answer back to this email and give me the right information.",
               "Thank you :-)"
@@ -84,12 +87,9 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             );
             sendMail(
               process.env.MAIL_USER,
-              `More info about ${session.shipping_details.name}!`,
-              `Shipping: ${session.shipping_details}`,
-              `Address: ${session.shipping_details.address}`,
-              `Postal code: ${session.shipping_details.address.postal_code}`,
-              `Purchase: ${session.lineItems.data}`,
-              //`You have purchased: ${lineItems}`,
+              `New order from ${session.customer_details?.name || "Unknown Customer"}`,
+              `Shipping Address: ${JSON.stringify(session.shipping_details?.address, null, 2)}`,
+              `Purchased Items: ${JSON.stringify(lineItems, null, 2)}`,
               "Thank you :-)"
               //`${metadata.sessionId.line_items}`
             );
