@@ -62,7 +62,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               console.log("Customer email:", session.customer_details.email);
               console.log("Shipping Info:", session.shipping_details.address);
               console.log("Shipping postal code:", session.shipping_details.address.postal_code);
-              console.log("Purchased Items:", lineItems[0].data);
+              //console.log("Purchased Items:", lineItems[0].data);
               // lineItems.forEach(item => {
               //   console.log("item metadata", item.metadata);
               // });
@@ -71,7 +71,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               session.customer_details.email, 
               `Hello ${session.customer_details.name}!`,
               `Your purchase id: ${session.id}!`
-              `Purchase: ${session.lineItems.data}`,
+              //`Purchase: ${session.lineItems.data}`,
               `I will ship to this address:`,
               session.shipping_details.address.line1,
               session.shipping_details.address.line2,
