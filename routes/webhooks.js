@@ -17,8 +17,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 router.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
   console.log('in webhook!');
-  console.log('✅ Webhook request received:', request.headers);
-  console.log('🔹 Raw body:', request.body.toString()); // Log raw body
+  //console.log('✅ Webhook request received:', request.headers);
+  //console.log('🔹 Raw body:', request.body.toString()); // Log raw body
     let event = request.body;
     
     if (endpointSecret) {
@@ -41,7 +41,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
           console.log("amount: ",paymentIntent.amount_received);
           sendMail(
             process.env.MAIL_USER,
-            `User info about ${paymentIntent.shipping.address.name}!`,
+            `User info about ${paymentIntent.shipping.name}!`,
             `Total amount: ${paymentIntent.amount}`,
           );
         
@@ -79,8 +79,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
   
               console.log("Session ID:", session.id);
               console.log("Customer email:", session.customer_details.email);
-              console.log("Shipping Info:", session.shipping.adress);
-              console.log("Shipping postal code:", session.shipping.adress.postal_code);
+              console.log("Shipping Info:", session.shipping.address);
+              console.log("Shipping postal code:", session.shipping.address.postal_code);
               console.log("Purchased Items:", lineItems[0].data);
               // lineItems.forEach(item => {
               //   console.log("item metadata", item.metadata);
@@ -92,10 +92,10 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               `Your purchase id: ${session.id}!`
               `Purchase: ${session.lineItems.data}`,
               `I will ship to this address:`,
-              session.shipping.adress.line1,
-              session.shipping.adress.line2,
-              session.shipping.adress.postal_code +" "+session.shipping.adress.city,
-              session.shipping.adress.country,
+              session.shipping.address.line1,
+              session.shipping.address.line2,
+              session.shipping.address.postal_code +" "+session.shipping.address.city,
+              session.shipping.address.country,
               //`You have purchased: ${lineItems}`,
               "If some of the information here looks wrong, just answer back to this email and give me the right information.",
               "Thank you :-)"
