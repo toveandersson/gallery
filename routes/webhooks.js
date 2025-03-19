@@ -76,8 +76,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             .join("\n");
 
           // Format purchased items for HTML email
-          const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> ${item.quantity} ${item.price}kr</div>`)
+          const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: .2rem;"> ${purchasedItemsWithImages
+            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> x${item.quantity} <strong>${item.name}</strong> ${item.price+item.currency}</div>`)
             .join("")} </div>`;
 
           // ✅ Combine email messages into one function call
@@ -107,9 +107,9 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               ${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}<br>
               ${session.shipping_details.address.country}
               </p>
-            <p>Purchased items:<p>
-              ${purchasedItemsHTML}
-            <p>If any information looks wrong please send me a mail back!</p>`;
+              <p>If any information looks wrong please mail me back!</p>
+            <h3>Purchased items:<h3>
+              ${purchasedItemsHTML}`;  // <p><strong>Total price: </p>
 
           // ✅ Send email to the customer
           sendMail(

@@ -12,7 +12,8 @@ async function fetchProductImages(lineItems) {
       name: item.description,
       image: product ? process.env.BASE_URL + product.image : process.env.BASE_URL+"/images/question-sign.png",  // Fallback image
       quantity: item.quantity,
-      price: Math.round(item.price.unit_amount/10)
+      price: Math.round((item.price.unit_amount/100)*item.quantity),
+      currency: item.currency
     };
   });
 }
