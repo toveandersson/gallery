@@ -19,7 +19,7 @@ const stripe = require('stripe')(STRIPE_KEY);
   
   // ❌ Disable JSON parsing for webhooks (needed for Stripe)
   app.use('/webhook', express.raw({ type: 'application/json' }));
-  
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   
@@ -57,6 +57,20 @@ const getAllPosters = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+async function fetchProductImages(lineItems) {
+  const descriptions = lineItems.map(item => item.description);
+  
+  const products = await Poster.find({ name: { $in: descriptions } });
+
+  return lineItems.map(item => {
+    const product = products.find(p => p.name === item.description);
+    return {
+      name: item.description,
+      image: product ? product.image : "/images/question-sign.png"  // Fallback image
+    };
+  });
+}
 
 const getPosterWithId = async (req, res) => {
   try {
@@ -166,5 +180,6 @@ app.get('/getAllPosters', getAllPosters);
                 
                 
       //app.get('/create-checkout-session/:amount');
+module.exports = { fetchProductImages };
 
 start();

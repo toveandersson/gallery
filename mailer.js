@@ -17,7 +17,8 @@ const sendMail = async (to, subject, text) => {
     from: process.env.MAIL_SENDER_PASSWORD,
     to: to,
     subject: subject,
-    text: text
+    text: text,  // Fallback plain text
+    html: html   // HTML version for email clients that support it
   };
 
   try {
