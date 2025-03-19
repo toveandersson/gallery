@@ -79,7 +79,7 @@ router.post('/create-checkout-session', async (req, res) => {
           line_items: cartItems.map(item => ({
               price_data: { 
                   currency: selectedCurrency,
-                  product_data: { name: item.name, images: [process.env.BASE_URL+ item.images]},
+                  product_data: { name: item.name, images: [process.env.BASE_URL+ encodeURI(item.image)]},
                   unit_amount: 3000,  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
               },
               quantity: item.quantity,
