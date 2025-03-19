@@ -9,10 +9,10 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false // Bypass self-signed certificate error
-  }
+  } 
 });
 
-const sendMail = async (to, subject, text) => {
+const sendMail = async (to, subject, text, html) => {
   const mailOptions = {
     from: process.env.MAIL_SENDER_PASSWORD,
     to: to,
