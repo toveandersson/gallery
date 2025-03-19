@@ -40,11 +40,11 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           console.log("Payment Intent ID:", sessionId);
           console.log("amount: ",paymentIntent.amount_received);
-          sendMail(
-            process.env.MAIL_USER,
-            `User info about ${paymentIntent.shipping.name}!`,
-            `Total amount: ${paymentIntent.amount}`,
-          );
+          // sendMail(
+          //   process.env.MAIL_USER,
+          //   `User info about ${paymentIntent.shipping.name}!`,
+          //   `Total amount: ${paymentIntent.amount}`,
+          // );
         
           response.json({ received: true });
         } catch (err) {
@@ -100,17 +100,16 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           const customerEmailHTML = `
             <h2>Thank you for your purchase! 😊</h2>
-            
-            <h2>I will send your package to this address:</h2>
+            <p>Your purchase ID: <strong>${session.id}</strong></p>
+            <h2>Shipping information:</h2>
             <p>
               ${session.shipping_details.address.line1}<br>
               ${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}<br>
               ${session.shipping_details.address.country}
               </p>
+            <p>Purchased items:<p>
               ${purchasedItemsHTML}
-            <p>If any information looks wrong please send me a mail back!</p>
-            <p>Your package should arrive in <strong>2-10 business days</strong>.</p>
-            <p>Your purchase ID: <strong>${session.id}</strong></p>`;
+            <p>If any information looks wrong please send me a mail back!</p>`;
 
           // ✅ Send email to the customer
           sendMail(
