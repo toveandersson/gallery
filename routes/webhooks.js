@@ -4,7 +4,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const sendMail = require("../mailer"); // Import the mailer function
-const { fetchProductImages } = require('../app'); 
+const { fetchProductImages } = require("../utils/dbUtils"); 
 const axios = require('axios');
 require('dotenv').config();
 
