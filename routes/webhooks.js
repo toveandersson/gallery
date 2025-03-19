@@ -77,9 +77,9 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           // Format purchased items for HTML email
           const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><br> <img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><strong>${item.name}</strong> " " ${item.quantity}</div>`)
+            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> ${item.quantity} ${item.price}kr</div>`)
             .join("")} </div>`;
-            
+
           // ✅ Combine email messages into one function call
           const customerEmailText = [
             `Hello ${session.customer_details.name}!`,
@@ -99,21 +99,18 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
           ].join("\n");
 
           const customerEmailHTML = `
-            <h2>Your Purchase</h2>
-            <p>Your purchase ID: <strong>${session.id}</strong></p>
-            <h2>Shipping Address:</h2>
+            <h2>Thank you for your purchase! 😊</h2>
+            
+            <h2>I will send your package to this address:</h2>
             <p>
               ${session.shipping_details.address.line1}<br>
               ${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}<br>
               ${session.shipping_details.address.country}
-            </p>
-            <p>If any information looks wrong please email me back.</p>
+              </p>
+              ${purchasedItemsHTML}
+            <p>If any information looks wrong please send me a mail back!</p>
             <p>Your package should arrive in <strong>2-10 business days</strong>.</p>
-            <p>Thank you! 😊</p>
-            <p>Expand the mail to see your products!
-            
-            ${purchasedItemsHTML}
-          `;
+            <p>Your purchase ID: <strong>${session.id}</strong></p>`;
 
           // ✅ Send email to the customer
           sendMail(
