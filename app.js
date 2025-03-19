@@ -26,7 +26,8 @@ const stripe = require('stripe')(STRIPE_KEY);
   
   const prices = require('./prices.json');
   const postersData = require('./public/scripts/postersData');
-  const Poster = require('./public/models/Poster')
+  const Poster = require('./models/Poster')
+  const { fetchProductImages } = require('./utils/dbUtils')
   const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
   const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
   app.use('/', checkoutRoutes); 
@@ -57,20 +58,6 @@ const getAllPosters = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
-
-async function fetchProductImages(lineItems) {
-  const descriptions = lineItems.map(item => item.description);
-  
-  const products = await Poster.find({ name: { $in: descriptions } });
-
-  return lineItems.map(item => {
-    const product = products.find(p => p.name === item.description);
-    return {
-      name: item.description,
-      image: product ? product.image : "/images/question-sign.png"  // Fallback image
-    };
-  });
-}
 
 const getPosterWithId = async (req, res) => {
   try {
@@ -180,6 +167,5 @@ app.get('/getAllPosters', getAllPosters);
                 
                 
       //app.get('/create-checkout-session/:amount');
-module.exports = { fetchProductImages };
 
 start();
