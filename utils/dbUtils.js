@@ -10,7 +10,8 @@ async function fetchProductImages(lineItems) {
     const product = products.find(p => p.name === item.description);
     return {
       name: item.description,
-      image: product ? process.env.BASE_URL + product.image : process.env.BASE_URL+"/images/question-sign.png"  // Fallback image
+      image: product ? process.env.BASE_URL + product.image : process.env.BASE_URL+"/images/question-sign.png",  // Fallback image
+      quantity: item.quantity
     };
   });
 }

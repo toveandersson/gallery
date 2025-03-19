@@ -77,7 +77,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           // Format purchased items for HTML email
           const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><strong>${item.name}</strong><br> <img src="${item.image}" alt="${item.name}" width="200"> </div>`)
+            .map(item => `<div style="text-align: center;"><br> <img src="${item.image}" alt="${item.name}" width="200"><strong>${item.name}</strong> " " ${item.quantity}</div>`)
             .join("")} </div>`;
 
           // ✅ Combine email messages into one function call
@@ -101,16 +101,18 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
           const customerEmailHTML = `
             <h2>Your Purchase</h2>
             <p>Your purchase ID: <strong>${session.id}</strong></p>
-            ${purchasedItemsHTML}
             <h2>Shipping Address:</h2>
             <p>
               ${session.shipping_details.address.line1}<br>
               ${session.shipping_details.address.postal_code} ${session.shipping_details.address.city}<br>
               ${session.shipping_details.address.country}
             </p>
-            <p>If some of the information here looks wrong, just reply to this email.</p>
+            <p>If any information looks wrong please email me back.</p>
             <p>Your package should arrive in <strong>2-10 business days</strong>.</p>
             <p>Thank you! 😊</p>
+            <p>Expand the mail to see your products!
+            
+            ${purchasedItemsHTML}
           `;
 
           // ✅ Send email to the customer
