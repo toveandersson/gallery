@@ -30,11 +30,20 @@ const sun= document.getElementById("sun");
 const moon= document.getElementById("moon");
 const sun2= document.getElementById("sun-m");
 const moon2= document.getElementById("moon-m");
-
+// if(document.body.dataset.page === "success"){
+//     console.log("in success");
+//         document.getElementsByClassName('purchase-info-text').innerText = "I've sent a mail to [insert mail]";
+//         const urlParams = new URLSearchParams(window.location.search);
+//         const sessionId = urlParams.get("session_id");
+//         console.log("Session ID:", sessionId);
+// }
 document.addEventListener("DOMContentLoaded", () => {
+    if(document.body.dataset.page === 'success'){
+        displayUserPurchaseInformation();
+        return;
+    }
     setNightMode();
     getShoppingCart();
-
     if (document.body.dataset.page === 'order'){
         console.log("order: go to add cart");
         addCartItems();
@@ -44,12 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.body.dataset.page === 'product'){
         console.log("productpage");
         showProductInfo();
-    }
-    if(document.body.dataset.page === 'success'){
-        document.getElementsByClassName('purchase-info-text').innerText = "I've sent a mail to [insert mail]";
-        const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get("session_id");
-        console.log("Session ID:", sessionId);
     }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
@@ -198,7 +201,26 @@ function moveChild() {
         }
     }
 }
-
+function displayUserPurchaseInformation() {
+    console.log("in success real");
+    document.getElementsByClassName("purchase-info-text")[0].innerText = "I've sent a mail to [insert mail]";
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+    console.log("Session ID:", sessionId);
+    if (sessionId) {
+        // Fetch session details from your backend
+        fetch(`/stripe/session/${sessionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.customer_email) {
+                    document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I've sent an order confirmation to </small> <strong><a href="mailto:${data.customer_email}">${data.customer_email}</a></strong></p>`;
+                } else {
+                    console.error("No email found in session data.");
+                }
+            })
+            .catch(error => console.error("Error fetching session details:", error));
+    }
+}
 function addCheckoutButton(){
     
     // Dynamic country and currency select setup
@@ -226,11 +248,33 @@ function addCheckoutButton(){
         countrySelect.value = defaultCountry; // Set default country
         currencySelect.value = defaultCurrency; // Set default currency
     }
+
+    async function checkStockBeforeCheckout(buyingSizesAmount) {
+        const response = await fetch("/check-stock", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ buyingSizesAmount })
+        });
     
+        const result = await response.json();
+        if (!result.success) {
+            alert(result.message);
+            return false;
+        }
+        
+        return true; // Stock is fine
+    }
+
     document.getElementById("checkout-button").addEventListener("click", async (event) => {
         event.preventDefault(); // Prevent default form submission
-        
         const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+        const buyingSizesAmount = shoppingCart.map(item => ({
+            id: item.id,
+            size: item.size,
+            quantity: item.quantity
+        }));
+        checkStockBeforeCheckout(buyingSizesAmount);
+
         const amount_shipping = calculatePrices();
         const country = countrySelect.value;
         const currency = currencySelect.value;

@@ -101,4 +101,14 @@ router.post('/create-checkout-session', async (req, res) => {
   }
 });
 
+router.get("/stripe/session/:sessionId", async (req, res) => {
+  try {
+      const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+      res.json({ customer_email: session.customer_details.email });
+  } catch (error) {
+      console.error("Error retrieving session:", error);
+      res.status(500).json({ error: "Could not retrieve session" });
+  }
+});
+
 module.exports = router;

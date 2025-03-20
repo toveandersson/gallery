@@ -4,7 +4,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const sendMail = require("../mailer"); // Import the mailer function
-const { fetchProductImages } = require("../utils/dbUtils"); 
+const { fetchProductImages, checkIfPostersInStock } = require("../utils/dbUtils"); 
 const axios = require('axios');
 require('dotenv').config();
 
@@ -149,5 +149,33 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
     // Return a 200 response to acknowledge receipt of the event
     response.send();
   });
+
+  router.post('/check-stock', async (req, res) => {
+    try {
+        const { buyingSizesAmount } = req.body; // Expecting an array of objects
+        if (!buyingSizesAmount || !Array.isArray(buyingSizesAmount)) {
+            return res.status(400).json({ success: false, message: "Invalid request format" });
+        }
+
+        const insufficientStock = [];
+
+        for (const item of buyingSizesAmount) {
+            const result = await checkIfPostersInStock(item.id, item.size, item.quantity);
+            if (!result.success) {
+                insufficientStock.push(result.message);
+            }
+        }
+
+        if (insufficientStock.length > 0) {
+            return res.json({ success: false, message: `Not enough stock for: ${insufficientStock.join(", ")}` });
+        }
+
+        res.json({ success: true }); // Everything is in stock
+    } catch (error) {
+        console.error("Error checking stock:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+});
+
 
   module.exports = router;

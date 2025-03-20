@@ -27,7 +27,7 @@ const stripe = require('stripe')(STRIPE_KEY);
   const prices = require('./prices.json');
   const postersData = require('./public/scripts/postersData');
   const Poster = require('./models/Poster')
-  const { fetchProductImages } = require('./utils/dbUtils')
+  const { fetchProductImages, checkIfPostersInStock, updatePosterSizes } = require('./utils/dbUtils')
   const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
   const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
   app.use('/', checkoutRoutes); 
