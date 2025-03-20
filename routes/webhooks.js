@@ -76,8 +76,8 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             .join("\n");
 
           // Format purchased items for HTML email
-          const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: .2rem;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> ${item.price+item.currency} x${item.quantity} </div>`)
+          const purchasedItemsHTML = `<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: .2rem;"> ${purchasedItemsWithImages
+            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> <small>${item.price+item.currency} x${item.quantity} </small></div>`)
             .join("")} </div>`;
 
           // ✅ Combine email messages into one function call
@@ -122,6 +122,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
           // ✅ Send notification email to admin
           const adminMessage = [
             `New order from ${session.customer_details?.name || "Unknown Customer"}`,
+            `Mail sent to: ${session.customer_details?.email}`,
             "",
             `Shipping Address:\n${JSON.stringify(session.shipping_details.address, null, 2)}`,
             "",
