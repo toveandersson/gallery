@@ -45,6 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("productpage");
         showProductInfo();
     }
+    if(document.body.dataset.page === 'success'){
+        document.getElementsByClassName('purchase-info-text').innerText = "I've sent a mail to [insert mail]";
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get("session_id");
+        console.log("Session ID:", sessionId);
+    }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
         return;

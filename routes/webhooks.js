@@ -76,7 +76,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
             .join("\n");
 
           // Format purchased items for HTML email
-          const purchasedItemsHTML = `<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: .2rem;"> ${purchasedItemsWithImages
+          const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: .2rem;"> ${purchasedItemsWithImages
             .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> <small>${item.price+item.currency} x${item.quantity} </small></div>`)
             .join("")} </div>`;
 
@@ -108,7 +108,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               ${session.shipping_details.address.country}
               </p>
               <p>If any information looks wrong please mail me back!</p>
-            <h3><br>Purchased items:<h3>
+            <h3><br>Purchased items: (you might need to scroll to see all)<h3>
               ${purchasedItemsHTML}`;  // <p><strong>Total price: </p>
 
           // ✅ Send email to the customer
