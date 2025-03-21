@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Poster = require('../models/Poster')
 
-async function fetchProductInformation(lineItems) {
+async function fetchProductImages(lineItems) {
   const descriptions = lineItems.map(item => item.description);
   
   const products = await Poster.find({ name: { $in: descriptions } });
@@ -66,4 +66,4 @@ async function updatePosterSizes(postersToUpdate) {
 
 
 
-module.exports = { fetchProductImages: fetchProductInformation, updatePosterSizes, checkIfPostersInStock };
+module.exports = { fetchProductImages: fetchProductImages, updatePosterSizes, checkIfPostersInStock };

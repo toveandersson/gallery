@@ -90,7 +90,7 @@ router.post('/create-checkout-session', async (req, res) => {
           mode: 'payment',
           metadata: { orderId: "12345XYZ" },  // ✅ Allowed
           success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,  
-          cancel_url: `${process.env.BASE_URL}/cancel`,
+          cancel_url: `${process.env.BASE_URL}/order`,
       });
 
       res.json({ url: session.url });

@@ -498,6 +498,28 @@ function calculatePrices(){
 
     return amount_shipping;
 }
+async function checkStock(posterId,selectedSize,testQuantity) {
+    const valueInStockResult = await valueInStock(testQuantity); // Assuming valueInStock() is the function you're using
+    return valueInStockResult;
+}
+async function valueInStock(posterId,selectedSize,testQuantity){
+    //console.log(posterId,selectedSize,testQuantity);
+    // Check stock before adding to cart
+    const stockResponse = await fetch('/check-stock-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            id: posterId,  // Change posterId → id 
+            size: selectedSize, 
+            quantity: testQuantity 
+        })
+    });
+    
+    const stockData = await stockResponse.json();
+    return stockData.success;
+}
 
 function addCartItems() {
     console.log("Adding updated list to cart:", shoppingCart);
@@ -546,6 +568,9 @@ function addCartItems() {
 
                 quantityInput.addEventListener("change", (event) => {
                     cartItem.quantity = Number(event.target.value);
+                    // checkStock(cartItem.id,selectedSize,cartItem.quantity).then((valueInStock) => {
+                    //     console.log('value in stock: ',valueInStock);
+                    // if (!valueInStock) {return;}});
                     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
                     calculatePrices();
                 });
