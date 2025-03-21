@@ -50,6 +50,29 @@ const start = async () =>{
     console.log(error)
   }
 }
+app.post('/check-stock-item', async (req, res) => {
+  try {
+    const { id, size, quantity } = req.body;
+    
+    if (!id || !size || !quantity) {
+      return res.status(400).json({ success: false, message: "Invalid request: Missing parameters." });
+    }
+    
+    const result = await checkIfPostersInStock(id, size, quantity);
+    
+    return res.json(result); // Return the result to the frontend
+    
+  } catch (error) {
+    console.error("Error checking stock:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+app.post('/update-stock', async (req, res) => {
+  const { posterSizes } = req.body;
+  await updatePosterSizes(posterSizes);
+});
+
 const getAllPosters = async (req, res) => {
   try {
     const posters = await Poster.find().sort({ id: 1 }); // Sorts by _id in ascending order
@@ -59,70 +82,98 @@ const getAllPosters = async (req, res) => {
   }
 };
 
+app.post('/check-stock', async (req, res) => {
+  try {
+      const { buyingSizesAmount } = req.body; // Expecting an array of objects
+      if (!buyingSizesAmount || !Array.isArray(buyingSizesAmount)) {
+          return res.status(400).json({ success: false, message: "Invalid request format" });
+      }
+
+      const insufficientStock = [];
+
+      for (const item of buyingSizesAmount) {
+          const result = await checkIfPostersInStock(item.id, item.size, item.quantity);
+          if (!result.success) {
+              insufficientStock.push(`${result.quantity} of ${result.name} with size ${result.size}`);
+          }
+      }
+
+      if (insufficientStock.length > 0) {
+          return res.json({ success: false, message: `There is no longer ${insufficientStock.join(", ")} in stock 😭` });
+      }
+
+      res.json({ success: true }); // Everything is in stock
+  } catch (error) {
+      console.error("Error checking stock:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 const getPosterWithId = async (req, res) => {
   try {
     const posterId = req.params.id; // Extract the ID from request params
-
+    
     const poster = await Poster.findOne({ id: posterId }); // Query by your custom id
     if (!poster) {
       return res.status(404).json({ msg: "Poster not found" });
     }
-
+    
     // console.log("Sending email for poster:", posterId, poster.name);
-
-
+    
+    
     // await sendMail(
-    //   process.env.MONGO_USER,
-    //   "Poster Accessed",
-    //   `Someone accessed the poster: ${poster.name} (ID: ${posterId})`
-    // );
-
-    res.status(200).json(poster);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
-
-const removePostersWithIds = async (req, res) => {
-  try {
-    const posterId = req.params.id; // Extract the ID from request params
-
-    const poster = await Poster.findOne({ id: posterId }); // Query by your custom id
-    if (!poster) {
-      return res.status(404).json({ msg: "Poster not found" });
+      //   process.env.MONGO_USER,
+      //   "Poster Accessed",
+      //   `Someone accessed the poster: ${poster.name} (ID: ${posterId})`
+      // );
+      
+      res.status(200).json(poster);
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
     }
-
-    // console.log("Sending email for poster:", posterId, poster.name);
-
-
-    // await sendMail(
-    //   process.env.MONGO_USER,
-    //   "Poster Accessed",
-    //   `Someone accessed the poster: ${poster.name} (ID: ${posterId})`
-    // );
-
-    res.status(200).json(poster);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
-
-// sendMail(
-//   "toveama@gmail.com",
-//   "Test Email",
-//   "This is a manual test to check if email works."
-// );
-// Add this route in your Express setup:
-app.get('/getPosterWithId/:id', getPosterWithId);
-app.get('/getAllPosters', getAllPosters);
-
-// const fetchPoster = (fetchId) =>{
-  //   return Poster.find({id: fetchId})
-  // }
-  // INSERTION IN THE DATABASE!
-  // Poster.insertMany(postersData)
-  //     .then(() => {
-    //         console.log("Data inserted successfully!");
+  };
+  
+  const removePostersWithIds = async (req, res) => {
+    try {
+      const posterId = req.params.id; // Extract the ID from request params
+      
+      const poster = await Poster.findOne({ id: posterId }); // Query by your custom id
+      if (!poster) {
+        return res.status(404).json({ msg: "Poster not found" });
+      }
+      
+      // console.log("Sending email for poster:", posterId, poster.name);
+      
+      
+      // await sendMail(
+        //   process.env.MONGO_USER,
+        //   "Poster Accessed",
+        //   `Someone accessed the poster: ${poster.name} (ID: ${posterId})`
+        // );
+        
+        res.status(200).json(poster);
+      } catch (error) {
+        res.status(500).json({ msg: error.message });
+      }
+    };
+    
+    app.get('/posters/:id');
+    // sendMail(
+      //   "toveama@gmail.com",
+      //   "Test Email",
+      //   "This is a manual test to check if email works."
+      // );
+      // Add this route in your Express setup:
+      app.get('/getPosterWithId/:id', getPosterWithId);
+      app.get('/getAllPosters', getAllPosters);
+      
+      // const fetchPoster = (fetchId) =>{
+        //   return Poster.find({id: fetchId})
+        // }
+        // INSERTION IN THE DATABASE!
+        // Poster.insertMany(postersData)
+        //     .then(() => {
+          //         console.log("Data inserted successfully!");
     //         mongoose.connection.close();
     //     })
     //     .catch((err) => console.error(err));

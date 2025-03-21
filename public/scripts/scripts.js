@@ -40,6 +40,8 @@ const moon2= document.getElementById("moon-m");
 document.addEventListener("DOMContentLoaded", () => {
     if(document.body.dataset.page === 'success'){
         displayUserPurchaseInformation();
+        updateStock();
+        clearCart();
         return;
     }
     setNightMode();
@@ -258,6 +260,7 @@ function addCheckoutButton(){
     
         const result = await response.json();
         if (!result.success) {
+            console.log("stock: ", false);
             alert(result.message);
             return false;
         }
@@ -273,8 +276,10 @@ function addCheckoutButton(){
             size: item.size,
             quantity: item.quantity
         }));
-        checkStockBeforeCheckout(buyingSizesAmount);
-
+        const stock = await checkStockBeforeCheckout(buyingSizesAmount);
+        console.log("stock: ", stock);
+        if (!stock){ 
+            return;}
         const amount_shipping = calculatePrices();
         const country = countrySelect.value;
         const currency = currencySelect.value;
@@ -307,6 +312,23 @@ function addCheckoutButton(){
         }
     });
     initializeCurrencySelect();
+}
+
+async function updateStock(){
+    const posterSizes = shoppingCart.map(item => ({
+        id: item.id,
+        sizes: { [item.size]: item.quantity } 
+    }));
+    console.log('postersizes for updating stock: ',posterSizes);
+    const response = await fetch("/update-stock", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ posterSizes }),
+    });
+
+    
 }
 
 // Run on page load and when window resizes
@@ -386,33 +408,68 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-
-function addToCart(posterId) {
+async function addToCart(posterId) {
     const selectedSize = document.getElementById(`s${posterId}`)?.value;
     if (!selectedSize) {
         alert("Please select a size before adding to cart!");
         return;
     }
-    
-    
-    fetch(`/getPosterWithId/${posterId}`)
-        .then(response => response.json())
-        .then(data => {
-            const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
-            const imagesArray = [data.image];
-            console.log("img array: ",imagesArray);
 
-            if (foundItem) { foundItem.quantity++; } 
-            else {
-                let newItem = new CartItem(posterId, data.name, posterPrices[document.getElementById(`s${posterId}`).selectedIndex], selectedSize, imagesArray);
-                shoppingCart.push(newItem);
-                console.log('new item: ',newItem);
-            }
+    try {
+        // Fetch the poster data first
+        const response = await fetch(`/getPosterWithId/${posterId}`);
+        const data = await response.json();
 
-            localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-            console.log('cart from storage: ',localStorage.getItem("shoppingCart"));
-        })
-        .catch(error => console.error("Error fetching poster:", error));
+        const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
+        const imagesArray = [data.image];
+        console.log("img array: ", imagesArray);
+
+        let testQuantity = foundItem ? foundItem.quantity + 1 : 1;
+        console.log(posterId,selectedSize,testQuantity);
+        // Check stock before adding to cart
+        const stockResponse = await fetch('/check-stock-item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                id: posterId,  // Change posterId → id 
+                size: selectedSize, 
+                quantity: testQuantity 
+            })
+        });
+
+        const stockData = await stockResponse.json();
+        console.log("Stock check response:", stockData);
+        const s = (stockData.quantity-1 > 1) ? 's' :'';
+
+        if (!stockData.success) {
+            alert(`The last ${stockData.quantity-1} item${s} in stock of ${stockData.name} in size ${stockData.size} is already in your cart 😬`);
+            return;
+        }
+
+        // Add to cart logic
+        if (foundItem) {
+            foundItem.quantity++; // Increase quantity if already in cart
+        } else {
+            let newItem = new CartItem(
+                posterId, 
+                data.name, 
+                posterPrices[document.getElementById(`s${posterId}`).selectedIndex], 
+                selectedSize, 
+                imagesArray
+            );
+            shoppingCart.push(newItem);
+            console.log('New item added: ', newItem);
+        }
+
+        // Save cart to local storage
+        localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+        console.log('Cart from storage:', localStorage.getItem("shoppingCart"));
+
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+    }
 }
 
 

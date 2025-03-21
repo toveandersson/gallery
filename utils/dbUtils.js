@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Poster = require('../models/Poster')
 
-async function fetchProductImages(lineItems) {
+async function fetchProductInformation(lineItems) {
   const descriptions = lineItems.map(item => item.description);
   
   const products = await Poster.find({ name: { $in: descriptions } });
@@ -22,14 +22,12 @@ async function checkIfPostersInStock(posterId, size, quantity) {
     try {
         const poster = await Poster.findOne({ id: posterId }); // Use 'id' instead of '_id'
         if (!poster) {
-            return { success: false, message: `Poster with id ${posterId} not found` };
+            return { success: false, message: `Poster with id ${posterId} not found in the database` };
         }
 
-
-        // Check if stock is sufficient
         const availableStock = poster.sizes.get(size) || 0;
         if (availableStock < quantity) {
-            return { success: false, message: `${size} of poster ${posterId} is out of stock` };
+            return { success: false, quantity: quantity, size: size, name: poster.name, message: `There is no longer ${quantity} of poster ${poster.name} with size ${size} in stock`};
         }
 
         return { success: true }; // Stock is fine
@@ -39,28 +37,33 @@ async function checkIfPostersInStock(posterId, size, quantity) {
     }
 }
 
-async function updatePosterSizes(posterId, sizesToReduce) {
-    try {
-      const poster = await Poster.findById(posterId);
-      if (!poster) {
-        throw new Error("Poster not found");
+async function updatePosterSizes(postersToUpdate) {
+  try {
+      const bulkOperations = postersToUpdate.map(({ id, sizes }) => ({
+          updateOne: {
+              filter: { id: id }, // Ensure you're using the correct ID field
+              update: {
+                  $inc: Object.fromEntries(
+                      Object.entries(sizes).map(([size, quantity]) => [`sizes.${size}`, -quantity]) // Reduce stock
+                  )
+              }
+          }
+      }));
+
+      if (bulkOperations.length === 0) {
+          throw new Error("No valid poster updates provided.");
       }
 
-      // Loop through each size and reduce the quantity
-      Object.keys(sizesToReduce).forEach(size => {
-        if (poster.sizes.has(size)) {
-          poster.sizes.set(size, Math.max(0, poster.sizes.get(size) - sizesToReduce[size]));
-        }
-      });
-  
-      await poster.save();
-      console.log(`Updated poster ${posterId} sizes successfully.`);
-      return poster;
-    } catch (error) {
+      await Poster.bulkWrite(bulkOperations);
+
+      console.log(`Updated sizes for ${postersToUpdate.length} posters successfully.`);
+      return { success: true };
+  } catch (error) {
       console.error("Error updating poster sizes:", error);
       throw error;
-    }
+  }
 }
 
 
-module.exports = { fetchProductImages, updatePosterSizes, checkIfPostersInStock };
+
+module.exports = { fetchProductImages: fetchProductInformation, updatePosterSizes, checkIfPostersInStock };
