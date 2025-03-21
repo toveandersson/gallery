@@ -99,7 +99,7 @@ app.post('/check-stock', async (req, res) => {
       }
 
       if (insufficientStock.length > 0) {
-          return res.json({ success: false, message: `There is no longer ${insufficientStock.join(", ")} in stock 😭` });
+          return res.json({ success: false, message: `There is no longer ${insufficientStock.join("or ")} in stock 😭` });
       }
 
       res.json({ success: true }); // Everything is in stock

@@ -205,7 +205,7 @@ function moveChild() {
 }
 function displayUserPurchaseInformation() {
     console.log("in success real");
-    document.getElementsByClassName("purchase-info-text")[0].innerText = "I've sent a mail to [insert mail]";
+    document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("session_id");
     console.log("Session ID:", sessionId);
@@ -215,7 +215,7 @@ function displayUserPurchaseInformation() {
             .then(response => response.json())
             .then(data => {
                 if (data.customer_email) {
-                    document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I've sent an order confirmation to </small> <strong><a href="mailto:${data.customer_email}">${data.customer_email}</a></strong></p>`;
+                    document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="mailto:${data.customer_email}">${data.customer_email}</a></strong></p>`;
                 } else {
                     console.error("No email found in session data.");
                 }
