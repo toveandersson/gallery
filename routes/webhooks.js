@@ -108,7 +108,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
               ${session.shipping_details.address.country}
               </p>
               <p>If any information looks wrong please mail me back!</p>
-            <h3><br>Purchased items: (you might need to scroll to see all)<h3>
+            <h3><br>Purchased items: <h4>(you might need to scroll to see all)</h4></h3>
               ${purchasedItemsHTML}`;  // <p><strong>Total price: </p>
 
           // ✅ Send email to the customer

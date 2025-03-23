@@ -142,17 +142,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 selectSizes.addEventListener('change', (event) => {
-                    const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
-                    if (sizesIndex == 0){
-                        price_text.textContent = posterPrices[0]+'kr';
-                    }
-                    else if (sizesIndex >= 0){
-                        price_text.textContent = posterPrices[1]+'kr';
-                    }
-                    else {
-                        price_text.textContent = posterPrices[0]+'kr'; 
+                    const selectedSize = event.target.value;
+                    if (!sizes){return;}
+                    const sizesKeys = Object.keys(sizes);
+                    const sizesIndex = sizesKeys.indexOf(selectedSize);
+                
+                    if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
+                        price_text.textContent = posterPrices[sizesIndex] + 'kr';
+                    } else {
+                        price_text.textContent = posterPrices[0] + 'kr'; // Default to the first price if not found
                     }
                 });
+                
 
                 selectSizes.dispatchEvent(new Event('change'));
                 
@@ -295,7 +296,6 @@ function addCheckoutButton(){
         if (country !== 'SE'){
             amount_shipping = shippingPrices[1];
         }
-    
         const response = await fetch("/create-checkout-session", {
             method: "POST",
             headers: {

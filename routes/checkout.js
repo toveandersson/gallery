@@ -14,7 +14,7 @@ if (!STRIPE_KEY) {
 const stripe = require('stripe')(STRIPE_KEY);
 
 router.post('/create-checkout-session', async (req, res) => {
-  const { cartItems, amount_shipping, country, currency } = req.body;
+  const { cartItems, amount_shipping, country, currency, images } = req.body;
   console.log('Received:', cartItems, amount_shipping, country, currency);
 
   try {
