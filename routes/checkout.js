@@ -14,7 +14,7 @@ if (!STRIPE_KEY) {
 const stripe = require('stripe')(STRIPE_KEY);
 
 router.post('/create-checkout-session', async (req, res) => {
-  const { cartItems, amount_shipping, country, currency, images } = req.body;
+  const { cartItems, amount_shipping, country, currency } = req.body;
   console.log('Received:', cartItems, amount_shipping, country, currency);
 
   try {
@@ -79,7 +79,7 @@ router.post('/create-checkout-session', async (req, res) => {
           line_items: cartItems.map(item => ({
               price_data: { 
                   currency: selectedCurrency,
-                  product_data: { name: item.name, images: [process.env.BASE_URL+ encodeURI(item.image)]},
+                  product_data: { name: item.name, images: [process.env.BASE_URL+ encodeURI(item.images)]},
                   unit_amount: 3000,  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
               },
               quantity: item.quantity,

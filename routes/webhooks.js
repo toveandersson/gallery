@@ -77,7 +77,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           // Format purchased items for HTML email
           const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: .2rem;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <strong>${item.name}</strong> <small>${item.price+item.currency} x${item.quantity} </small></div>`)
+            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}"${item.quantity} alt="${item.name}" width="200"><br> <strong>${item.name}</strong>; <small>${item.price+item.currency} </small></div>`)
             .join("")} </div>`;
 
           // ✅ Combine email messages into one function call
