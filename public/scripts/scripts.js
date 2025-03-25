@@ -229,11 +229,14 @@ function displayUserPurchaseInformation() {
             .then(data => {
                 if (data.customer_email) {
                     console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
+                    console.log(typeof(data.customer_email));
                     const link = detectEmailService(data.customer_email);
                     if (link !== 'Unknown'){
+                        console.log(link);
                         document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
                     }
                     else {
+                        console.log(link);
                         document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
                     }
 
@@ -249,19 +252,25 @@ function detectEmailService(email) {
         console.error('No email provided');
         return 'Unknown';  // Or handle it however you need to
     }
-
+    console.log("type of email: ",typeof(email));
     const domain = toString(email.split('@')[1]);
+    console.log("domain: ",domain);
     
 
     if (domain === 'gmail.com') {
+        console.log("email: ",domain);
         return 'https://mail.google.com';
     } else if (domain === 'outlook.com' || domain === 'hotmail.com') {
+        console.log("email: ",domain);
         return 'https://outlook.live.com';
     } else if (domain === 'yahoo.com') {
+        console.log("email: ",domain);
         return 'https://mail.yahoo.com';
     } else if (domain === 'icloud.com') {
+        console.log("email: ",domain);
         return 'https://www.icloud.com/mail';
     } else {
+        console.log("email: ",domain);
         return 'Unknown';
     }
 }
