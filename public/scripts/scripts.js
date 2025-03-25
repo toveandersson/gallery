@@ -106,12 +106,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const add = document.createElement('button');
                 add.setAttribute('type', 'button');
-                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
                 add.setAttribute('id', 'add-button-id');
                 add.setAttribute('onclick', 'addToCart(this.id);');
+                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
+                add.style.margin = "0rem";
+                add.style.padding = ".8rem";
                 
                 const inner_flex = document.createElement('div');
                 inner_flex.setAttribute('class', 'inner-flex');
+                
+                const middle_flex = document.createElement('div');
+                middle_flex.setAttribute('class', 'middle-flex');
 
                 const price_text = document.createElement('h2');
                 price_text.style = 'margin: 0rem;';
@@ -124,6 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const sizes = poster.sizes; // Extract sizes
                 selectSizes.innerHTML = ""; // Clear previous options
+
+                const option = document.createElement("option");
+                option.value = "";
+                option.disabled = true;
+                option.selected = true;
+                option.style.color = "black";
+                option.textContent = "Sizes";
+
+                const hr = document.createElement("hr");
+
+                selectSizes.appendChild(option);
+                selectSizes.appendChild(hr);
 
                 if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
                     for (const [size, quantity] of Object.entries(sizes)) {
@@ -157,12 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
                 selectSizes.dispatchEvent(new Event('change'));
-                
-                if (!selectSizes.value) {
-                    price_text.textContent = 'no left';
-                    selectSizes.style.width = '30%';
+                const options = selectSizes.options;
+                if ([...options].every(option => option.disabled)){
+                    price_text.textContent = 'out';
+                    price_text.style = "x-small";
+                    price_text.style.marginBottom = "0rem";
+                    price_text.style.marginTop = "0rem";
+                    price_text.style.fontSize = "2rem";
                     selectSizes.style.marginLeft = '0rem';
                 }
+                selectSizes.style.width = '80%';
                 
                 add.id = poster.id;
                 title.innerText = poster.name;
@@ -170,14 +191,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 imgBg.appendChild(imageLink);
                 imageLink.appendChild(image); // Wrap the image in the link
-                imgBg.appendChild(add);
+                //imgBg.appendChild(add);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
                 poster_flex.appendChild(link);
                 link.appendChild(title);
-                poster_flex.appendChild(inner_flex);
                 inner_flex.appendChild(price_text);
                 inner_flex.appendChild(selectSizes);
+                middle_flex.appendChild(inner_flex);
+                poster_flex.appendChild(middle_flex);
+                middle_flex.appendChild(add);
 
                 posterGrid.appendChild(div_card);
             });
@@ -677,6 +700,7 @@ function showProductInfo() {
       document.getElementById('product-img').src = posterData.image;
       document.getElementById('product-title').textContent = posterData.name;
       document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
+      document.getElementsByClassName('add-button')[0].id = posterData.id;
     }
     fetch(`/getPosterWithId/${posterData.id}`)
     .then(response => response.json())
@@ -704,21 +728,38 @@ function showProductInfo() {
             option.innerHTML = size;
             document.getElementById('product-select').appendChild(option);
         }
+        document.getElementById('product-select').addEventListener('change', (event) => {
+            const selectedSize = event.target.value;
+            if (!sizes){return;}
+            const sizesKeys = Object.keys(sizes);
+            const sizesIndex = sizesKeys.indexOf(selectedSize);
+            console.log("sel size ",selectedSize);
+            console.log("ind ",sizesIndex);
+            console.log(posterPrices[sizesIndex]);
             
-            document.getElementById('product-select').addEventListener('change', (event) => {
-                const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
-                if (sizesIndex == 0){
-                    document.getElementById('product-price').textContent = '45kr';
-                }
-                else if (sizesIndex >= 0){
-                    document.getElementById('product-price').textContent = '60kr';
-                }
-                else {
-                    document.getElementById('product-price').textContent = '45kr'; 
-                }
-            });
+        
+            if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
+                document.getElementById('product-price').textContent = posterPrices[sizesIndex] + 'kr';
+            } else {
+                document.getElementById('product-price').textContent = posterPrices[0] + 'kr'; // Default to the first price if not found
+            }
+        });
+        document.getElementById('product-select').dispatchEvent(new Event('change'));  
+        // document.getElementById('product-select').addEventListener('change', (event) => {
+        //         const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
+        //         if (sizesIndex == 0){
+        //             document.getElementById('product-price').textContent = '45kr';
+        //         }
+        //         else if (sizesIndex >= 0){
+        //             document.getElementById('product-price').textContent = '60kr';
+        //         }
+        //         else {
+        //             document.getElementById('product-price').textContent = '45kr'; 
+        //         }
+        //     });
             
-            document.getElementById('product-price').textContent = '45kr'; 
+        //     document.getElementById('product-price').textContent = '45kr'; 
+            document.getElementById('product-select').id=`s${selectedPoster.id}`;
     })
     .catch(error => console.error("Error fetching poster:", error));
     

@@ -76,6 +76,17 @@ body {
     box-sizing: border-box; /* ? */
 }
 
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures full height */
+}
+
+/* Pushes the footer down when there isn’t enough content */
+.content {
+    flex: 1;
+}
+
 @font-face {
     font-family: 'Sofia Sans';
     src: url('fonts/Sofia_Sans/SofiaSans-Italic-VariableFont_wght.ttf') format('truetype'),
@@ -488,11 +499,19 @@ h2 {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    /* flex-grow: 1; */
+}
+.middle-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    /* flex-grow: 1; */
 }
 
 .poster-flex-child {
-    padding: 1rem;
-    margin: .25rem;
+    padding: .5rem;
+    margin: .5rem;
     border-radius: .5rem;
     background-color: var(--light);
     /* cursor: context-menu; */
@@ -505,9 +524,9 @@ h2 {
 .add-button {
     
     padding: 1rem;
-    font-weight: 900;
+    font-weight: 1000;
     cursor: pointer;
-    position: absolute;
+    position: static;
     top: 0;
     right: 0;
 }
