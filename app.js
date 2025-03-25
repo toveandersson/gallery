@@ -77,16 +77,21 @@ const getAllPosters = async (req, res) => {
   try {
     const posters = await Poster.find();
     posters.forEach(poster => {
-      poster.id = Number(poster.id); // Convert before sorting
-  });
+      console.log("Checking poster:", poster);
+      if (poster.id === undefined) {
+        console.warn("⚠️ Missing 'id' for poster:", poster._id);
+      } else {
+        poster.id = Number(poster.id); // Convert before sorting
+      }
+    });
 
     const sortedPosters = posters.sort((a, b) => Number(a.id) - Number(b.id)); // Sort safely
-  
     res.status(200).json(sortedPosters);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
 };
+
 
 
 app.post('/check-stock', async (req, res) => {
@@ -204,23 +209,23 @@ app.get('/', (req, res, next) => {
   });
 });
       
-// app.get('/posters/:posterID', async (req, res) => {
-//   try {
-//     const { posterID } = req.params;
+app.get('/posters/:posterID', async (req, res) => {
+  try {
+    const { posterID } = req.params;
 
-//     const singlePoster = await Poster.findOne({ id: Number(posterID) });
+    const singlePoster = await Poster.findOne({ id: Number(posterID) });
 
-//     if (singlePoster) {
-//           const queryString = new URLSearchParams(singlePoster.toObject()).toString();
-//           res.redirect(`/product/product.html?${queryString}`);
-//     } else {
-//           res.status(404).send('Poster not found');
-//       }
-//     } catch (error) {
-//       console.error("❌ Error fetching poster:", error);
-//       res.status(500).send("Internal Server Error");
-//   }
-// });
+    if (singlePoster) {
+          const queryString = new URLSearchParams(singlePoster.toObject()).toString();
+          res.redirect(`/product/product.html?${queryString}`);
+    } else {
+          res.status(404).send('Poster not found');
+      }
+    } catch (error) {
+      console.error("❌ Error fetching poster:", error);
+      res.status(500).send("Internal Server Error");
+  }
+});
                 
                 
 app.get('/create-checkout-session/:amount');

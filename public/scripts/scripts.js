@@ -621,40 +621,50 @@ function showProductInfo() {
       document.getElementById('product-title').textContent = posterData.name;
       document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
     }
-    const selectedPoster = postersData.find(poster => poster.id === Number(posterData.id));
-    const sizes = selectedPoster.sizes; // Directly extract sizes
+    fetch(`/getPosterWithId/${posterData.id}`)
+    .then(response => response.json())
+    .then(selectedPoster => {
+        if (!selectedPoster) {
+            console.error("Poster not found");
+            return;
+        }
+        const sizes = selectedPoster.sizes; // Extract sizes
+        console.log("Sizes:", sizes);
 
-    for (const [size, quantity] of Object.entries(sizes)) {
-        console.log(`Size: ${size}, Quantity: ${quantity}`);
-        const option = document.createElement('option');
-        option.setAttribute('value', size);         
-        // option.setAttributeNS('required', true) ;                                                                                            
-        if (quantity <= 0){
-            option.setAttribute('disabled', true);
-        };
-        // if (firstTime){
-        //     option.selected = true;
-        //     firstTime = false;
-        // }
-        
-        option.innerHTML = size;
-        document.getElementById('product-select').appendChild(option);
-        
-        document.getElementById('product-select').addEventListener('change', (event) => {
-            const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
-            if (sizesIndex == 0){
-                document.getElementById('product-price').textContent = '45kr';
-            }
-            else if (sizesIndex >= 0){
-                document.getElementById('product-price').textContent = '60kr';
-            }
-            else {
-                document.getElementById('product-price').textContent = '45kr'; 
-            }
-        });
-        
-        document.getElementById('product-price').textContent = '45kr'; 
-    }
+        for (const [size, quantity] of Object.entries(sizes)) {
+            console.log(`Size: ${size}, Quantity: ${quantity}`);
+            const option = document.createElement('option');
+            option.setAttribute('value', size);         
+            // option.setAttributeNS('required', true) ;                                                                                            
+            if (quantity <= 0){
+                option.setAttribute('disabled', true);
+            };
+            // if (firstTime){
+            //     option.selected = true;
+            //     firstTime = false;
+            // }
+            
+            option.innerHTML = size;
+            document.getElementById('product-select').appendChild(option);
+        }
+            
+            document.getElementById('product-select').addEventListener('change', (event) => {
+                const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
+                if (sizesIndex == 0){
+                    document.getElementById('product-price').textContent = '45kr';
+                }
+                else if (sizesIndex >= 0){
+                    document.getElementById('product-price').textContent = '60kr';
+                }
+                else {
+                    document.getElementById('product-price').textContent = '45kr'; 
+                }
+            });
+            
+            document.getElementById('product-price').textContent = '45kr'; 
+    })
+    .catch(error => console.error("Error fetching poster:", error));
+    
 }
 
 function removeFromCart(posterId, size) {
