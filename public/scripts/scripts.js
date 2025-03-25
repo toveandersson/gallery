@@ -217,11 +217,9 @@ function moveChild() {
     }
 }
 function displayUserPurchaseInformation() {
-    console.log("in success real");
     document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("session_id");
-    console.log("Session ID:", sessionId);
     if (sessionId) {
         // Fetch session details from your backend
         fetch(`/stripe/session/${sessionId}`)
@@ -252,9 +250,14 @@ function detectEmailService(email) {
         console.error('No email provided');
         return 'Unknown';  // Or handle it however you need to
     }
-    console.log("type of email: ",typeof(email));
-    const domain = toString(email.split('@')[1]);
-    console.log("domain: ",domain);
+    const parts = email.split('@');
+    if (parts.length < 2) {
+        console.error("Invalid email format:", email);
+        return 'Unknown';
+    }
+
+    const domain = parts[1].trim(); // Get the domain part
+    console.log("Domain:", domain);
     
 
     if (domain === 'gmail.com') {
