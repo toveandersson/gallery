@@ -228,7 +228,8 @@ function displayUserPurchaseInformation() {
             .then(response => response.json())
             .then(data => {
                 if (data.customer_email) {
-                    const link = detectEmailService(data.costumer_email);
+                    console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
+                    const link = detectEmailService(data.customer_email);
                     if (link !== 'Unknown'){
                         document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
                     }
@@ -244,10 +245,14 @@ function displayUserPurchaseInformation() {
     }
 }
 function detectEmailService(email) {
-    // Extract the domain from the email
-    const domain = email.split('@')[1];
+    if (!email) {
+        console.error('No email provided');
+        return 'Unknown';  // Or handle it however you need to
+    }
 
-    // Check which email provider it matches
+    const domain = toString(email.split('@')[1]);
+    
+
     if (domain === 'gmail.com') {
         return 'https://mail.google.com';
     } else if (domain === 'outlook.com' || domain === 'hotmail.com') {
@@ -260,6 +265,7 @@ function detectEmailService(email) {
         return 'Unknown';
     }
 }
+
 
 
 
