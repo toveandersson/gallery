@@ -38,6 +38,7 @@ const moon2= document.getElementById("moon-m");
 //         console.log("Session ID:", sessionId);
 // }
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("saaved scroll pos: ",localStorage.getItem("scrollPosition"))
     if(document.body.dataset.page === 'success'){
         displayUserPurchaseInformation();
         updateStock();
@@ -55,6 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.body.dataset.page === 'product'){
         console.log("productpage");
         showProductInfo();
+    }
+    else if (document.body.dataset.page !== 'posters'){
+        localStorage.setItem("scrollPosition", null);
+        console.log("resetting scroll pos");
     }
     if (document.body.dataset.page !== 'posters'){
         console.log("return, on ",document.body.dataset.page);
@@ -79,18 +84,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 image.setAttribute('id', 'image');
                 image.src = poster.image;
 
-                // Create an invisible overlay
-                const overlay = document.createElement('div');
-                overlay.setAttribute('class', 'image-overlay');
-
                 const imageLink = document.createElement('a');
+                imageLink.setAttribute('onclick', 'saveScrollPosition();');
                 imageLink.href = `/posters/${poster.id}`;
+
                 //link.setAttribute('class', 'poster-link');
 
                 // Create a link to wrap the image
                 const link = document.createElement('a');
+                link.setAttribute('onclick', 'saveScrollPosition();');
                 link.href = `/posters/${poster.id}`;
                 link.setAttribute('class', 'poster-link');
+                
 
                 const poster_flex = document.createElement('div');
                 poster_flex.setAttribute('class', 'poster-flex')
@@ -103,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 add.setAttribute('type', 'button');
                 add.setAttribute('class', 'fa-plus poster-flex-child add-button');
                 add.setAttribute('id', 'add-button-id');
-                add.setAttribute('onclick', 'addToCart(this.id)');
+                add.setAttribute('onclick', 'addToCart(this.id);');
                 
                 const inner_flex = document.createElement('div');
                 inner_flex.setAttribute('class', 'inner-flex');
@@ -116,10 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectSizes.setAttribute('class', 'product-select');
                 selectSizes.setAttribute('id', `s${poster.id}`);
                 selectSizes.style = "background-color: var(--h2-text-color);";
-
                 
                 const sizes = poster.sizes; // Extract sizes
-
                 selectSizes.innerHTML = ""; // Clear previous options
 
                 if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
@@ -153,8 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         price_text.textContent = posterPrices[0] + 'kr'; // Default to the first price if not found
                     }
                 });
-                
-
                 selectSizes.dispatchEvent(new Event('change'));
                 
                 if (!selectSizes.value) {
@@ -162,16 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     selectSizes.style.width = '30%';
                     selectSizes.style.marginLeft = '0rem';
                 }
-
-                //add sizes to it
-
+                
                 add.id = poster.id;
                 title.innerText = poster.name;
                 imgBg.style.backgroundColor = "#fdf8e5";
 
                 imgBg.appendChild(imageLink);
                 imageLink.appendChild(image); // Wrap the image in the link
-                imgBg.appendChild(overlay); // Add the overlay over the image
                 imgBg.appendChild(add);
                 div_card.appendChild(imgBg);
                 div_card.appendChild(poster_flex);
@@ -184,11 +182,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 posterGrid.appendChild(div_card);
             });
             
+            scrollToSavedPos();
             window.addEventListener('resize', moveChild);
             moveChild(); // Run once on page load
         })
         .catch(error => console.error('Error fetching posters:', error));
 });
+function saveScrollPosition() {
+    localStorage.setItem("scrollPosition", window.scrollY);
+    console.log("Saved position:", localStorage.getItem("scrollPosition"));
+}
+
+function scrollToSavedPos(){
+    const savedScrollPosition = localStorage.getItem("scrollPosition");
+    console.log("Scrolling to:", savedScrollPosition);
+    
+    if (savedScrollPosition !== null) {
+        window.scrollTo(0, Number(savedScrollPosition)); // Ensure it's a number
+    }
+}
 
 function moveChild() {
     const children = document.getElementsByClassName('inner-flex');
@@ -216,7 +228,14 @@ function displayUserPurchaseInformation() {
             .then(response => response.json())
             .then(data => {
                 if (data.customer_email) {
-                    document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="mailto:${data.customer_email}">${data.customer_email}</a></strong></p>`;
+                    const link = detectEmailService(data.costumer_email);
+                    if (link !== 'Unknown'){
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
+                    }
+                    else {
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
+                    }
+
                 } else {
                     console.error("No email found in session data.");
                 }
@@ -224,6 +243,26 @@ function displayUserPurchaseInformation() {
             .catch(error => console.error("Error fetching session details:", error));
     }
 }
+function detectEmailService(email) {
+    // Extract the domain from the email
+    const domain = email.split('@')[1];
+
+    // Check which email provider it matches
+    if (domain === 'gmail.com') {
+        return 'https://mail.google.com';
+    } else if (domain === 'outlook.com' || domain === 'hotmail.com') {
+        return 'https://outlook.live.com';
+    } else if (domain === 'yahoo.com') {
+        return 'https://mail.yahoo.com';
+    } else if (domain === 'icloud.com') {
+        return 'https://www.icloud.com/mail';
+    } else {
+        return 'Unknown';
+    }
+}
+
+
+
 function addCheckoutButton(){
     
     // Dynamic country and currency select setup
