@@ -1,418 +1,9 @@
-//let { posters } = require('./scripts/postersData');
-//import posters from './scripts/postersData.js';
-//import posters from './scripts/postersData.js';
-// const express = require('express')
-// const app = express()
-class CartItem {
-    constructor(id, name, price, size, images = [], quantity = 1) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.size = size;
-        this.images = images;
-        this.quantity = quantity;
-    }
-}
-let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)) || [];
-//showSwish();
-
-localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-const shippingPrices = [18, 38];
-const posterPrices = [45, 55];
-const freeShippingMin = 120;
-console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
-
+// ----------- STYLE AND APPEREANCE ----------------- //
 let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
 const button = document.getElementById('changeColorBtn');
-
 const body = document.body;
-const sun= document.getElementById("sun");
-const moon= document.getElementById("moon");
-const sun2= document.getElementById("sun-m");
-const moon2= document.getElementById("moon-m");
-// if(document.body.dataset.page === "success"){
-//     console.log("in success");
-//         document.getElementsByClassName('purchase-info-text').innerText = "I've sent a mail to [insert mail]";
-//         const urlParams = new URLSearchParams(window.location.search);
-//         const sessionId = urlParams.get("session_id");
-//         console.log("Session ID:", sessionId);
-// }
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("saaved scroll pos: ",localStorage.getItem("scrollPosition"))
-    if(document.body.dataset.page === 'success'){
-        displayUserPurchaseInformation();
-        updateStock();
-        clearCart();
-        return;
-    }
-    setNightMode();
-    getShoppingCart();
-    if (document.body.dataset.page === 'order'){
-        console.log("order: go to add cart");
-        addCartItems();
-        document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
-        addCheckoutButton();
-    }
-    if (document.body.dataset.page === 'product'){
-        console.log("productpage");
-        showProductInfo();
-    }
-    else if (document.body.dataset.page !== 'posters'){
-        localStorage.setItem("scrollPosition", null);
-        console.log("resetting scroll pos");
-    }
-    if (document.body.dataset.page !== 'posters'){
-        console.log("return, on ",document.body.dataset.page);
-        return;
-    }
-    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-    fetch('/getAllPosters')
-        .then(response => response.json())
-        .then(postersData => {
-            postersData.forEach((poster) => {
-                if (poster.available === false){ return; }
-                
-                const imgBg = document.createElement('div');
-                imgBg.setAttribute('class', 'imgBg');
-
-                const div_card = document.createElement('div');
-                div_card.setAttribute('class', 'poster-child');
-
-                // Create the image element
-                const image = document.createElement('img');
-                image.setAttribute('class', 'thumbnail');
-                image.setAttribute('id', 'image');
-                image.src = poster.image;
-
-                const imageLink = document.createElement('a');
-                imageLink.setAttribute('onclick', 'saveScrollPosition();');
-                imageLink.href = `/posters/${poster.id}`;
-
-                //link.setAttribute('class', 'poster-link');
-
-                // Create a link to wrap the image
-                const link = document.createElement('a');
-                link.setAttribute('onclick', 'saveScrollPosition();');
-                link.href = `/posters/${poster.id}`;
-                link.setAttribute('class', 'poster-link');
-                
-
-                const poster_flex = document.createElement('div');
-                poster_flex.setAttribute('class', 'poster-flex')
-
-                const title = document.createElement('h3');
-                title.setAttribute('id', 'title');
-                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
-
-                const add = document.createElement('button');
-                add.setAttribute('type', 'button');
-                add.setAttribute('id', 'add-button-id');
-                add.setAttribute('onclick', 'addToCart(this.id);');
-                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
-                add.style.margin = "0rem";
-                add.style.padding = ".8rem";
-                
-                const inner_flex = document.createElement('div');
-                inner_flex.setAttribute('class', 'inner-flex');
-                
-                const middle_flex = document.createElement('div');
-                middle_flex.setAttribute('class', 'middle-flex');
-
-                const price_text = document.createElement('h2');
-                price_text.style = 'margin: 0rem;';
-
-                const selectSizes = document.createElement('select');
-                selectSizes.setAttribute('type', 'select');
-                selectSizes.setAttribute('class', 'product-select');
-                selectSizes.setAttribute('id', `s${poster.id}`);
-                selectSizes.style = "background-color: var(--h2-text-color);";
-                
-                const sizes = poster.sizes; // Extract sizes
-                selectSizes.innerHTML = ""; // Clear previous options
-
-                const option = document.createElement("option");
-                option.value = "";
-                option.disabled = true;
-                option.selected = true;
-                option.style.color = "black";
-                option.textContent = "Sizes";
-
-                const hr = document.createElement("hr");
-
-                selectSizes.appendChild(option);
-                selectSizes.appendChild(hr);
-
-                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-                    for (const [size, quantity] of Object.entries(sizes)) {
-                        console.log(`Size: ${size}, Quantity: ${quantity}`);
-                
-                        // Create a new <option> element for each size
-                        const option = document.createElement('option');
-                        option.setAttribute('value', size);
-                        option.textContent = `${size}`;
-                
-                        // Disable the option if the quantity is 0 or less
-                        if (quantity <= 0) {
-                            option.setAttribute('disabled', true);
-                        }
-                
-                        // Append the option to the <select> dropdown
-                        selectSizes.appendChild(option);
-                    }
-                }
-
-                selectSizes.addEventListener('change', (event) => {
-                    const selectedSize = event.target.value;
-                    if (!sizes){return;}
-                    const sizesKeys = Object.keys(sizes);
-                    const sizesIndex = sizesKeys.indexOf(selectedSize);
-                
-                    if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
-                        price_text.textContent = posterPrices[sizesIndex] + 'kr';
-                    } else {
-                        price_text.textContent = posterPrices[0] + 'kr'; // Default to the first price if not found
-                    }
-                });
-                selectSizes.dispatchEvent(new Event('change'));
-                const options = selectSizes.options;
-                if ([...options].every(option => option.disabled)){
-                    price_text.textContent = 'out';
-                    price_text.style = "x-small";
-                    price_text.style.marginBottom = "0rem";
-                    price_text.style.marginTop = "0rem";
-                    price_text.style.fontSize = "2rem";
-                    selectSizes.style.marginLeft = '0rem';
-                }
-                selectSizes.style.width = '80%';
-                
-                add.id = poster.id;
-                title.innerText = poster.name;
-                imgBg.style.backgroundColor = "#fdf8e5";
-
-                imgBg.appendChild(imageLink);
-                imageLink.appendChild(image); // Wrap the image in the link
-                //imgBg.appendChild(add);
-                div_card.appendChild(imgBg);
-                div_card.appendChild(poster_flex);
-                poster_flex.appendChild(link);
-                link.appendChild(title);
-                inner_flex.appendChild(price_text);
-                inner_flex.appendChild(selectSizes);
-                middle_flex.appendChild(inner_flex);
-                poster_flex.appendChild(middle_flex);
-                middle_flex.appendChild(add);
-
-                posterGrid.appendChild(div_card);
-            });
-            
-            scrollToSavedPos();
-            window.addEventListener('resize', moveChild);
-            moveChild(); // Run once on page load
-        })
-        .catch(error => console.error('Error fetching posters:', error));
-});
-function saveScrollPosition() {
-    localStorage.setItem("scrollPosition", window.scrollY);
-    console.log("Saved position:", localStorage.getItem("scrollPosition"));
-}
-
-function scrollToSavedPos(){
-    const savedScrollPosition = localStorage.getItem("scrollPosition");
-    console.log("Scrolling to:", savedScrollPosition);
-    
-    if (savedScrollPosition !== null) {
-        window.scrollTo(0, Number(savedScrollPosition)); // Ensure it's a number
-    }
-}
-
-function moveChild() {
-    const children = document.getElementsByClassName('inner-flex');
-    const desktopParents = document.getElementsByClassName('poster-flex');
-    const mobileParents = document.getElementsByClassName('poster-child');
-
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (window.innerWidth <= 768) {
-            if (mobileParents[i]) mobileParents[i].appendChild(child); // Move to mobile parent
-        } else {
-            if (desktopParents[i]) desktopParents[i].appendChild(child); // Move to desktop parent
-        }
-    }
-}
-function displayUserPurchaseInformation() {
-    document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("session_id");
-    if (sessionId) {
-        // Fetch session details from your backend
-        fetch(`/stripe/session/${sessionId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.customer_email) {
-                    console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
-                    console.log(typeof(data.customer_email));
-                    const link = detectEmailService(data.customer_email);
-                    if (link !== 'Unknown'){
-                        console.log(link);
-                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
-                    }
-                    else {
-                        console.log(link);
-                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
-                    }
-
-                } else {
-                    console.error("No email found in session data.");
-                }
-            })
-            .catch(error => console.error("Error fetching session details:", error));
-    }
-}
-function detectEmailService(email) {
-    if (!email) {
-        console.error('No email provided');
-        return 'Unknown';  // Or handle it however you need to
-    }
-    const parts = email.split('@');
-    if (parts.length < 2) {
-        console.error("Invalid email format:", email);
-        return 'Unknown';
-    }
-
-    const domain = parts[1].trim(); // Get the domain part
-    console.log("Domain:", domain);
-    
-
-    if (domain === 'gmail.com') {
-        console.log("email: ",domain);
-        return 'https://mail.google.com';
-    } else if (domain === 'outlook.com' || domain === 'hotmail.com') {
-        console.log("email: ",domain);
-        return 'https://outlook.live.com';
-    } else if (domain === 'yahoo.com') {
-        console.log("email: ",domain);
-        return 'https://mail.yahoo.com';
-    } else if (domain === 'icloud.com') {
-        console.log("email: ",domain);
-        return 'https://www.icloud.com/mail';
-    } else {
-        console.log("email: ",domain);
-        return 'Unknown';
-    }
-}
-
-
-
-
-function addCheckoutButton(){
-    
-    // Dynamic country and currency select setup
-    const countryToCurrencyMap = {
-        'SE': 'sek', 'FR': 'eur', 'DE': 'eur', 'IT': 'eur', 'ES': 'eur',
-        'NL': 'eur', 'BE': 'eur', 'DK': 'dkk', 'FI': 'eur', 'NO': 'nok',
-        'PL': 'pln', 'AT': 'eur', 'IE': 'eur', 'PT': 'eur', 'GR': 'eur',
-        'LU': 'eur', 'CZ': 'czk', 'SK': 'eur', 'SI': 'eur',
-        'LT': 'eur', 'LV': 'eur', 'EE': 'eur', 'BG': 'bgn', 'RO': 'ron',
-        'HR': 'eur', 'CY': 'eur', 'MT': 'eur'
-    };
-    
-    const countrySelect = document.getElementById("country-select");
-    const currencySelect = document.getElementById("currency-select");
-    countrySelect.addEventListener('change', function() {
-        const selectedCountry = countrySelect.value;
-        const selectedCurrency = countryToCurrencyMap[selectedCountry];
-        currencySelect.value = selectedCurrency; // Update the currency select based on country
-    });
-    
-    // Initialize the currency select when the page loads
-    function initializeCurrencySelect() {
-        const defaultCountry = 'SE'; // Default country or fetched country code
-        const defaultCurrency = countryToCurrencyMap[defaultCountry];
-        countrySelect.value = defaultCountry; // Set default country
-        currencySelect.value = defaultCurrency; // Set default currency
-    }
-
-    async function checkStockBeforeCheckout(buyingSizesAmount) {
-        const response = await fetch("/check-stock", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ buyingSizesAmount })
-        });
-    
-        const result = await response.json();
-        if (!result.success) {
-            console.log("stock: ", false);
-            alert(result.message);
-            return false;
-        }
-        
-        return true; // Stock is fine
-    }
-
-    document.getElementById("checkout-button").addEventListener("click", async (event) => {
-        event.preventDefault(); // Prevent default form submission
-        const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-        const buyingSizesAmount = shoppingCart.map(item => ({
-            id: item.id,
-            size: item.size,
-            quantity: item.quantity
-        }));
-        const stock = await checkStockBeforeCheckout(buyingSizesAmount);
-        console.log("stock: ", stock);
-        if (!stock){ 
-            return;}
-        const amount_shipping = calculatePrices();
-        const country = countrySelect.value;
-        const currency = currencySelect.value;
-        document.documentElement.setAttribute('lang', country);
-        console.log('lang: ',document.documentElement.getAttribute('lang'));
-        //return; 
-        if (shoppingCart.length === 0) {
-            alert("Your cart is empty!");
-            return;
-        }
-
-        console.log({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency});
-        if (country !== 'SE'){
-            amount_shipping = shippingPrices[1];
-        }
-        const response = await fetch("/create-checkout-session", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency}),
-        });
-    
-        const data = await response.json();
-        if (data.url) {
-            window.location.href = data.url; // Redirect to Stripe checkout
-        } else {
-            console.error("Error creating checkout session:", data.error);
-        }
-    });
-    initializeCurrencySelect();
-}
-
-async function updateStock(){
-    const posterSizes = shoppingCart.map(item => ({
-        id: item.id,
-        sizes: { [item.size]: item.quantity } 
-    }));
-    console.log('postersizes for updating stock: ',posterSizes);
-    const response = await fetch("/update-stock", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ posterSizes }),
-    });
-
-    
-}
-
-// Run on page load and when window resizes
-window.addEventListener('resize', moveChild);
+const sun= document.getElementById("sun"); const moon= document.getElementById("moon");
+const sun2= document.getElementById("sun-m"); const moon2= document.getElementById("moon-m");
 
 function on() {
     // display overlay
@@ -488,15 +79,198 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-async function addToCart(posterId) {
-    const selectedSize = document.getElementById(`s${posterId}`)?.value;
-    if (!selectedSize) {
-        alert("Please select a size before adding to cart!");
+function saveScrollPosition() {
+    localStorage.setItem("scrollPosition", window.scrollY);
+    console.log("Saved position:", localStorage.getItem("scrollPosition"));
+}
+function scrollToSavedPos(){
+    const savedScrollPosition = localStorage.getItem("scrollPosition");
+    console.log("Scrolling to:", savedScrollPosition);
+    
+    if (savedScrollPosition !== null) {  window.scrollTo(0, Number(savedScrollPosition));} // Ensure it's a number  
+}
+function moveChild() {
+    const children = document.getElementsByClassName('inner-flex');
+    const desktopParents = document.getElementsByClassName('poster-flex');
+    const mobileParents = document.getElementsByClassName('poster-child');
+    
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (window.innerWidth <= 768) {
+            if (mobileParents[i]) mobileParents[i].appendChild(child); // Move to mobile parent
+        } else {
+            if (desktopParents[i]) desktopParents[i].appendChild(child); // Move to desktop parent
+        }
+    }
+}
+window.addEventListener('resize', moveChild); 
+// -------------- ^ STYLE AND APPEREANCE ^ --------------- //
+
+class CartItem {
+    constructor(id, name, price, size, images = [], quantity = 1, itemType = "poster") {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.size = size;
+        this.images = images;
+        this.quantity = quantity;
+        this.itemType = itemType;
+    }
+}
+
+let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)) || [];
+localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+const shippingPrices = [18, 38];
+const posterPrices = [45, 55];
+const freeShippingMin = 120;
+console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
+
+document.addEventListener("DOMContentLoaded", () => {
+    if(body.dataset.page === 'success'){
+        displayUserPurchaseInformation();
+        updateStock();
+        clearCart();
         return;
     }
+    setNightMode();
+    if (body.dataset.page === 'order'){
+        addCartItems();
+        document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
+        addCheckoutButton();
+    }
+    if (body.dataset.page === 'product'){
+        showProductInfo();
+    }
+    else if (body.dataset.page !== 'posters'){
+        localStorage.setItem("scrollPosition", null);
+    }
+    if (body.dataset.page !== 'posters'){
+        return;
+    }
+    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
+    fetch('/getAllPosters')
+        .then(response => response.json())
+        .then(postersData => {
+            postersData.forEach((poster) => {
+                if (poster.available === false){ return; }
+                
+                const imgBg = document.createElement('div');
+                imgBg.setAttribute('class', 'imgBg');
 
+                const div_card = document.createElement('div');
+                div_card.setAttribute('class', 'poster-child');
+
+                const image = document.createElement('img');
+                image.setAttribute('class', 'thumbnail');
+                image.setAttribute('id', 'image'); 
+                image.src = poster.image;
+
+                const imageLink = document.createElement('a');
+                imageLink.setAttribute('onclick', 'saveScrollPosition();');
+                imageLink.href = `/posters/${poster._id}`;
+
+                const link = document.createElement('a');
+                link.setAttribute('onclick', 'saveScrollPosition();');
+                link.href = `/posters/${poster._id}`;
+                link.setAttribute('class', 'poster-link');
+
+                const poster_flex = document.createElement('div');
+                poster_flex.setAttribute('class', 'poster-flex')
+
+                const title = document.createElement('h3');
+                title.setAttribute('id', 'title');
+                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
+                //console.log("-id ",poster._id);
+
+                const add = document.createElement('button');
+                add.setAttribute('type', 'button');
+                add.setAttribute('id', 'add-button-id');
+                add.setAttribute('onclick', `addToCart('${poster._id}');`);
+
+                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
+                add.style.margin = "0rem";
+                add.style.padding = ".8rem";
+                
+                const inner_flex = document.createElement('div');
+                inner_flex.setAttribute('class', 'inner-flex');
+                
+                const middle_flex = document.createElement('div');
+                middle_flex.setAttribute('class', 'middle-flex');
+
+                const price_text = document.createElement('h2');
+                price_text.style = 'margin: 0rem;';
+
+                const emailContainer = document.createElement('div');
+                emailContainer.setAttribute('id', 'formContainer');
+                //emailContainer.style="width: 80%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
+
+                const selectSizes = document.createElement('select');
+                selectSizes.setAttribute('type', 'select');
+                selectSizes.setAttribute('class', 'product-select');
+                selectSizes.setAttribute('id', `${poster._id}`);
+                selectSizes.style = "background-color: var(--h2-text-color);";
+                
+                const sizes = poster.sizes; 
+                selectSizes.innerHTML = ""; 
+
+                const sizesTitleOption = document.createElement("option");
+                sizesTitleOption.value = "";
+                sizesTitleOption.disabled = true;
+                sizesTitleOption.setAttribute('data-disabled', true);
+                sizesTitleOption.selected = false;
+                sizesTitleOption.style.color = "black";
+                sizesTitleOption.textContent = "Sizes";
+
+                const hr = document.createElement("hr");
+
+                selectSizes.appendChild(sizesTitleOption);
+                selectSizes.appendChild(hr);
+
+                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
+                    //console.log(sizes);
+                    buildSelectSize(selectSizes, sizes, price_text);
+                    selectSizes.dispatchEvent(new Event('change'));
+                    //console.log("sizes: ",poster.sizes);
+                }
+                
+                //console.log("check it: ",selectSizes, selectSizes.options, price_text);
+                
+                add.id = poster.id;
+                title.innerText = poster.name;
+                imgBg.style.backgroundColor = "#fdf8e5";
+                
+                imgBg.appendChild(imageLink);
+                imageLink.appendChild(image); // Wrap the image in the link
+                //imgBg.appendChild(add);
+                div_card.appendChild(imgBg);
+                div_card.appendChild(poster_flex);
+                poster_flex.appendChild(link);
+                link.appendChild(title);
+                inner_flex.appendChild(price_text);
+                inner_flex.appendChild(selectSizes);
+                poster_flex.appendChild(middle_flex);
+                middle_flex.appendChild(emailContainer);
+                middle_flex.appendChild(add);
+                middle_flex.appendChild(inner_flex);
+                
+                posterGrid.appendChild(div_card);
+                checkIfOut(selectSizes, selectSizes.options, price_text);
+            });
+            
+            scrollToSavedPos();
+            window.addEventListener('resize', moveChild);
+            moveChild(); // Run once on page load
+        })
+        .catch(error => console.error('Error fetching posters:', error));
+});
+
+async function addToCart(posterId) {
+    console.log("poster.id ",posterId);
+    const selectedSize = document.getElementById(`${posterId}`)?.value;
+    if (!selectedSize) {
+        alert("Please select a size before adding to cart!");
+        return; }
     try {
-        // Fetch the poster data first
         const response = await fetch(`/getPosterWithId/${posterId}`);
         const data = await response.json();
 
@@ -527,21 +301,23 @@ async function addToCart(posterId) {
             alert(`The last ${stockData.quantity-1} item${s} in stock of ${stockData.name} in size ${stockData.size} is already in your cart 😬`);
             return;
         }
-
+        console.log("sel ind: ",document.getElementById(`${posterId}`).selectedIndex -1);
         // Add to cart logic
         if (foundItem) {
             foundItem.quantity++; // Increase quantity if already in cart
         } else {
             let newItem = new CartItem(
                 posterId, 
-                data.name, 
-                posterPrices[document.getElementById(`s${posterId}`).selectedIndex], 
+                data.name,
+                posterPrices[document.getElementById(`${posterId}`).selectedIndex -1], 
+                //posterPrices[document.getElementById(`s${posterId}`).selectedIndex], 
                 selectedSize, 
                 imagesArray
             );
             shoppingCart.push(newItem);
             console.log('New item added: ', newItem);
         }
+        console.log("iddd: ",posterId);
 
         // Save cart to local storage
         localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
@@ -549,18 +325,6 @@ async function addToCart(posterId) {
 
     } catch (error) {
         console.error("Error adding to cart:", error);
-    }
-}
-
-
-function getShoppingCart() {
-    const storedCart = localStorage.getItem("shoppingCart");
-    if (storedCart) {
-        shoppingCart = JSON.parse(storedCart).map(item => 
-            new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)
-        );
-    } else {
-        shoppingCart = [];
     }
 }
 
@@ -578,10 +342,12 @@ function calculatePrices(){
 
     return amount_shipping;
 }
+
 async function checkStock(posterId,selectedSize,testQuantity) {
     const valueInStockResult = await valueInStock(testQuantity); // Assuming valueInStock() is the function you're using
     return valueInStockResult;
 }
+
 async function valueInStock(posterId,selectedSize,testQuantity){
     //console.log(posterId,selectedSize,testQuantity);
     // Check stock before adding to cart
@@ -601,6 +367,139 @@ async function valueInStock(posterId,selectedSize,testQuantity){
     return stockData.success;
 }
 
+function displayUserPurchaseInformation() {
+    document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+    if (sessionId) {
+        // Fetch session details from your backend
+        fetch(`/stripe/session/${sessionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.customer_email) {
+                    console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
+                    console.log(typeof(data.customer_email));
+                    const link = detectEmailService(data.customer_email);
+                    if (link !== 'Unknown'){
+                        console.log(link);
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
+                    }
+                    else {
+                        console.log(link);
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
+                    }
+
+                } else {
+                    console.error("No email found in session data.");
+                }
+            })
+            .catch(error => console.error("Error fetching session details:", error));
+    }
+}
+
+function detectEmailService(email) {
+    if (!email) {
+        console.error('No email provided');
+        return 'Unknown';  // Or handle it however you need to
+    }
+    const parts = email.split('@');
+    const domain = parts[1].trim(); // Get the domain part
+    if (domain === 'gmail.com') {  console.log("email: ",domain); return 'https://mail.google.com';
+    } else if (domain === 'outlook.com' || domain === 'hotmail.com') {  console.log("email: ",domain);  return 'https://outlook.live.com';
+    } else if (domain === 'yahoo.com') { console.log("email: ",domain); return 'https://mail.yahoo.com';
+    } else if (domain === 'icloud.com') { console.log("email: ",domain);  return 'https://www.icloud.com/mail';
+    } else {console.log("email: ",domain);  return 'Unknown';  }
+}
+
+function addCheckoutButton(){
+    // Dynamic country and currency select setup
+    const countryToCurrencyMap = {
+        'SE': 'sek', 'FR': 'eur', 'DE': 'eur', 'IT': 'eur', 'ES': 'eur',
+        'NL': 'eur', 'BE': 'eur', 'DK': 'dkk', 'FI': 'eur', 'NO': 'nok',
+        'PL': 'pln', 'AT': 'eur', 'IE': 'eur', 'PT': 'eur', 'GR': 'eur',
+        'LU': 'eur', 'CZ': 'czk', 'SK': 'eur', 'SI': 'eur',
+        'LT': 'eur', 'LV': 'eur', 'EE': 'eur', 'BG': 'bgn', 'RO': 'ron',
+        'HR': 'eur', 'CY': 'eur', 'MT': 'eur'
+    };
+    
+    const countrySelect = document.getElementById("country-select");
+    const currencySelect = document.getElementById("currency-select");
+    countrySelect.addEventListener('change', function() {
+        const selectedCountry = countrySelect.value;
+        const selectedCurrency = countryToCurrencyMap[selectedCountry];
+        currencySelect.value = selectedCurrency; // Update the currency select based on country
+    });
+    
+    // Initialize the currency select when the page loads
+    function initializeCurrencySelect() {
+        const defaultCountry = 'SE'; // Default country or fetched country code
+        const defaultCurrency = countryToCurrencyMap[defaultCountry];
+        countrySelect.value = defaultCountry; // Set default country
+        currencySelect.value = defaultCurrency; // Set default currency
+    }
+
+    async function checkStockBeforeCheckout(buyingSizesAmount) {
+        const response = await fetch("/check-stock", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ buyingSizesAmount })
+        });
+    
+        const result = await response.json();
+        if (!result.success) {
+            console.log("stock: ", false);
+            alert(result.message);
+            return false;
+        }
+        
+        return true; // Stock is fine
+}
+
+document.getElementById("checkout-button").addEventListener("click", async (event) => {
+    event.preventDefault(); // Prevent default form submission
+    const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+    const buyingSizesAmount = shoppingCart.map(item => ({
+        id: item.id,
+        size: item.size,
+        quantity: item.quantity
+    }));
+    const stock = await checkStockBeforeCheckout(buyingSizesAmount);
+    console.log("stock: ", stock);
+    if (!stock){ 
+        return;}
+    const amount_shipping = calculatePrices();
+    const country = countrySelect.value;
+    const currency = currencySelect.value;
+    document.documentElement.setAttribute('lang', country);
+    console.log('lang: ',document.documentElement.getAttribute('lang'));
+    //return; 
+    if (shoppingCart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    console.log({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency});
+    if (country !== 'SE'){
+        amount_shipping = shippingPrices[1];
+    }
+    const response = await fetch("/create-checkout-session", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency}),
+    });
+
+    const data = await response.json();
+    if (data.url) {
+        window.location.href = data.url; // Redirect to Stripe checkout
+    } else {
+        console.error("Error creating checkout session:", data.error);
+    }
+});
+initializeCurrencySelect();
+}
+
 function addCartItems() {
     console.log("Adding updated list to cart:", shoppingCart);
     calculatePrices();
@@ -609,100 +508,109 @@ function addCartItems() {
     // document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
     // document.getElementById('total-price').innerText = `Total price: ${price + (price > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
     fetch('/getAllPosters')
-        .then(response => response.json())
-        .then(postersData => {
-            shoppingCart.forEach(cartItem => {
-                const itemPoster = postersData.find(poster => Number(poster.id) === Number(cartItem.id));
-                if (!itemPoster) {
-                    console.warn("Poster not found for ID:", cartItem.id);
-                    return;
-                }
-
-                const imgBg = document.createElement('div');
-                imgBg.setAttribute('class', 'imgBg');
-
-                const div_card = document.createElement('div');
-                div_card.setAttribute('class', 'cart-item');
-                div_card.setAttribute('id', itemPoster.id);
-
-                const image = document.createElement('img');
-                image.setAttribute('class', 'thumbnail');
-                image.src = itemPoster.image;
-
-                const poster_flex = document.createElement('div');
-                poster_flex.setAttribute('class', 'order-poster-flex')
-
-                const title = document.createElement('h3');
-                title.innerText = `${itemPoster.name}`;
-                title.style.marginBottom = '0rem';
-
-                const quantityDiv = document.createElement("div");
-                quantityDiv.className = "quantity";
-
-                const quantityInput = document.createElement("input");
-                quantityInput.type = "number";
-                quantityInput.className = "input-box";
-                quantityInput.value = cartItem.quantity;
-                quantityInput.min = "1";
-                quantityInput.max = "10";
-
-                quantityInput.addEventListener("change", (event) => {
-                    cartItem.quantity = Number(event.target.value);
-                    // checkStock(cartItem.id,selectedSize,cartItem.quantity).then((valueInStock) => {
+    .then(response => response.json())
+    .then(postersData => {
+        shoppingCart.forEach(cartItem => {
+            const itemPoster = postersData.find(poster => poster._id === cartItem.id);
+            if (!itemPoster) {
+                console.warn("Poster not found for ID:", cartItem.id);
+                return;
+            }
+            const imgBg = document.createElement('div');
+            imgBg.setAttribute('class', 'imgBg');
+            
+            const div_card = document.createElement('div');
+            div_card.setAttribute('class', 'cart-item');
+            div_card.setAttribute('id', cartItem.id);
+            
+            const image = document.createElement('img');
+            image.setAttribute('class', 'thumbnail');
+            image.src = itemPoster.image;
+            
+            const poster_flex = document.createElement('div');
+            poster_flex.setAttribute('class', 'order-poster-flex');
+            
+            const title = document.createElement('h3');
+            title.innerText = `${itemPoster.name}`;
+            title.style.marginBottom = '0rem';
+            
+            const quantityDiv = document.createElement("div");
+            quantityDiv.className = "quantity";
+            
+            const quantityInput = document.createElement("input");
+            quantityInput.type = "number";
+            quantityInput.className = "input-box";
+            quantityInput.value = cartItem.quantity;
+            quantityInput.min = "1";
+            quantityInput.max = "10";
+            
+            quantityInput.addEventListener("change", (event) => {
+                cartItem.quantity = Number(event.target.value);
+                // checkStock(cartItem.id,selectedSize,cartItem.quantity).then((valueInStock) => {
                     //     console.log('value in stock: ',valueInStock);
                     // if (!valueInStock) {return;}});
-                    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-                    calculatePrices();
-                });
-                
-                const size = document.createElement('h4');
-                size.innerText = cartItem.size;
-                size.style.margin = '0rem';
-                size.style.marginBottom = '1rem';
-                
-                const price = document.createElement('h4');
-                price.innerText = cartItem.price + 'kr';
-                
-                const remove = document.createElement('button');
-                remove.setAttribute('class', 'fa-minus remove-button');
-                remove.setAttribute('onclick', `removeFromCart(${cartItem.id}, '${cartItem.size}')`);
-                
-                imgBg.appendChild(image);
-                div_card.appendChild(imgBg);
-                div_card.appendChild(title);
-                div_card.appendChild(size);
-                div_card.appendChild(poster_flex);
-                quantityDiv.appendChild(quantityInput);
-                poster_flex.appendChild(quantityDiv);
-                poster_flex.appendChild(price);
-                poster_flex.appendChild(remove);
-                itemGrid.appendChild(div_card);
+                localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+                calculatePrices();
             });
-        })
-        .catch(error => console.error('Error fetching posters:', error));
+            
+            const size = document.createElement('h4');
+            size.innerText = cartItem.size;
+            size.style.margin = '0rem';
+            size.style.marginBottom = '1rem';
+            
+            const price = document.createElement('h4');
+            price.innerText = cartItem.price + 'kr';
+            
+            const remove = document.createElement('button');
+            remove.setAttribute('class', 'fa-minus remove-button');
+            remove.setAttribute('onclick', `removeFromCart('${cartItem.id}', '${cartItem.size}')`);
+            
+            imgBg.appendChild(image);
+            div_card.appendChild(imgBg);
+            div_card.appendChild(title);
+            div_card.appendChild(size);
+            div_card.appendChild(poster_flex);
+            quantityDiv.appendChild(quantityInput);
+            poster_flex.appendChild(quantityDiv);
+            poster_flex.appendChild(price);
+            poster_flex.appendChild(remove);
+            itemGrid.appendChild(div_card);
+        });
+    })
+    .catch(error => console.error('Error fetching posters:', error));
 }
 
-// document.getElementById('checkout-form').onsubmit = function() {
-//     const amount = calculateAmount();  // Your function to calculate the amount dynamically
-//     document.getElementById('amount').value = amount;
-// };
-
-function calculateAmount() {
-    //kolla så allt finns först
-    
+async function updateStock(){ 
+    const posterSizes = shoppingCart.map(item => ({
+        id: item.id,
+        sizes: { [item.size]: item.quantity } 
+    }));
+    console.log('postersizes for updating stock: ',posterSizes);
+    const response = await fetch("/update-stock", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ posterSizes }),
+    });  
+    const result = await response.json();
+    if (!result.success) {
+        console.log("update res: ", false);
+        alert(result.message);
+    }
 }
 
-function showProductInfo() {
+function showProductInfo(){
     const urlParams = new URLSearchParams(window.location.search);
     const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
-   
+    
     if (posterData) {
-      document.getElementById('product-img').src = posterData.image;
-      document.getElementById('product-title').textContent = posterData.name;
-      document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
-      document.getElementsByClassName('add-button')[0].id = posterData.id;
+        document.getElementById('product-img').src = posterData.image;
+        document.getElementById('product-title').textContent = posterData.name;
+        document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
+        document.getElementsByClassName('add-button')[0].id = posterData.id;
     }
-    fetch(`/getPosterWithId/${posterData.id}`)
+    fetch(`/getPosterWithId/${posterData._id}`)
     .then(response => response.json())
     .then(selectedPoster => {
         if (!selectedPoster) {
@@ -710,64 +618,145 @@ function showProductInfo() {
             return;
         }
         const sizes = selectedPoster.sizes; // Extract sizes
-        console.log("Sizes:", sizes);
-
-        for (const [size, quantity] of Object.entries(sizes)) {
-            console.log(`Size: ${size}, Quantity: ${quantity}`);
-            const option = document.createElement('option');
-            option.setAttribute('value', size);         
-            // option.setAttributeNS('required', true) ;                                                                                            
-            if (quantity <= 0){
-                option.setAttribute('disabled', true);
-            };
-            // if (firstTime){
-            //     option.selected = true;
-            //     firstTime = false;
-            // }
-            
-            option.innerHTML = size;
-            document.getElementById('product-select').appendChild(option);
-        }
-        document.getElementById('product-select').addEventListener('change', (event) => {
-            const selectedSize = event.target.value;
-            if (!sizes){return;}
-            const sizesKeys = Object.keys(sizes);
-            const sizesIndex = sizesKeys.indexOf(selectedSize);
-            console.log("sel size ",selectedSize);
-            console.log("ind ",sizesIndex);
-            console.log(posterPrices[sizesIndex]);
-            
-        
-            if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
-                document.getElementById('product-price').textContent = posterPrices[sizesIndex] + 'kr';
-            } else {
-                document.getElementById('product-price').textContent = posterPrices[0] + 'kr'; // Default to the first price if not found
+        if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
+            buildSelectSize(document.getElementById('product-select'), sizes, document.getElementById('product-price'));
+            if (checkIfOut(document.getElementById('product-select'), document.getElementById('product-select').options, document.getElementById('product-price'))){
+                createEmailinput(document.getElementById("formContainer"),document.getElementById('product-select'));
+                removeAddButton();
+                buildEmailSelectSize();
             }
-        });
-        document.getElementById('product-select').dispatchEvent(new Event('change'));  
-        // document.getElementById('product-select').addEventListener('change', (event) => {
-        //         const sizesIndex = Object.keys(sizes).indexOf(event.target.value);
-        //         if (sizesIndex == 0){
-        //             document.getElementById('product-price').textContent = '45kr';
-        //         }
-        //         else if (sizesIndex >= 0){
-        //             document.getElementById('product-price').textContent = '60kr';
-        //         }
-        //         else {
-        //             document.getElementById('product-price').textContent = '45kr'; 
-        //         }
-        //     });
-            
-        //     document.getElementById('product-price').textContent = '45kr'; 
-            document.getElementById('product-select').id=`s${selectedPoster.id}`;
+        }
     })
     .catch(error => console.error("Error fetching poster:", error));
+}       
+
+function setOptionsAbled(options){
+    for (const option of Object.entries(options)){
+        option.disabled = "false";
+    }
+}
+function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
+    for (const [size, quantity] of Object.entries(sizesKeysObject)) {
+        //console.log(`Size: ${size}, Quantity: ${quantity}`);
+        const option = document.createElement('option');
+        option.setAttribute('value', size);                                                                                                   
+        if (quantity <= 0){
+            //option.setAttribute('disabled', true);
+            option.setAttribute('data-disabled', true);
+        };
+        option.innerHTML = size;
+        selectObject.appendChild(option);
+    }
+    selectObject.addEventListener('change', (event) => {
+        const selectedSize = event.target.value;
+        const selectedOption = event.target.selectedOptions[0]; // Get the selected <option>
+        const sizesKeys = Object.keys(sizesKeysObject);
+        const sizesIndex = sizesKeys.indexOf(selectedSize);
     
+        if (selectedOption.getAttribute("data-disabled") === "true") {
+            priceTextObject.textContent = "out";
+            priceTextObject.style.fontSize = "2rem";
+            priceTextObject.style.marginBottom = "0rem";
+            priceTextObject.style.marginTop = "0rem";
+        } else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
+            priceTextObject.textContent = posterPrices[sizesIndex] + "kr";
+        } else {
+            priceTextObject.textContent = posterPrices[0] + "kr"; // Default price
+        }
+    });
+    
+    selectObject.dispatchEvent(new Event('change'));
+} 
+
+function buildEmailSelectSize(){
+    //not good, have to also be able if only one is disabled
+}   
+
+function checkIfOut(selectSizes, options, priceTextObj){
+    console.log("checking if");
+    console.log([...options].map(option => option.outerHTML)); // Debug: Check all options
+    if ([...options].every(option =>  option.disabled || option.getAttribute("data-disabled") === "true")) {
+        console.log("All options are unavailable.");
+        priceTextObj.textContent = 'out';
+        priceTextObj.style = "x-small";
+        priceTextObj.style.marginBottom = "0rem";
+        priceTextObj.style.marginTop = "0rem";
+        priceTextObj.style.fontSize = "2rem";
+        selectSizes.style.marginLeft = '0rem';
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function createEmailinput(emailContainer, selectSizes){
+    // Create label
+    const label = document.createElement("label");
+    label.setAttribute("for", "email");
+    label.textContent = "Email me when back in stock:";
+    label.style.marginLeft = "auto";
+
+    // Create span for validation message
+    const emailAlert = document.createElement("span");
+    emailAlert.setAttribute("id", "emailAlert");
+    emailAlert.textContent = "Email is unvalid";
+    emailAlert.style.marginLeft = "auto";
+
+    // Create input field
+    const input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("id", "email");
+    input.setAttribute("name", "email");
+    input.setAttribute("placeholder", "example@gmail.com");
+    input.style.marginLeft = "auto";
+
+    const confirmButton = document.createElement("button");
+    confirmButton.textContent = "Confirm";
+    confirmButton.style.marginLeft = "auto"; 
+    confirmButton.style.marginTop = "1rem"; 
+    confirmButton.style.marginBottom = "1rem"; 
+    confirmButton.style.padding = ".5rem 1rem";
+    confirmButton.style.cursor = "pointer";
+
+    // Append elements to the DOM (for example, inside a form or a div)
+    emailContainer.appendChild(label);   
+    emailContainer.appendChild(emailAlert);
+    emailContainer.appendChild(input);
+    emailContainer.appendChild(confirmButton);
+
+    confirmButton.addEventListener("click", () => {
+        console.log("Email confirmed:", input.value);
+        // if (!selectSizes.value){
+        //     emailAlert.textContent = "Choose a size to add";
+        // }
+        if (validateEmail(input.value, emailAlert)){
+            console.log('database: ', selectSizes.selectedIndex,' ', input.value);
+            console.log(selectSizes.value);
+        }
+    });
+
+    // input.addEventListener("input", (event) => {
+    //     validateEmail(input.value, emailAlert);
+    // });
+}
+
+function removeAddButton(addButton){
+    if (!addButton){
+        document.getElementsByClassName("add-button")[0].remove();
+    }
+    else {
+        addButton.remove();
+    }
 }
 
 function removeFromCart(posterId, size) {
+    console.log("remove id: ",posterId);
     let idCartItems = Array.from(document.getElementsByClassName('cart-item'));
-    let filteredList = idCartItems.filter(item => Number(item.id) === posterId);
+    console.log("Checking IDs in cart items:");
+    idCartItems.forEach(item => console.log("Item ID:", item.id));
+
+    let filteredList = idCartItems.filter(item => item.id === posterId);
     console.log('filtered list: ', filteredList);
     
     if (filteredList.length > 0) {
@@ -781,7 +770,7 @@ function removeFromCart(posterId, size) {
             }
         });
     }
-    const removeCartItem = shoppingCart.find(item => Number(item.id) === Number(posterId) && item.size === size);
+    const removeCartItem = shoppingCart.find(item => item.id === posterId && item.size === size);
     if (removeCartItem){
         shoppingCart.splice(shoppingCart.indexOf(removeCartItem), 1);
     }
@@ -793,6 +782,7 @@ function clearCart() {
     Array.from(document.getElementsByClassName('cart-item')).forEach(item => item.remove());
     shoppingCart = [];
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    if(body.dataset.page === 'success'){return;}
     calculatePrices();
 }
 
@@ -805,27 +795,15 @@ function showSwish() {
     }
 };
 
-//const form = document.querySelector("form");
-// Select elements representing alerts for name, email, and phone
 const nameAlert = document.getElementById("nameAlert");
 const emailAlert = document.getElementById("emailAlert");
 const phoneAlert = document.getElementById("phoneAlert");
-//Add event listener for form submission
-// form.addEventListener("submit", (event) => {
-//     // Prevent the default form submission behavior
-//     event.preventDefault();
-//     showSwish();
-//     // If form validation passes, reset the form
-//     if (validateForm()) {
-//         form.reset();
-//     }
-// });
 // Add event listener for input events within the form
 // form.addEventListener("input", (event) => {
 //     // Retrieve the element that triggered the event
 //     const target = event.target;
 //     // console.log(target);
-    
+
 //     // Check if the event was triggered by the name input field
 //     if (target.id === 'name') {
 //         // console.log(target.id)
@@ -844,7 +822,7 @@ const phoneAlert = document.getElementById("phoneAlert");
 //     }
 // });
 // Function to validate email format using regular expression
-function validateEmail(email) {
+function validateEmail(email, emailAlert) {
     // Regular expression to validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     // Check if the email matches the regex pattern

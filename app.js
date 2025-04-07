@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 const prices = require('./prices.json');
 const postersData = require('./public/scripts/postersData');
 const Poster = require('./models/Poster')
-const { fetchProductImages, checkIfPostersInStock, updatePosterSizes } = require('./utils/dbUtils')
+const { fetchProductImages, checkIfPostersInStock, reducePosterSizes } = require('./utils/dbUtils')
 const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
 const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
 app.use('/', checkoutRoutes); 
@@ -70,29 +70,20 @@ app.post('/check-stock-item', async (req, res) => {
 
 app.post('/update-stock', async (req, res) => {
   const { posterSizes } = req.body;
-  await updatePosterSizes(posterSizes);
+  await reducePosterSizes(posterSizes);
 });
 
 const getAllPosters = async (req, res) => {
   try {
     const posters = await Poster.find();
-    posters.forEach(poster => {
-      console.log("Checking poster:", poster);
-      if (poster.id === undefined) {
-        console.warn("⚠️ Missing 'id' for poster:", poster._id);
-      } else {
-        poster.id = Number(poster.id); // Convert before sorting
-      }
-    });
 
-    const sortedPosters = posters.sort((a, b) => Number(a.id) - Number(b.id)); // Sort safely
+    const sortedPosters = posters.sort((a, b) => a.id - (b.id)); // Sort safely
+    console.log("sortedposters: ",sortedPosters);
     res.status(200).json(sortedPosters);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
 };
-
-
 
 app.post('/check-stock', async (req, res) => {
   try {
@@ -126,7 +117,7 @@ const getPosterWithId = async (req, res) => {
   try {
     const posterId = req.params.id; // Extract the ID from request params
     
-    const poster = await Poster.findOne({ id: posterId }); // Query by your custom id
+    const poster = await Poster.findOne({ _id: posterId }); // Query by your custom id
     if (!poster) {
       return res.status(404).json({ msg: "Poster not found" });
     }
@@ -179,19 +170,6 @@ const removePostersWithIds = async (req, res) => {
 app.get('/getPosterWithId/:id', getPosterWithId);
 app.get('/getAllPosters', getAllPosters);
 
-// const fetchPoster = (fetchId) =>{
-//     return Poster.find({id: fetchId})
-//   }
-//   // INSERTION IN THE DATABASE!
-//   Poster.insertMany(postersData)
-//       .then(() => {
-//             console.log("Data inserted successfully!");
-//       mongoose.connection.close();
-//   })
-//   .catch((err) => console.error(err));
-// app.get('/postersData', (req, res) => {
-//   res.json(postersData);
-// });
 
 // Serve folders as routes
 app.get('/:folderName', (req, res, next) => {
@@ -212,8 +190,9 @@ app.get('/', (req, res, next) => {
 app.get('/posters/:posterID', async (req, res) => {
   try {
     const { posterID } = req.params;
+    console.log("id param for fetching poster ",posterID);
 
-    const singlePoster = await Poster.findOne({ id: Number(posterID) });
+    const singlePoster = await Poster.findOne({ _id: posterID });
 
     if (singlePoster) {
           const queryString = new URLSearchParams(singlePoster.toObject()).toString();
@@ -229,5 +208,19 @@ app.get('/posters/:posterID', async (req, res) => {
                 
                 
 app.get('/create-checkout-session/:amount');
+
+// const fetchPoster = (fetchId) =>{
+//       return Poster.find({id: fetchId})
+//     }
+//     // INSERTION IN THE DATABASE!
+//     Poster.insertMany(postersData)
+//         .then(() => {
+//               console.log("Data inserted successfully!");
+//         mongoose.connection.close();
+//     })
+//     .catch((err) => console.error(err));
+//   app.get('/postersData', (req, res) => {
+//     res.json(postersData);
+//   });
 
 start();

@@ -18,30 +18,40 @@ async function fetchProductImages(lineItems) {
   });
 }
 
+// async function addMailToList(posterId,size){
+//   try{
+//     const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
+//       if (!poster) {
+//           return { success: false, message: `Poster with id ${posterId} not found in the database` };
+//       }
+
+//   }
+// }
+
 async function checkIfPostersInStock(posterId, size, quantity) {
-    try {
-        const poster = await Poster.findOne({ id: posterId }); // Use 'id' instead of '_id'
-        if (!poster) {
-            return { success: false, message: `Poster with id ${posterId} not found in the database` };
-        }
+  try {
+      const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
+      if (!poster) {
+          return { success: false, message: `Poster with id ${posterId} not found in the database` };
+      }
 
-        const availableStock = poster.sizes.get(size) || 0;
-        if (availableStock < quantity) {
-            return { success: false, quantity: quantity, size: size, name: poster.name, message: `There is no longer ${quantity} of poster ${poster.name} with size ${size} in stock`};
-        }
+      const availableStock = poster.sizes.get(size) || 0;
+      if (availableStock < quantity) {
+          return { success: false, quantity: quantity, size: size, name: poster.name, message: `There is no longer ${quantity} of poster ${poster.name} with size ${size} in stock`};
+      }
 
-        return { success: true }; // Stock is fine
+      return { success: true }; // Stock is fine
     } catch (error) {
         console.error("Error checking poster stock:", error);
         return { success: false, message: "Error checking stock" };
     }
 }
 
-async function updatePosterSizes(postersToUpdate) {
+async function reducePosterSizes(postersToUpdate) {
   try {
       const bulkOperations = postersToUpdate.map(({ id, sizes }) => ({
           updateOne: {
-              filter: { id: id }, // Ensure you're using the correct ID field
+              filter: { _id: id }, // Ensure you're using the correct ID field
               update: {
                   $inc: Object.fromEntries(
                       Object.entries(sizes).map(([size, quantity]) => [`sizes.${size}`, -quantity]) // Reduce stock
@@ -66,4 +76,5 @@ async function updatePosterSizes(postersToUpdate) {
 
 
 
-module.exports = { fetchProductImages: fetchProductImages, updatePosterSizes, checkIfPostersInStock };
+
+module.exports = { fetchProductImages, reducePosterSizes, checkIfPostersInStock };
