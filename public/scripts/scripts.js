@@ -683,7 +683,8 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
-            formContainer.style.display = 'block';
+            if (body.dataset.page === 'product'){ formContainer.style.display = 'flex'; }
+            else {formContainer.style.display = 'block';}
             if (formContainer && formContainer.children.length === 0){
                 console.log("inside");
                 createEmailInput(formContainer,selectObject);
