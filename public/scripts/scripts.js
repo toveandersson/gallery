@@ -443,6 +443,7 @@ function addCheckoutButton(){
     }
 
     async function checkStockBeforeCheckout(buyingSizesAmount) {
+        console.log('buying sizes: am',buyingSizesAmount);
         const response = await fetch("/check-stock", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -487,6 +488,7 @@ document.getElementById("checkout-button").addEventListener("click", async (even
     if (country !== 'SE'){
         amount_shipping = shippingPrices[1];
     }
+    return;
     const response = await fetch("/create-checkout-session", {
         method: "POST",
         headers: {
@@ -765,6 +767,7 @@ function createEmailInput(emailContainer, selectSizes){
     confirmButton.style.marginLeft = 'auto';
     confirmButton.style.borderRadius= '.5rem';
     confirmButton.style.backgroundColor= 'var(--h1-color)';
+    confirmButton.style.textDecoration= 'none';
 
     const addedToListAlert = document.createElement("span");
     addedToListAlert.setAttribute("id", "addedToListAlert");

@@ -112,31 +112,31 @@ h2 {
 
 @media(max-width: 967px){
     html {
-        font-size: 100%;
+        font-size: 100%!important;
     }
 }
 
 @media(max-width: 768px){
     html {
-        font-size: 70%;
+        font-size: 70%!important;
     } 
 }
 
 @media(max-width: 568px){
     html {
-        font-size: 50%;
+        font-size: 50%!important;
     }
 }
 
 @media(max-width: 380px){
     html {
-        font-size: 40%;
+        font-size: 40% !important;
     }
 }
 
 @media(max-width: 340px){
     html {
-        font-size: 30%;
+        font-size: 30%!important;
     }
 }
 

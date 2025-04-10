@@ -30,6 +30,7 @@ async function fetchProductImages(lineItems) {
 
 async function checkIfPostersInStock(posterId, size, quantity) {
   try {
+    console.log('poster id:: - ',posterId);
       const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
       if (!poster) {
           return { success: false, message: `Poster with id ${posterId} not found in the database` };
