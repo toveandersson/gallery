@@ -615,7 +615,7 @@ function showProductInfo(){
         document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
         document.getElementsByClassName('add-button')[0].id = posterData._id;
         document.getElementsByClassName('product-select')[0].id = posterData._id;
-        formContainer.id = 'form',posterData._id;
+        formContainer.id = 'form'+posterData._id;
     }
     fetch(`/getPosterWithId/${posterData._id}`)
     .then(response => response.json())
