@@ -3,6 +3,7 @@ const router = express.Router();
 const controllers = require('../controllers/generalControllers');
 
 router.post('/update-stock', controllers.updateStock);
+router.get('/update-stock', controllers.updateStock);
 router.post('/check-stock-item', controllers.checkStockItem);
 router.post('/check-stock', controllers.checkStock);
 router.get('/posters/:posterID', controllers.getPoster);
