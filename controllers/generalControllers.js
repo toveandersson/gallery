@@ -43,6 +43,30 @@ const checkStockItem = async (req, res) => {
     }
 };
 
+const getPosterWithId = async (req, res) => {
+  try {
+    const posterId = req.params.id; // Extract the ID from request params
+    
+    const poster = await Poster.findOne({ _id: posterId }); // Query by your custom id
+    if (!poster) {
+      return res.status(404).json({ msg: "Poster not found" });
+    }
+    
+    // console.log("Sending email for poster:", posterId, poster.name);
+    
+    
+    // await sendMail(
+      //   process.env.MONGO_USER,
+      //   "Poster Accessed",
+      //   `Someone accessed the poster: ${poster.name} (ID: ${posterId})`
+      // );
+      
+      res.status(200).json(poster);
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+};
+
 const checkStock = async (req, res) => {
     try {
         const { buyingSizesAmount } = req.body; // Expecting an array of objects
@@ -122,5 +146,6 @@ module.exports = {
     checkStock,
     getPoster,
     getAllPosters,
+    getPosterWithId
 };
   

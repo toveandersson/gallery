@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const emailContainer = document.createElement('div');
                 emailContainer.setAttribute('class', 'formContainer');
-                emailContainer.setAttribute('id', `${poster._id}`);
+                emailContainer.setAttribute('id', `form${poster._id}`);
                 emailContainer.style="background-color: var(--main-bg-color-rgba); padding: 1rem; position: absolute; bottom: 0rem;";
                 //emailContainer.style="width: 100%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
 
@@ -255,8 +255,11 @@ function w(string){
 
 async function addToCart(posterId) {
     console.log("poster.id ",posterId);
+    console.log("hej");
     const selectElement = document.getElementById(`${posterId}`);
+    console.log(selectElement);
     const selectedSize = selectElement?.value;
+    console.log(selectedSize);
     if (!selectedSize) {
         w("no size");
         alert("Please select a size before adding to cart!");
@@ -277,7 +280,6 @@ async function addToCart(posterId) {
 
         const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
         const imagesArray = [data.image];
-        console.log("img array: ", imagesArray);
 
         let testQuantity = foundItem ? foundItem.quantity + 1 : 1;
         console.log('this is before adding to cart ',posterId,selectedSize,testQuantity);
@@ -470,12 +472,12 @@ document.getElementById("checkout-button").addEventListener("click", async (even
     console.log("stock: ", stock);
     if (!stock){ 
         return;}
-    const amount_shipping = calculatePrices();
+    let amount_shipping = calculatePrices();
     const country = countrySelect.value;
     const currency = currencySelect.value;
     document.documentElement.setAttribute('lang', country);
     console.log('lang: ',document.documentElement.getAttribute('lang'));
-    //return; 
+
     if (shoppingCart.length === 0) {
         alert("Your cart is empty!");
         return;
@@ -613,7 +615,7 @@ function showProductInfo(){
         document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
         document.getElementsByClassName('add-button')[0].id = posterData._id;
         document.getElementsByClassName('product-select')[0].id = posterData._id;
-        formContainer.id = posterData._id;
+        formContainer.id = 'form',posterData._id;
     }
     fetch(`/getPosterWithId/${posterData._id}`)
     .then(response => response.json())
@@ -626,7 +628,6 @@ function showProductInfo(){
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
             const selectSizes = document.getElementsByClassName('product-select')[0];
             buildSelectSize(selectSizes, sizes, document.getElementById('product-price'));
-            formContainer.style.display = 'flex';
         }
         else (w("error: sizes doesnt exist or isnt an object etc"));
     })
@@ -675,12 +676,15 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         const sizesIndex = sizesKeys.indexOf(selectedSize);
 
         const formContainers = document.getElementsByClassName("formContainer");
-        const formContainer = Array.from(formContainers).find(el => el.id === selectObject.id);
+        const formContainer = Array.from(formContainers).find(el => el.id === 'form'+selectObject.id);
+        formContainer.style.display = 'none';
+        console.log("event change");
         
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
-            console.log(formContainer);
+            formContainer.style.display = 'block';
             if (formContainer && formContainer.children.length === 0){
+                console.log("inside");
                 createEmailInput(formContainer,selectObject);
                 removeAddButton();
             }
@@ -716,6 +720,7 @@ function checkIfOut(selectSizes, options, priceTextObj){
 }
 
 function removeEmailInput(emailContainer) {
+    console.log("removing");
     emailContainer.style.display = 'none';
     const children = Array.from(emailContainer.children); // Make it a static copy
     if (!children){return;}
@@ -769,7 +774,10 @@ function createEmailInput(emailContainer, selectSizes){
     emailContainer.appendChild(confirmButton);
     emailContainer.appendChild(emailAlert);
     emailContainer.appendChild(addedToListAlert);
-    emailContainer.style.display = 'block';
+    if (body.dataset.page === 'product'){
+        emailContainer.style.display = 'flex';
+    }   
+    else{emailContainer.style.display = 'block';}
 
     confirmButton.addEventListener("click", () => {
         console.log("Email confirmed:", input.value);
