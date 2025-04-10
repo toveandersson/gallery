@@ -51,7 +51,7 @@ async function reducePosterSizes(postersToUpdate) {
   try {
       const bulkOperations = postersToUpdate.map(({ id, sizes }) => ({
           updateOne: {
-              filter: { _id: new ObjectId(id) }, // Ensure you're using the correct ID field
+              filter: { _id: id }, // Ensure you're using the correct ID field
               update: {
                   $inc: Object.fromEntries(
                       Object.entries(sizes).map(([size, quantity]) => [`sizes.${size}`, -quantity]) // Reduce stock
