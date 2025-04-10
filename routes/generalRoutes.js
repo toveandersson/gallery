@@ -9,6 +9,7 @@ router.post('/check-stock', controllers.checkStock);
 router.get('/posters/:posterID', controllers.getPoster);
 router.get('/getAllPosters', controllers.getAllPosters);
 router.get('/getPosterWithId/:id', controllers.getPosterWithId);
+app.get('/', controllers.serveHome);
 router.get('/:folderName', (req, res, next) => {
   if (req.params.folderName.includes('.')) return next(); // let static handler deal with it
   controllers.serveFolders(req, res, next);

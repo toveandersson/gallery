@@ -2,6 +2,13 @@ const path = require('path');
 const dbUtils = require('../utils/dbUtils');
 const Poster = require('../models/Poster')
 
+const serveHome = (req, res, next) => {   
+    const filePath = path.join(__dirname, 'public', 'home', `index.html`);
+    res.sendFile(filePath, (err) => {
+      if (err) next(); // Continue to 404 handler if not found
+    });
+}; 
+
 const serveFolders = (req, res, next) => {
     const folderName = req.params.folderName;
     const filePath = path.join(__dirname, '../public', folderName, `${folderName}.html`);
@@ -13,8 +20,7 @@ const serveFolders = (req, res, next) => {
         }
     });
 };
-
-
+ 
 const updateStock = async (req, res) => {
     try {
         const { posterSizes } = req.body;
@@ -146,6 +152,7 @@ module.exports = {
     checkStock,
     getPoster,
     getAllPosters,
-    getPosterWithId
+    getPosterWithId,
+    serveHome
 };
   
