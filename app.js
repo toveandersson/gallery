@@ -35,6 +35,13 @@ const start = async () =>{
   }
 }
 
+app.get('/', (req, res, next) => {   
+  const filePath = path.join(__dirname, 'public', 'home', `index.html`);
+  res.sendFile(filePath, (err) => {
+    if (err) next(); // Continue to 404 handler if not found
+  });
+});
+
 // dont know with this?
 //app.get('/create-checkout-session/:amount');
 
