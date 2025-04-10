@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 const sendMail = async (to, subject, text, html) => {
   const mailOptions = {
-    from: process.env.MAIL_SENDER_PASSWORD,
+    from: process.env.MAIL_SENDER_ADRESS,
     to: to,
     subject: subject,
     text: text,  // Fallback plain text
@@ -23,7 +23,7 @@ const sendMail = async (to, subject, text, html) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
+    console.log("Email sent successfully TO", to);
   } catch (error) {
     console.error("Error sending email:", error);
   }

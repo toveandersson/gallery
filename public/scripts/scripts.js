@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(postersData => {
             postersData.forEach((poster) => {
                 if (poster.available === false){ return; }
+                console.log("Poster ID:", poster._id); // Make sure this logs the real Mongo ID
                 
                 const imgBg = document.createElement('div');
                 imgBg.setAttribute('class', 'imgBg');
@@ -201,8 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 price_text.style = 'margin: 0rem;';
 
                 const emailContainer = document.createElement('div');
-                emailContainer.setAttribute('id', 'formContainer');
-                //emailContainer.style="width: 80%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
+                emailContainer.setAttribute('class', 'formContainer');
+                emailContainer.setAttribute('id', `${poster._id}`);
+                emailContainer.style="background-color: var(--main-bg-color-rgba); padding: 1rem; position: absolute; bottom: 0rem;";
+                //emailContainer.style="width: 100%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
 
                 const selectSizes = document.createElement('select');
                 selectSizes.setAttribute('type', 'select');
@@ -213,28 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const sizes = poster.sizes; 
                 selectSizes.innerHTML = ""; 
 
-                const sizesTitleOption = document.createElement("option");
-                sizesTitleOption.value = "";
-                sizesTitleOption.disabled = true;
-                sizesTitleOption.setAttribute('data-disabled', true);
-                sizesTitleOption.selected = false;
-                sizesTitleOption.style.color = "black";
-                sizesTitleOption.textContent = "Sizes";
-
-                const hr = document.createElement("hr");
-
-                selectSizes.appendChild(sizesTitleOption);
-                selectSizes.appendChild(hr);
-
-                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-                    //console.log(sizes);
-                    buildSelectSize(selectSizes, sizes, price_text);
-                    selectSizes.dispatchEvent(new Event('change'));
-                    //console.log("sizes: ",poster.sizes);
-                }
-                
-                //console.log("check it: ",selectSizes, selectSizes.options, price_text);
-                
                 add.id = poster.id;
                 title.innerText = poster.name;
                 imgBg.style.backgroundColor = "#fdf8e5";
@@ -249,11 +230,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 inner_flex.appendChild(price_text);
                 inner_flex.appendChild(selectSizes);
                 poster_flex.appendChild(middle_flex);
-                middle_flex.appendChild(emailContainer);
+                imgBg.appendChild(emailContainer);
                 middle_flex.appendChild(add);
                 middle_flex.appendChild(inner_flex);
                 
                 posterGrid.appendChild(div_card);
+
+                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
+                    buildSelectSize(selectSizes, sizes, price_text);
+                }
                 checkIfOut(selectSizes, selectSizes.options, price_text);
             });
             
@@ -264,12 +249,28 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error('Error fetching posters:', error));
 });
 
+function w(string){
+    console.log(string);
+}
+
 async function addToCart(posterId) {
     console.log("poster.id ",posterId);
-    const selectedSize = document.getElementById(`${posterId}`)?.value;
+    const selectElement = document.getElementById(`${posterId}`);
+    const selectedSize = selectElement?.value;
     if (!selectedSize) {
+        w("no size");
         alert("Please select a size before adding to cart!");
-        return; }
+        return; 
+    }
+    w(selectedSize);
+
+    const selectedOption = selectElement?.selectedOptions[0]; 
+    if (selectedOption && selectedOption.getAttribute("data-disabled") === "true") {
+        w("no stock");
+        alert("This size is currently out of stock. Please choose another.");
+        return; 
+    }
+
     try {
         const response = await fetch(`/getPosterWithId/${posterId}`);
         const data = await response.json();
@@ -279,7 +280,7 @@ async function addToCart(posterId) {
         console.log("img array: ", imagesArray);
 
         let testQuantity = foundItem ? foundItem.quantity + 1 : 1;
-        console.log(posterId,selectedSize,testQuantity);
+        console.log('this is before adding to cart ',posterId,selectedSize,testQuantity);
         // Check stock before adding to cart
         const stockResponse = await fetch('/check-stock-item', {
             method: 'POST',
@@ -351,6 +352,7 @@ async function checkStock(posterId,selectedSize,testQuantity) {
 async function valueInStock(posterId,selectedSize,testQuantity){
     //console.log(posterId,selectedSize,testQuantity);
     // Check stock before adding to cart
+    console.log("look at this id: ",id,'size ', selectedSize,'testquantity ',testQuantity);
     const stockResponse = await fetch('/check-stock-item', {
         method: 'POST',
         headers: {
@@ -463,6 +465,7 @@ document.getElementById("checkout-button").addEventListener("click", async (even
         size: item.size,
         quantity: item.quantity
     }));
+    console.log("sizes amount: ", buyingSizesAmount);
     const stock = await checkStockBeforeCheckout(buyingSizesAmount);
     console.log("stock: ", stock);
     if (!stock){ 
@@ -603,12 +606,14 @@ async function updateStock(){
 function showProductInfo(){
     const urlParams = new URLSearchParams(window.location.search);
     const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
-    
+    const formContainer = document.getElementsByClassName('formContainer')[0];
     if (posterData) {
         document.getElementById('product-img').src = posterData.image;
         document.getElementById('product-title').textContent = posterData.name;
         document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
-        document.getElementsByClassName('add-button')[0].id = posterData.id;
+        document.getElementsByClassName('add-button')[0].id = posterData._id;
+        document.getElementsByClassName('product-select')[0].id = posterData._id;
+        formContainer.id = posterData._id;
     }
     fetch(`/getPosterWithId/${posterData._id}`)
     .then(response => response.json())
@@ -619,69 +624,89 @@ function showProductInfo(){
         }
         const sizes = selectedPoster.sizes; // Extract sizes
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-            buildSelectSize(document.getElementById('product-select'), sizes, document.getElementById('product-price'));
-            if (checkIfOut(document.getElementById('product-select'), document.getElementById('product-select').options, document.getElementById('product-price'))){
-                createEmailinput(document.getElementById("formContainer"),document.getElementById('product-select'));
-                removeAddButton();
-                buildEmailSelectSize();
-            }
+            const selectSizes = document.getElementsByClassName('product-select')[0];
+            buildSelectSize(selectSizes, sizes, document.getElementById('product-price'));
+            formContainer.style.display = 'flex';
         }
+        else (w("error: sizes doesnt exist or isnt an object etc"));
     })
     .catch(error => console.error("Error fetching poster:", error));
-}       
-
+}
 function setOptionsAbled(options){
     for (const option of Object.entries(options)){
         option.disabled = "false";
     }
 }
 function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
+    const sizesTitleOption = document.createElement("option");
+    sizesTitleOption.value = "";
+    sizesTitleOption.disabled = true;
+    sizesTitleOption.setAttribute('data-disabled', true);
+    sizesTitleOption.selected = false;
+    sizesTitleOption.style.color = "black";
+    sizesTitleOption.textContent = "Sizes";
+    selectObject.appendChild(sizesTitleOption);
+
+    const hr = document.createElement("hr");
+    selectObject.appendChild(hr);
+
+    let hasInStock = false;
     for (const [size, quantity] of Object.entries(sizesKeysObject)) {
-        //console.log(`Size: ${size}, Quantity: ${quantity}`);
+        console.log(`Size: ${size}, Quantity: ${quantity}`);
         const option = document.createElement('option');
         option.setAttribute('value', size);                                                                                                   
         if (quantity <= 0){
-            //option.setAttribute('disabled', true);
             option.setAttribute('data-disabled', true);
-        };
+            //option.selected = false;
+        }
+        else if (!hasInStock) {
+            option.selected = true; // Set the first available as selected
+            hasInStock = true;
+        }
+        
         option.innerHTML = size;
         selectObject.appendChild(option);
     }
+
     selectObject.addEventListener('change', (event) => {
         const selectedSize = event.target.value;
         const selectedOption = event.target.selectedOptions[0]; // Get the selected <option>
         const sizesKeys = Object.keys(sizesKeysObject);
         const sizesIndex = sizesKeys.indexOf(selectedSize);
-    
+
+        const formContainers = document.getElementsByClassName("formContainer");
+        const formContainer = Array.from(formContainers).find(el => el.id === selectObject.id);
+        
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
-            priceTextObject.style.fontSize = "2rem";
-            priceTextObject.style.marginBottom = "0rem";
-            priceTextObject.style.marginTop = "0rem";
+            console.log(formContainer);
+            if (formContainer && formContainer.children.length === 0){
+                createEmailInput(formContainer,selectObject);
+                removeAddButton();
+            }
         } else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
             priceTextObject.textContent = posterPrices[sizesIndex] + "kr";
+            showAddButton();
+            removeEmailInput(formContainer);
         } else {
             priceTextObject.textContent = posterPrices[0] + "kr"; // Default price
+            showAddButton();
+            removeEmailInput(formContainer);
         }
     });
-    
     selectObject.dispatchEvent(new Event('change'));
 } 
 
-function buildEmailSelectSize(){
-    //not good, have to also be able if only one is disabled
-}   
-
 function checkIfOut(selectSizes, options, priceTextObj){
-    console.log("checking if");
-    console.log([...options].map(option => option.outerHTML)); // Debug: Check all options
+    // console.log("checking if");
+    // console.log([...options].map(option => option.outerHTML)); // Debug: Check all options
     if ([...options].every(option =>  option.disabled || option.getAttribute("data-disabled") === "true")) {
         console.log("All options are unavailable.");
         priceTextObj.textContent = 'out';
         priceTextObj.style = "x-small";
-        priceTextObj.style.marginBottom = "0rem";
+        priceTextObj.style.marginBottom = "0rem"; 
         priceTextObj.style.marginTop = "0rem";
-        priceTextObj.style.fontSize = "2rem";
+        //priceTextObj.style.fontSize = "2rem";
         selectSizes.style.marginLeft = '0rem';
         return true;
     }
@@ -690,7 +715,17 @@ function checkIfOut(selectSizes, options, priceTextObj){
     }
 }
 
-function createEmailinput(emailContainer, selectSizes){
+function removeEmailInput(emailContainer) {
+    emailContainer.style.display = 'none';
+    const children = Array.from(emailContainer.children); // Make it a static copy
+    if (!children){return;}
+    for (const child of children) {
+      console.log(child.tagName); // or w() if that's your debug function
+      child.remove();
+    }
+  }
+  
+function createEmailInput(emailContainer, selectSizes){
     // Create label
     const label = document.createElement("label");
     label.setAttribute("for", "email");
@@ -709,6 +744,7 @@ function createEmailinput(emailContainer, selectSizes){
     input.setAttribute("id", "email");
     input.setAttribute("name", "email");
     input.setAttribute("placeholder", "example@gmail.com");
+    input.style.margin = ".5rem";
     input.style.marginLeft = "auto";
 
     const confirmButton = document.createElement("button");
@@ -718,12 +754,22 @@ function createEmailinput(emailContainer, selectSizes){
     confirmButton.style.marginBottom = "1rem"; 
     confirmButton.style.padding = ".5rem 1rem";
     confirmButton.style.cursor = "pointer";
+    confirmButton.style.margin = ".5rem";
+    confirmButton.style.marginLeft = 'auto';
+    confirmButton.style.borderRadius= '.5rem';
+    confirmButton.style.backgroundColor= 'var(--h1-color)';
+
+    const addedToListAlert = document.createElement("span");
+    addedToListAlert.setAttribute("id", "addedToListAlert");
+    addedToListAlert.style.marginLeft = "auto";
 
     // Append elements to the DOM (for example, inside a form or a div)
     emailContainer.appendChild(label);   
-    emailContainer.appendChild(emailAlert);
     emailContainer.appendChild(input);
     emailContainer.appendChild(confirmButton);
+    emailContainer.appendChild(emailAlert);
+    emailContainer.appendChild(addedToListAlert);
+    emailContainer.style.display = 'block';
 
     confirmButton.addEventListener("click", () => {
         console.log("Email confirmed:", input.value);
@@ -733,20 +779,33 @@ function createEmailinput(emailContainer, selectSizes){
         if (validateEmail(input.value, emailAlert)){
             console.log('database: ', selectSizes.selectedIndex,' ', input.value);
             console.log(selectSizes.value);
+            addedToListAlert.textContent = `I'll send a mail to ${input.value} when back in stock!`;
+            addedToListAlert.style.display = 'block';
         }
     });
 
-    // input.addEventListener("input", (event) => {
-    //     validateEmail(input.value, emailAlert);
-    // });
+    input.addEventListener("input", (event) => {
+        //validateEmail(input.value, emailAlert);
+        addedToListAlert.style.display = 'none';
+        emailAlert.style.display = 'none';
+    });
 }
 
 function removeAddButton(addButton){
     if (!addButton){
-        document.getElementsByClassName("add-button")[0].remove();
+        document.getElementsByClassName("add-button")[0].style.display = 'none';
     }
     else {
-        addButton.remove();
+        addButton.style.display = 'none';
+    }
+}
+
+function showAddButton(addButton){
+    if (!addButton){
+        document.getElementsByClassName("add-button")[0].style.display = 'block';
+    }
+    else {
+        addButton.style.display = 'block';
     }
 }
 

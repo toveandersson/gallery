@@ -6,6 +6,15 @@ const sendMail = require("./mailer"); // Import the mailer function
 const axios = require('axios');
 require('dotenv').config();
 
+app.use(express.static('./public'));
+// ❌ Disable JSON parsing for webhooks (needed for Stripe), OBS! above any other parsing ex json
+app.use('/webhook', express.raw({ type: 'application/json' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+const router = require('./routes/generalRoutes');
+const errorHandler = require('./middleware/errorHandler');
+
 const STRIPE_KEY = process.env.STRIPE_URI;
 if (!STRIPE_KEY) {
   console.error("Stripe API key is missing!");
@@ -15,23 +24,19 @@ const stripe = require('stripe')(STRIPE_KEY);
 // const lineItems = await stripe.checkout.sessions.listLineItems(
   //   'cs_test_a1enSAC01IA3Ps2vL32mNoWKMCNmmfUGTeEeHXI5tLCvyFNGsdG2UNA7mr'
   // );
-app.use(express.static('./public'))
-
-// ❌ Disable JSON parsing for webhooks (needed for Stripe)
-app.use('/webhook', express.raw({ type: 'application/json' }));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-
-const prices = require('./prices.json');
-const postersData = require('./public/scripts/postersData');
-const Poster = require('./models/Poster')
-const { fetchProductImages, checkIfPostersInStock, reducePosterSizes } = require('./utils/dbUtils')
-const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
-const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
-app.use('/', checkoutRoutes); 
-app.use('/', webhookRoutes); 
+  
+  const prices = require('./prices.json');
+  const postersData = require('./public/scripts/postersData');
+  const Poster = require('./models/Poster')
+  const { fetchProductImages, checkIfPostersInStock, reducePosterSizes } = require('./utils/dbUtils')
+  
+  const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
+  const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
+  app.use(checkoutRoutes); 
+  app.use(webhookRoutes); 
+  app.use(router);
+  //error handler last, catch errors after all routes and middlewares
+  app.use(errorHandler);
 
 //   const apiRoutes = require('./routes/api'); // Example for your other routes
 //   app.use('/api', apiRoutes);
@@ -50,68 +55,69 @@ const start = async () =>{
     console.log(error)
   }
 }
-app.post('/check-stock-item', async (req, res) => {
-  try {
-    const { id, size, quantity } = req.body;
+// // // app.post('/check-stock-item', async (req, res) => {
+// // //   try {
+// // //     const { id, size, quantity } = req.body;
     
-    if (!id || !size || !quantity) {
-      return res.status(400).json({ success: false, message: "Invalid request: Missing parameters." });
-    }
+// // //     if (!id || !size || !quantity) {
+// // //       return res.status(400).json({ success: false, message: "Invalid request: Missing parameters." });
+// // //     }
     
-    const result = await checkIfPostersInStock(id, size, quantity);
+// // //     const result = await checkIfPostersInStock(id, size, quantity);
     
-    return res.json(result); // Return the result to the frontend
+// // //     return res.json(result); // Return the result to the frontend
     
-  } catch (error) {
-    console.error("Error checking stock:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
+// // //   } catch (error) {
+// // //     console.error("Error checking stock:", error);
+// // //     res.status(500).json({ success: false, message: "Internal Server Error" });
+// // //   }
+// // // });
 
-app.post('/update-stock', async (req, res) => {
-  const { posterSizes } = req.body;
-  await reducePosterSizes(posterSizes);
-});
+// // // app.post('/update-stock', async (req, res) => {
+// // //   const { posterSizes } = req.body;
+// // //   await reducePosterSizes(posterSizes);
+// // // });
 
-const getAllPosters = async (req, res) => {
-  try {
-    const posters = await Poster.find();
 
-    const sortedPosters = posters.sort((a, b) => a.id - (b.id)); // Sort safely
-    console.log("sortedposters: ",sortedPosters);
-    res.status(200).json(sortedPosters);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
+// // // const getAllPosters = async (req, res) => {
+// // //   try {
+// // //     const posters = await Poster.find();
 
-app.post('/check-stock', async (req, res) => {
-  try {
-      const { buyingSizesAmount } = req.body; // Expecting an array of objects
-      console.log("buying sizes gotten: ",buyingSizesAmount)
-      if (!buyingSizesAmount || !Array.isArray(buyingSizesAmount)) {
-          return res.status(400).json({ success: false, message: "Invalid request format" });
-      }
+// // //     const sortedPosters = posters.sort((a, b) => a.id - (b.id)); // Sort safely
+// // //     console.log("sortedposters: ",sortedPosters);
+// // //     res.status(200).json(sortedPosters);
+// // //   } catch (error) {
+// // //     res.status(500).json({ msg: error.message });
+// // //   }
+// // // };
 
-      const insufficientStock = [];
+// // // app.post('/check-stock', async (req, res) => {
+// // //   try {
+// // //       const { buyingSizesAmount } = req.body; // Expecting an array of objects
+// // //       console.log("buying sizes gotten: ",buyingSizesAmount)
+// // //       if (!buyingSizesAmount || !Array.isArray(buyingSizesAmount)) {
+// // //           return res.status(400).json({ success: false, message: "Invalid request format" });
+// // //       }
 
-      for (const item of buyingSizesAmount) {
-          const result = await checkIfPostersInStock(item.id, item.size, item.quantity);
-          if (!result.success) {
-              insufficientStock.push(`${result.quantity} of ${result.name} with size ${result.size}`);
-          }
-      }
+// // //       const insufficientStock = [];
 
-      if (insufficientStock.length > 0) {
-          return res.json({ success: false, message: `There is no longer ${insufficientStock.join("or ")} in stock 😭` });
-      }
+// // //       for (const item of buyingSizesAmount) {
+// // //           const result = await checkIfPostersInStock(item.id, item.size, item.quantity);
+// // //           if (!result.success) {
+// // //               insufficientStock.push(`${result.quantity} of ${result.name} with size ${result.size}`);
+// // //           }
+// // //       }
 
-      res.json({ success: true }); // Everything is in stock
-  } catch (error) {
-      console.error("Error checking stock:", error);
-      res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-});
+// // //       if (insufficientStock.length > 0) {
+// // //           return res.json({ success: false, message: `There is no longer ${insufficientStock.join("or ")} in stock 😭` });
+// // //       }
+
+// // //       res.json({ success: true }); // Everything is in stock
+// // //   } catch (error) {
+// // //       console.error("Error checking stock:", error);
+// // //       res.status(500).json({ success: false, message: "Internal Server Error" });
+// // //   }
+// // // });
 
 const getPosterWithId = async (req, res) => {
   try {
@@ -168,43 +174,43 @@ const removePostersWithIds = async (req, res) => {
       // );
       // Add this route in your Express setup:
 app.get('/getPosterWithId/:id', getPosterWithId);
-app.get('/getAllPosters', getAllPosters);
+// // // app.get('/getAllPosters', getAllPosters);
 
 
 // Serve folders as routes
-app.get('/:folderName', (req, res, next) => {
-  const folderName = req.params.folderName;
-  const filePath = path.join(__dirname, 'public', folderName, `${folderName}.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) next(); // Continue to 404 handler if not found
-  });
-});
+// // // app.get('/:folderName', (req, res, next) => {
+// // //   const folderName = req.params.folderName;
+// // //   const filePath = path.join(__dirname, 'public', folderName, `${folderName}.html`);
+// // //   res.sendFile(filePath, (err) => {
+// // //     if (err) next(); // Continue to 404 handler if not found
+// // //   });
+// // // });
 
-app.get('/', (req, res, next) => {
-  const filePath = path.join(__dirname, 'public', 'home', `index.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) next(); // Continue to 404 handler if not found
-  });
-});
+// app.get('/', (req, res, next) => {   ??????????????????????????? should it be here?
+//   const filePath = path.join(__dirname, 'public', 'home', `index.html`);
+//   res.sendFile(filePath, (err) => {
+//     if (err) next(); // Continue to 404 handler if not found
+//   });
+// });
       
-app.get('/posters/:posterID', async (req, res) => {
-  try {
-    const { posterID } = req.params;
-    console.log("id param for fetching poster ",posterID);
+// // // app.get('/posters/:posterID', async (req, res) => {
+// // //   try {
+// // //     const { posterID } = req.params;
+// // //     console.log("id param for fetching poster ",posterID);
 
-    const singlePoster = await Poster.findOne({ _id: posterID });
+// // //     const singlePoster = await Poster.findOne({ _id: posterID });
 
-    if (singlePoster) {
-          const queryString = new URLSearchParams(singlePoster.toObject()).toString();
-          res.redirect(`/product/product.html?${queryString}`);
-    } else {
-          res.status(404).send('Poster not found');
-      }
-    } catch (error) {
-      console.error("❌ Error fetching poster:", error);
-      res.status(500).send("Internal Server Error");
-  }
-});
+// // //     if (singlePoster) {
+// // //           const queryString = new URLSearchParams(singlePoster.toObject()).toString();
+// // //           res.redirect(`/product/product.html?${queryString}`);
+// // //     } else {
+// // //           res.status(404).send('Poster not found');
+// // //       }
+// // //     } catch (error) {
+// // //       console.error("❌ Error fetching poster:", error);
+// // //       res.status(500).send("Internal Server Error");
+// // //   }
+// // // });
                 
                 
 app.get('/create-checkout-session/:amount');
