@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const sizes = poster.sizes; 
                 selectSizes.innerHTML = ""; 
 
-                add.id = poster.id;
+                add.id = 'btn'+poster._id;
                 title.innerText = poster.name;
                 imgBg.style.backgroundColor = "#fdf8e5";
                 
@@ -678,6 +678,7 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         const formContainers = document.getElementsByClassName("formContainer");
         const formContainer = Array.from(formContainers).find(el => el.id === 'form'+selectObject.id);
         formContainer.style.display = 'none';
+        removeAddButton(document.getElementById('btn'+selectObject.id));
         console.log("event change");
         
         if (selectedOption.getAttribute("data-disabled") === "true") {
@@ -686,15 +687,15 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
             if (formContainer && formContainer.children.length === 0){
                 console.log("inside");
                 createEmailInput(formContainer,selectObject);
-                removeAddButton();
+                removeAddButton(document.getElementById('btn'+selectObject.id));
             }
         } else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
             priceTextObject.textContent = posterPrices[sizesIndex] + "kr";
-            showAddButton();
+            showAddButton(document.getElementById('btn'+selectObject.id));
             removeEmailInput(formContainer);
         } else {
             priceTextObject.textContent = posterPrices[0] + "kr"; // Default price
-            showAddButton();
+            showAddButton(document.getElementById('btn'+selectObject.id));
             removeEmailInput(formContainer);
         }
     });
