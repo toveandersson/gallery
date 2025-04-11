@@ -488,7 +488,6 @@ document.getElementById("checkout-button").addEventListener("click", async (even
     if (country !== 'SE'){
         amount_shipping = shippingPrices[1];
     }
-    return;
     const response = await fetch("/create-checkout-session", {
         method: "POST",
         headers: {
