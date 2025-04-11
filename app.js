@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
+const controllers = require('./controllers/generalControllers');
+app.get('/', controllers.serveHome);
 app.use(express.static('./public'));
 // ❌ Disable JSON parsing for webhooks (needed for Stripe), OBS! above any other parsing ex json
 app.use('/webhook', express.raw({ type: 'application/json' }));

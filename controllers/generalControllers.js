@@ -3,7 +3,7 @@ const dbUtils = require('../utils/dbUtils');
 const Poster = require('../models/Poster')
 
 const serveHome = (req, res, next) => {   
-    const filePath = path.join(__dirname, 'public', 'home', `index.html`);
+    const filePath = path.join(__dirname, '../public', '/home', `/index.html`);
     res.sendFile(filePath, (err) => {
       if (err) next(); // Continue to 404 handler if not found
     });
