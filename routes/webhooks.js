@@ -16,6 +16,21 @@ const stripe = require('stripe')(STRIPE_KEY);
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+const currencySymbolMap = {
+  'sek': 'kr',
+  'eur': '€',
+  'dkk': 'kr',
+  'nok': 'kr',
+  'pln': 'zł',
+  'czk': 'Kč',
+  'bgn': 'лв',
+  'ron': 'lei'
+};
+
+const getCurrencySymbol = (currency) => {
+  return currencySymbolMap[currency] || '';
+};
+
 router.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
   console.log('in webhook!');
   //console.log('✅ Webhook request received:', request.headers);
@@ -77,7 +92,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (request,
 
           // Format purchased items for HTML email
           const purchasedItemsHTML = `<div style="display: flex; flex-wrap: wrap; gap: .2rem;"> ${purchasedItemsWithImages
-            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <small>${item.quantity}</small> <strong>${item.name}</strong> <small>${item.price+item.currency} </small></div>`)
+            .map(item => `<div style="text-align: center;"><img src="${encodeURI(item.image)}" alt="${item.name}" width="200"><br> <small>${item.quantity}</small> <strong>${item.name}</strong> <small>${item.price+getCurrencySymbol(item.currency)} </small></div>`)
             .join("")} </div>`;
 
           // ✅ Combine email messages into one function call
