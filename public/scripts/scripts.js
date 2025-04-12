@@ -187,16 +187,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 add.setAttribute('type', 'button');
                 add.setAttribute('id', 'add-button-id');
                 add.setAttribute('onclick', `addToCart('${poster._id}');`);
-
                 add.setAttribute('class', 'fa-plus poster-flex-child add-button');
                 add.style.margin = "0rem";
-                add.style.padding = ".8rem";
+                add.style.padding = ".9rem";
+
                 
                 const inner_flex = document.createElement('div');
                 inner_flex.setAttribute('class', 'inner-flex');
                 
-                const middle_flex = document.createElement('div');
-                middle_flex.setAttribute('class', 'middle-flex');
+                // const middle_flex = document.createElement('div');
+                // middle_flex.setAttribute('class', 'middle-flex');
 
                 const price_text = document.createElement('h2');
                 price_text.style = 'margin: 0rem;';
@@ -229,12 +229,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.appendChild(title);
                 inner_flex.appendChild(price_text);
                 inner_flex.appendChild(selectSizes);
-                poster_flex.appendChild(middle_flex);
+                poster_flex.appendChild(inner_flex);
+                poster_flex.appendChild(add);
                 imgBg.appendChild(emailContainer);
-                middle_flex.appendChild(add);
-                middle_flex.appendChild(inner_flex);
+                // middle_flex.appendChild(add);
+                // middle_flex.appendChild(inner_flex);
                 
                 posterGrid.appendChild(div_card);
+                inner_flex.style.order = 1;
+add.style.order = 2;
+
+//add.style.marginLeft = 'auto';
+inner_flex.style.marginLeft = 'auto';
+                inner_flex.classList.add('add-button');
 
                 if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
                     buildSelectSize(selectSizes, sizes, price_text);

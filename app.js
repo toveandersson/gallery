@@ -40,6 +40,7 @@ const start = async () =>{
 //app.get('/create-checkout-session/:amount');
 
 // function i dont know how it works, adds to poster
+const addSizesToData = 
 //const postersData = require('./public/scripts/postersData');
 //const Poster = require('./models/Poster')
 //
@@ -53,8 +54,11 @@ const start = async () =>{
 //         mongoose.connection.close();
 //     })
 //     .catch((err) => console.error(err));
+
 //   app.get('/postersData', (req, res) => {
 //     res.json(postersData);
 //   });
 
 start();
+const dbUtils = require('./utils/dbUtils');
+//dbUtils.fixSizeNames();

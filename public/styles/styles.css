@@ -490,7 +490,7 @@ h2 {
 }
 .poster-flex {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: .5rem;
     position: relative;
@@ -528,7 +528,7 @@ h2 {
 /* denna används, oklart om andra två add gör det? */
 .add-button {
     padding: 1rem;
-    font-weight: 1000;
+    font-weight: 100;
     cursor: pointer;
     position: static;
     top: 0;
@@ -544,7 +544,7 @@ h2 {
 /* poster child, add button relative */
 
 .fa-minus, .fa-plus {
-    font-size: 1rem;
+    font-size: 2rem;
     text-decoration: none;
 }
 

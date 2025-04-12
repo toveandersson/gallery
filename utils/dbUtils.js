@@ -18,6 +18,40 @@ async function fetchProductImages(lineItems) {
   });
 }
 
+const updateSizes = async () => {
+  try {
+    const posters = await Poster.find();
+
+    for (let poster of posters) {
+      if (poster.sizes && poster.sizes.size > 0) {
+        // If sizes exist: overwrite values with 3 and 1 (based on existing keys)
+        const newSizes = new Map();
+        const sizeKeys = Array.from(poster.sizes.keys());
+
+        if (sizeKeys.length > 0) newSizes.set(sizeKeys[0], 3);
+        if (sizeKeys.length > 1) newSizes.set(sizeKeys[1], 1);
+
+        poster.sizes = newSizes;
+      } else {
+        // If sizes don't exist: add default sizes
+        poster.sizes = new Map([
+          ['15x15', 3],
+          ['20x20', 1]
+        ]);
+      }
+
+      await poster.save();
+      console.log(`Updated poster with ID ${poster.id}`);
+    }
+
+    console.log('All posters updated!');
+    mongoose.connection.close();
+  } catch (err) {
+    console.error(err);
+    mongoose.connection.close();
+  }
+};
+
 // async function addMailToList(posterId,size){
 //   try{
 //     const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
@@ -76,6 +110,37 @@ async function reducePosterSizes(postersToUpdate) {
 }
 
 
+const fixSizeNames = async () => {
+  try {
+    const posters = await Poster.find();
+
+    for (let poster of posters) {
+      if (poster.sizes && poster.sizes.size > 0) {
+        const updatedSizes = new Map();
+
+        for (let [key, value] of poster.sizes.entries()) {
+          // If key doesn't end in 'cm', add 'cm' to it
+          if (!key.endsWith('cm')) {
+            updatedSizes.set(`${key}cm`, value);
+          } else {
+            updatedSizes.set(key, value);
+          }
+        }
+
+        poster.sizes = updatedSizes;
+        await poster.save();
+        console.log(`Updated size names for poster with ID ${poster.id}`);
+      }
+    }
+
+    console.log('Finished updating size names!');
+    mongoose.connection.close();
+  } catch (err) {
+    console.error(err);
+    mongoose.connection.close();
+  }
+};
 
 
-module.exports = { fetchProductImages, reducePosterSizes, checkIfPostersInStock };
+
+module.exports = { fetchProductImages, reducePosterSizes, checkIfPostersInStock, updateSizes, fixSizeNames };
