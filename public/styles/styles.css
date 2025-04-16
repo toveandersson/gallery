@@ -544,7 +544,11 @@ h2 {
 
 /* poster child, add button relative */
 
-.fa-minus, .fa-plus {
+.fa-minus {
+    /* font-size: 2rem; */
+    text-decoration: none;
+}
+.fa-plus {
     font-size: 2rem;
     text-decoration: none;
 }
