@@ -1,5 +1,5 @@
 // ----------- STYLE AND APPEREANCE ----------------- //
-let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? true;
+let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? false;
 const button = document.getElementById('changeColorBtn');
 const body = document.body;
 const sun= document.getElementById("sun"); const moon= document.getElementById("moon");
