@@ -623,7 +623,7 @@ function showProductInfo(){
     if (posterData) {
         document.getElementById('product-img').src = posterData.image;
         document.getElementById('product-title').textContent = posterData.name;
-        document.getElementById('product-desc').textContent = posterData.desc + 'This image has reduzed quality, look at home to see the real quality of the print';
+        document.getElementById('product-desc').textContent = posterData.desc + ' The image quality is reduzed, look at the homepage to see a more realistic quality of the print!';
         document.getElementsByClassName('add-button')[0].id = posterData._id;
         document.getElementsByClassName('product-select')[0].id = posterData._id;
         formContainer.id = 'form'+posterData._id;

@@ -23,6 +23,7 @@
     --h2-text-color: var(--very-light);
     --light: var(--very-light);
     --slightly-lighter-bg: var(--lighter-yellow);
+    --lighter-bg: #f6df75;
     --light-bg: var(--light);
 }
 
@@ -36,6 +37,7 @@
     --h2-text-color: var(--yellow);
     --light: var(--very-light);
     --slightly-lighter-bg: var(--lighter-dark-gb);
+    --lighter-bg: #10240e;
     --light-bg: hotpink;
 }
 
@@ -881,7 +883,7 @@ padding: .5rem
 form {
     color: white;
     /* width: 80%; */
-    background-color: var(--dark-yellow);
+    /* background-color: var(--dark-yellow); */
     padding: .5rem;
     border-radius: .5rem;
     /* margin: auto; */
@@ -891,7 +893,7 @@ form {
 .shopping-cart-div {
     color: white;
     width: 80%;
-    background-color: var(--dark-yellow);
+    background-color: var(--lighter-bg);
     padding: 1.5rem;
     border-radius: .5rem;
     margin: auto;
@@ -900,7 +902,7 @@ form {
 .checkout-btn-div{
     color: white;
     width: 80%;
-    background-color: var(--dark-yellow);
+    background-color: var(--main-bg-color);
     padding: 1.5rem;
     border-radius: .5rem;
     margin: auto;
