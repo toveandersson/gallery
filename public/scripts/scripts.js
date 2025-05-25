@@ -62,7 +62,7 @@ function dark() {
     sun.style.display = "block";
     moon2.style.display = "none";
     sun2.style.display = "block";
-    hideMarks('pinkMark', 'mark-hidden', true);
+    hideMarks('pinkMark', 'mark-hidden', false);
     nightmodeVar = true;
     console.log("turning dark: ",nightmodeVar);
     localStorage.setItem("nightmode", nightmodeVar);
@@ -90,13 +90,13 @@ function scrollToSavedPos(){
     if (savedScrollPosition !== null) {  window.scrollTo(0, Number(savedScrollPosition));} // Ensure it's a number  
 }
 function moveChild() {
-    const children = document.getElementsByClassName('inner-flex');
+    let children = document.getElementsByClassName('middle-flex');
     const desktopParents = document.getElementsByClassName('poster-flex');
     const mobileParents = document.getElementsByClassName('poster-child');
     
     for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 1200) {
             if (mobileParents[i]) mobileParents[i].appendChild(child); // Move to mobile parent
         } else {
             if (desktopParents[i]) desktopParents[i].appendChild(child); // Move to desktop parent
@@ -126,6 +126,10 @@ const freeShippingMin = 120;
 console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
 
 document.addEventListener("DOMContentLoaded", () => {
+    if (body.dataset.page === 'home'){
+        document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
+    }
+    
     if(body.dataset.page === 'success'){
         displayUserPurchaseInformation();
         updateStock();
@@ -195,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const inner_flex = document.createElement('div');
                 inner_flex.setAttribute('class', 'inner-flex');
                 
-                // const middle_flex = document.createElement('div');
-                // middle_flex.setAttribute('class', 'middle-flex');
+                const middle_flex = document.createElement('div');
+                middle_flex.setAttribute('class', 'middle-flex');
 
                 const price_text = document.createElement('h2');
                 price_text.style = 'margin: 0rem;';
@@ -211,7 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectSizes.setAttribute('type', 'select');
                 selectSizes.setAttribute('class', 'product-select');
                 selectSizes.setAttribute('id', `${poster._id}`);
-                selectSizes.style = "background-color: var(--h2-text-color);";
                 
                 const sizes = poster.sizes; 
                 selectSizes.innerHTML = ""; 
@@ -227,21 +230,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 div_card.appendChild(poster_flex);
                 poster_flex.appendChild(link);
                 link.appendChild(title);
+                poster_flex.appendChild(middle_flex);
                 inner_flex.appendChild(price_text);
                 inner_flex.appendChild(selectSizes);
-                poster_flex.appendChild(inner_flex);
-                poster_flex.appendChild(add);
+                middle_flex.appendChild(inner_flex);
+                middle_flex.appendChild(add);
                 imgBg.appendChild(emailContainer);
                 // middle_flex.appendChild(add);
                 // middle_flex.appendChild(inner_flex);
                 
                 posterGrid.appendChild(div_card);
                 inner_flex.style.order = 1;
-add.style.order = 2;
+                add.style.order = 2;
 
-//add.style.marginLeft = 'auto';
-inner_flex.style.marginLeft = 'auto';
-                inner_flex.classList.add('add-button');
+                //inner_flex.classList.add('add-button');
 
                 if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
                     buildSelectSize(selectSizes, sizes, price_text);
@@ -262,7 +264,6 @@ function w(string){
 
 async function addToCart(posterId) {
     console.log("poster.id ",posterId);
-    console.log("hej");
     const selectElement = document.getElementById(`${posterId}`);
     console.log(selectElement);
     const selectedSize = selectElement?.value;
@@ -315,17 +316,19 @@ async function addToCart(posterId) {
         // Add to cart logic
         if (foundItem) {
             foundItem.quantity++; // Increase quantity if already in cart
-        } else {
+        } 
+        else {
             let newItem = new CartItem(
                 posterId, 
                 data.name,
+                //shoppingCart.type.poster ?? poster
                 posterPrices[document.getElementById(`${posterId}`).selectedIndex -1], 
                 //posterPrices[document.getElementById(`s${posterId}`).selectedIndex], 
                 selectedSize, 
                 imagesArray
             );
-            shoppingCart.push(newItem);
-            console.log('New item added: ', newItem);
+        shoppingCart.push(newItem);
+        console.log('New item added: ', newItem);
         }
         console.log("iddd: ",posterId);
 
@@ -520,7 +523,7 @@ function addCartItems() {
     itemGrid.innerHTML = "";  // Clear previous items to prevent duplication
     // document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
     // document.getElementById('total-price').innerText = `Total price: ${price + (price > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
-    fetch('/getAllPosters')
+    fetch('/getAllPosters') //byt ut till getAllProducts
     .then(response => response.json())
     .then(postersData => {
         shoppingCart.forEach(cartItem => {

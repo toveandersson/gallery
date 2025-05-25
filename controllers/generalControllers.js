@@ -3,23 +3,23 @@ const dbUtils = require('../utils/dbUtils');
 const Poster = require('../models/Poster')
 
 const serveHome = (req, res, next) => {   
-    const filePath = path.join(__dirname, '../public', '/home', `/index.html`);
+    const filePath = path.join(__dirname, '../public', '/home', `/home.html`);
     res.sendFile(filePath, (err) => {
       if (err) next(); // Continue to 404 handler if not found
     });
 }; 
 
-const serveFolders = (req, res, next) => {
-    const folderName = req.params.folderName;
-    const filePath = path.join(__dirname, '../public', folderName, `${folderName}.html`);
+// const serveFolders = (req, res, next) => {
+//     const folderName = req.params.folderName;
+//     const filePath = path.join(__dirname, '../public', folderName, `${folderName}.html`);
 
-    res.sendFile(filePath, (error) => {
-        if (error) {
-            console.error("Error sending file:", error);
-            next(error); // Forward error to centralized handler
-        }
-    });
-};
+//     res.sendFile(filePath, (error) => {
+//         if (error) {
+//             console.error("Error sending file:", error);
+//             next(error); // Forward error to centralized handler
+//         }
+//     });
+// };
  
 const updateStock = async (req, res) => {
     try {
@@ -110,7 +110,7 @@ const getPoster = async (req, res) => {
 
         if (singlePoster) {
             const queryString = new URLSearchParams(singlePoster.toObject()).toString();
-            res.redirect(`/product/product.html?${queryString}`);
+            res.redirect(`/product?${queryString}`);
         } else {
             res.status(404).send('Poster not found');
         }
@@ -146,7 +146,6 @@ const getAllPosters = async (req, res, next) => {
   
 
 module.exports = {
-    serveFolders,
     updateStock,
     checkStockItem,
     checkStock,

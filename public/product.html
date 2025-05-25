@@ -3,34 +3,33 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial=1.0">      
+        <meta name="viewport" content="width=device-width, initial=1.0">
 
         <meta name="description" content="Gallery">
-        <meta name="keywords" content="TA, art, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
+        <meta name="keywords" content="TA, art, retro, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
         <meta name="author" content="Tove Andersson">
         <title>Tove</title>
         <link rel="icon" type="image/png" href="/images\LargerPosters\tabloom_icon.png">
-        <!-- google fonts -->
+        <!-- google fonts 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet"> -->
         <!-- stylesheet -->
-        <link rel="stylesheet" href="../styles/normalize.css">
-        <link rel="stylesheet" href="../styles/styles.css">
+        <link rel="stylesheet" href="/styles/styles.css">
         <!-- font awesome cdn -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
-        <script src="../app.js" defer></script>
-        <script src="../scripts/scripts.js" defer></script>
-        <script src="../scripts/postersData.js" defer></script>
+        <script src="/app.js" defer></script>
+        <script src="/scripts/scripts.js" defer></script>
+        <script src="/scripts/postersData.js" defer></script>
         <!-- google adsense -->
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5894583602325760"
         crossorigin="anonymous"></script>
 </head>
 
-<body data-page="posters">
+<body data-page="product">
     <!-- overlay for mobile -->
     <div id="overlay">
         <div class="close-button">
@@ -72,9 +71,8 @@
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png" alt="painting" style="width: 2.5rem;"loading="lazy" > 
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"id="sun-m"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"id="sun-m">  
                         <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" id="moon-m"> 
-                    </button>
                     </button>
                 </div>
                 <div id="right-side">
@@ -83,18 +81,45 @@
             </nav>
         </div>
 
-
-    <!-- painting grid -->
+        <!-- about -->
+        <div class="page-container">
+        
         <div class="paintings">
-            <h2>Posters</h2>
-            <div class="painting-grid-posters">
+            <a href="/posters" style="display: block; margin-left: 3rem;margin-top: 3rem;"><button style="position:fixed;"><----</button></a>
+            <h1 id="product-title"></h1>
+            <div class="product">
+                <img src="" alt="product" id="product-img">
+                <div class="about-child2" style="display: flex; justify-content: space-between; align-items: center; padding: 0rem 0rem 0rem 0rem; background-color: var(--main-bg-color); color: none; width: 70%">
+                    <h2 id="product-price">{Price}</h2>
+                    <div style="display: flex;align-items: center;gap: 2rem;justify-content: center;">
+                        <select name="Sizes" class="product-select"></select>
+                        </select>
+                        <button type="button" style="position: static;" class="fa-plus poster-flex-child add-button" id="" onclick="addToCart(this.id);"></button>
+                    </div>
+                </div>
+                <div class="formContainer" style="width: 100%; background-color: var(--main-bg-color); min-height: 5rem; display: flex; align-items: center; flex-direction: column; ">
+                </div>  
+                
+            
+                <div class="about-child2" style="width: 80%;">
+                    
+                    <div>
+                        
+                        <p id="product-desc"></p>
+                            
+                            <!--I also guarantee your money back if something should go wrong with your order.-->
+                        </p>
+                            
+                    </div>
+                </div>
             </div>
         </div>
+
     </main>
 
     <!-- footer -->
-    <footer>
-        <img src="/images\LargerPosters\circus_bg_lowRes.png" alt="poster" style="width: 10%;" loading="lazy">
+    <footer style="position:static;bottom:0rem;left:0rem;">
+        <img src="/images\LargerPosters\grandma_bg_lowRes.png" alt="poster" style="width: 10%;" loading="lazy">
             <div>
                 <div>
                     <a href="/home">Home</a>
@@ -104,9 +129,9 @@
                 </div>
             </div>
         </div>
-            <img src="/images\LargerPosters\gnarl_bg_lowRes.png" alt="poster" style="width: 10%;" loading="lazy">
+            <img src="/images\LargerPosters\sunny_bg_lowRes.png" alt="poster" style="width: 10%;" loading="lazy">
+        </div>
         </footer>
+    </div>
     </body>
-    <!-- 
-     -->
     </html>

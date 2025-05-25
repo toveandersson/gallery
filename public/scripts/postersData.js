@@ -80,7 +80,7 @@
 //         '/images/scan_erilar19_2024-10-24-15-22-53 - Copy.jpeg',
 //       image: "/images/ImgReducedSize/modern_reduced_size.jpg",
 //       price: 10.99,
-//       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
+//       desc: "dekorera",
 //       available: true,
 //       sizes: { '15x15cm': 2, '20x20cm': 1 }
 //     },
@@ -218,7 +218,7 @@
 //       image: "/images/ImgReducedSize/pink_reduced_size.jpg",
 //       price: 10.99,
 //       desc: "Avaliable in 15x15cm and 20x20cm. FSC certified, thick paper.",
-//       // desc: `Pink, beröva sig, Diskbänksrealism`,
+//       // desc: `Pink, beröva sig, Diskbänksrealism, Dekandens, fördärv`,
 //       available: true
 //     },
 //     {

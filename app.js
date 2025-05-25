@@ -1,10 +1,18 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const path = require('path');
 
 const controllers = require('./controllers/generalControllers');
-app.get('/', controllers.serveHome);
-app.use(express.static('./public'));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+app.use(
+  express.static(
+    path.join(__dirname, 'public'),
+    { extensions: ['html'] }
+  )
+);
 // ❌ Disable JSON parsing for webhooks (needed for Stripe), OBS! above any other parsing ex json
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
@@ -18,10 +26,11 @@ const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
 app.use(checkoutRoutes); 
 app.use(webhookRoutes); 
 app.use(router);
+
 //error handler last, catch errors after all routes and middlewares
 app.use(errorHandler);
 
-const port = process.env.PORT || 4242;
+const port = process.env.PORT || 5000;
 
 const connectDB = (url) =>{
   return mongoose.connect(url)

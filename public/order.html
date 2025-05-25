@@ -10,10 +10,10 @@
         <meta name="author" content="Tove Andersson">
         <title>Tove</title>
         <link rel="icon" type="image/png" href="/images\LargerPosters\tabloom_icon.png">
-        <!-- google fonts -->
+        <!-- google fonts 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet"> -->
         <!-- stylesheet -->
         <link rel="stylesheet" href="../styles/normalize.css">
         <link rel="stylesheet" href="../styles/styles.css">
@@ -82,13 +82,11 @@
             </nav>
         </div>
 
-        <div class="spacer"></div> 
-
-
-        <!-- form -->
         <div>
             <!-- <button>add to stock</button> -->
-            <h1 style="padding-top: 2rem;">Order</h1>
+            <div class="paintings">
+            <h2 style="padding-top: 2rem;">Order</h2>
+            </div>
             <div class="order">
                  <h4 style="justify-self: end; margin-right: 10rem; color: white;"> free shipping over 120kr!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4> 
                 <div class="shopping-cart-div">       <!--  action="" method="POST"  -->
@@ -156,7 +154,7 @@
                             <!-- <p style="font-weight: 200; font-size: 1.2rem;"> It is not yet possible to order, please come back soon!   </p> -->
                             <form id="checkout-form"action="/create-checkout-session" method="POST">
                                 <input type="hidden" name="amount" id="amount" value="500"> <!-- Replace with dynamic amount value -->
-                                <button type="submit" id="checkout-button">Proceed to checkout</button>
+                                <button type="submit" id="checkout-button" style ="font-family: 'Sofia Sans', sans-serif;">PROCEED TO CHECKOUT</button>
                         </div>
 
                     </div>
