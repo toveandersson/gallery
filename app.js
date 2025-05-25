@@ -13,6 +13,13 @@ app.use(
     { extensions: ['html'] }
   )
 );
+app.use((req, res, next) => {
+  if (req.path !== '/' && req.path.endsWith('/')) {
+    // note: use 302 until you’re sure it works, then change to 301
+    return res.redirect(302, req.path.slice(0, -1) + (req.url.slice(req.path.length) || ''));
+  }
+  next();
+});
 // ❌ Disable JSON parsing for webhooks (needed for Stripe), OBS! above any other parsing ex json
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
@@ -30,7 +37,7 @@ app.use(router);
 //error handler last, catch errors after all routes and middlewares
 app.use(errorHandler);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4242;
 
 const connectDB = (url) =>{
   return mongoose.connect(url)
