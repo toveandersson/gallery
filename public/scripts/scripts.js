@@ -177,8 +177,9 @@ async function buildPosterCards(data, posterGrid){
         title.setAttribute('id', 'title');
         title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
         title.style.textDecoration = "underline";
-        title.style.textDecorationThickness = ".3rem";
-        title.style.textDecorationStyle ="dotted";
+        title.style.textDecorationThickness = ".4rem";
+        //title.style.textDecorationStyle ="wavy";
+        title.style.textDecorationColor = "rgba(253, 90, 170, 0.1)";
        // title.style.textDecorationSkipInk="none";
 
         const add = document.createElement('button');
@@ -834,6 +835,7 @@ function showSwish() {
         console.log(swishDiv[i].style.display);
     }
 }
+// ---- validation ----
 const nameAlert = document.getElementById("nameAlert");
 const emailAlert = document.getElementById("emailAlert");
 const phoneAlert = document.getElementById("phoneAlert");

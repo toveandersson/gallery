@@ -730,7 +730,7 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
 .shopping-cart {
     display: grid; 
     grid-template-columns: repeat(5, 1fr);
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
     grid-gap: 1rem;
     /* max-width: 1600px; */
     align-items: stretch;        
