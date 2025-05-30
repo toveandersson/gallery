@@ -2,10 +2,9 @@
 let nightmodeVar = JSON.parse(localStorage.getItem("nightmode")) ?? false;
 const button = document.getElementById('changeColorBtn');
 const body = document.body;
-const sun= document.getElementById("sun"); const moon= document.getElementById("moon");
-const sun2= document.getElementById("sun-m"); const moon2= document.getElementById("moon-m");
-
-function on() {
+const suns = Array.from(document.getElementsByClassName("sun"));
+const moons = Array.from(document.getElementsByClassName("moon"));
+function displayOverlay() {
     // display overlay
     const turnOn = document.getElementById("overlay");
     turnOn.style.display = "block";
@@ -13,58 +12,34 @@ function on() {
     const overflow = document.querySelector("body");
     overflow.style.overflow = "";
 }
-function off() {
-    // display overlay
+function hideOverlay() {
     const turnOff = document.getElementById("overlay");
     turnOff.style.display = "none";
-    //turn off vertical scroll
-    const overflow = document.querySelector("body");
+    const overflow = document.querySelector("body"); 
     overflow.style.overflow = ""; //do nothing
 }
-function setNightMode(){
-    console.log("set night mode function, nightmode: ",nightmodeVar);
-    if (nightmodeVar === true){
-        console.log("nightmode: ",nightmodeVar);
-        console.log("nu blir det mörkt");
-        dark();
-    }
-    else{
-        light();
-        console.log("nu blir det ljust");
-    }
-    //nightmodeVar ? dark() : light();
+function setNightMode() {
+    nightmodeVar ? dark() : light();
 }
 function nightmodeSwitch() {
-    console.log("nightmode switch");
-    if (nightmodeVar === false) {
-        dark();
-    }
-    else if (nightmodeVar === true){
-        light();
-    }
+    nightmodeVar ? light() : dark();
 }
 function light() {
     body.classList.remove('nightmode');
     body.classList.add('lightmode');
-    sun.style.display = "none";
-    moon.style.display = "block";
-    sun2.style.display = "none";
-    moon2.style.display = "block";
-    hideMarks('pinkMark', 'mark-hidden', false);
+    suns.forEach(sun=> sun.style.display = "none");
+    moons.forEach(moon=> moon.style.display = "block" );
+    //hideMarks('pinkMark', 'mark-hidden', false);
     nightmodeVar = false;
-    console.log("turning light: ",nightmodeVar);
     localStorage.setItem("nightmode", nightmodeVar);
 }
 function dark() {   
     body.classList.remove('lightmode');
     body.classList.add('nightmode');
-    moon.style.display = "none";
-    sun.style.display = "block";
-    moon2.style.display = "none";
-    sun2.style.display = "block";
-    hideMarks('pinkMark', 'mark-hidden', false);
+    suns.forEach(sun=> sun.style.display = "block");
+    moons.forEach(moon=> moon.style.display = "none" );
+    //hideMarks('pinkMark', 'mark-hidden', true);
     nightmodeVar = true;
-    console.log("turning dark: ",nightmodeVar);
     localStorage.setItem("nightmode", nightmodeVar);
 }
 function hideMarks(className, hiddenClass, shouldHide) {
@@ -79,14 +54,12 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-function saveScrollPosition() {
+function saveScrollPosition(goBackToPage) {
     localStorage.setItem("scrollPosition", window.scrollY);
-    console.log("Saved position:", localStorage.getItem("scrollPosition"));
+    localStorage.setItem("goBackToPage", goBackToPage);
 }
 function scrollToSavedPos(){
     const savedScrollPosition = localStorage.getItem("scrollPosition");
-    console.log("Scrolling to:", savedScrollPosition);
-    
     if (savedScrollPosition !== null) {  window.scrollTo(0, Number(savedScrollPosition));} // Ensure it's a number  
 }
 function moveChild() {
@@ -105,9 +78,8 @@ function moveChild() {
 }
 window.addEventListener('resize', moveChild); 
 // -------------- ^ STYLE AND APPEREANCE ^ --------------- //
-
 class CartItem {
-    constructor(id, name, price, size, images = [], quantity = 1, itemType = "poster") {
+    constructor(id, name, price, size, images = [], quantity = 1, itemType = "poster", set = 0, unique = false) { //set (collection) number for special sorting, unique if there is only one item and i want to add some text saying that?
         this.id = id;
         this.name = name;
         this.price = price;
@@ -115,21 +87,20 @@ class CartItem {
         this.images = images;
         this.quantity = quantity;
         this.itemType = itemType;
+        this.set = set;
+        this.unique = unique;
     }
 }
-
-let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity)) || [];
+let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity, item.type, item.set, item.unique)) || [];
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 const shippingPrices = [18, 38];
-const posterPrices = [45, 55];
+const posterPrices = [45, 65];
 const freeShippingMin = 120;
-console.log("Initial localStorage.shoppingCart:", localStorage.getItem("shoppingCart"));
 
 document.addEventListener("DOMContentLoaded", () => {
     if (body.dataset.page === 'home'){
         document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
     }
-    
     if(body.dataset.page === 'success'){
         displayUserPurchaseInformation();
         updateStock();
@@ -144,140 +115,141 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (body.dataset.page === 'product'){
         showProductInfo();
+        const page = localStorage.getItem("goBackToPage");
+        const noPlural = ['jewellery']; // Add more exceptions here if needed
+        const suffix = noPlural.includes(page) ? '' : 's';
+        document.getElementsByClassName("go-back-btn")[0].href = '/' + page + suffix;
     }
     else if (body.dataset.page !== 'posters'){
         localStorage.setItem("scrollPosition", null);
+    }
+    if (body.dataset.page === 'mugs'){
+    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
+        fetch('/getAllMugs')
+            .then(res => res.json())
+            .then(data => buildPosterCards(data, posterGrid))
+            .catch(err => console.error('Error:', err));
+    }
+    if (body.dataset.page === 'jewellery'){
+    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
+        fetch('/getAllJewellery')
+            .then(res => res.json())
+            .then(data => buildPosterCards(data, posterGrid))
+            .catch(err => console.error('Error:', err));
     }
     if (body.dataset.page !== 'posters'){
         return;
     }
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
     fetch('/getAllPosters')
-        .then(response => response.json())
-        .then(postersData => {
-            postersData.forEach((poster) => {
-                if (poster.available === false){ return; }
-                console.log("Poster ID:", poster._id); // Make sure this logs the real Mongo ID
-                
-                const imgBg = document.createElement('div');
-                imgBg.setAttribute('class', 'imgBg');
-
-                const div_card = document.createElement('div');
-                div_card.setAttribute('class', 'poster-child');
-
-                const image = document.createElement('img');
-                image.setAttribute('class', 'thumbnail');
-                image.setAttribute('id', 'image'); 
-                image.src = poster.image;
-
-                const imageLink = document.createElement('a');
-                imageLink.setAttribute('onclick', 'saveScrollPosition();');
-                imageLink.href = `/posters/${poster._id}`;
-
-                const link = document.createElement('a');
-                link.setAttribute('onclick', 'saveScrollPosition();');
-                link.href = `/posters/${poster._id}`;
-                link.setAttribute('class', 'poster-link');
-
-                const poster_flex = document.createElement('div');
-                poster_flex.setAttribute('class', 'poster-flex')
-
-                const title = document.createElement('h3');
-                title.setAttribute('id', 'title');
-                title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
-                //console.log("-id ",poster._id);
-
-                const add = document.createElement('button');
-                add.setAttribute('type', 'button');
-                add.setAttribute('id', 'add-button-id');
-                add.setAttribute('onclick', `addToCart('${poster._id}');`);
-                add.setAttribute('class', 'fa-plus poster-flex-child add-button');
-                add.style.margin = "0rem";
-                add.style.padding = ".9rem";
-
-                
-                const inner_flex = document.createElement('div');
-                inner_flex.setAttribute('class', 'inner-flex');
-                
-                const middle_flex = document.createElement('div');
-                middle_flex.setAttribute('class', 'middle-flex');
-
-                const price_text = document.createElement('h2');
-                price_text.style = 'margin: 0rem;';
-
-                const emailContainer = document.createElement('div');
-                emailContainer.setAttribute('class', 'formContainer');
-                emailContainer.setAttribute('id', `form${poster._id}`);
-                emailContainer.style="background-color: var(--main-bg-color-rgba); padding: 1rem; position: absolute; bottom: 0rem;";
-                //emailContainer.style="width: 100%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
-
-                const selectSizes = document.createElement('select');
-                selectSizes.setAttribute('type', 'select');
-                selectSizes.setAttribute('class', 'product-select');
-                selectSizes.setAttribute('id', `${poster._id}`);
-                
-                const sizes = poster.sizes; 
-                selectSizes.innerHTML = ""; 
-
-                add.id = 'btn'+poster._id;
-                title.innerText = poster.name;
-                imgBg.style.backgroundColor = "#fdf8e5";
-                
-                imgBg.appendChild(imageLink);
-                imageLink.appendChild(image); // Wrap the image in the link
-                //imgBg.appendChild(add);
-                div_card.appendChild(imgBg);
-                div_card.appendChild(poster_flex);
-                poster_flex.appendChild(link);
-                link.appendChild(title);
-                poster_flex.appendChild(middle_flex);
-                inner_flex.appendChild(price_text);
-                inner_flex.appendChild(selectSizes);
-                middle_flex.appendChild(inner_flex);
-                middle_flex.appendChild(add);
-                imgBg.appendChild(emailContainer);
-                // middle_flex.appendChild(add);
-                // middle_flex.appendChild(inner_flex);
-                
-                posterGrid.appendChild(div_card);
-                inner_flex.style.order = 1;
-                add.style.order = 2;
-
-                //inner_flex.classList.add('add-button');
-
-                if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-                    buildSelectSize(selectSizes, sizes, price_text);
-                }
-                checkIfOut(selectSizes, selectSizes.options, price_text);
-            });
-            
-            scrollToSavedPos();
-            window.addEventListener('resize', moveChild);
-            moveChild(); // Run once on page load
-        })
-        .catch(error => console.error('Error fetching posters:', error));
+        .then(res => res.json())
+        .then(data => buildPosterCards(data, posterGrid))
+        .catch(err => console.error('Error:', err));
 });
+async function buildPosterCards(data, posterGrid){
+    data.forEach((product) => {
+        if (product.available === false){ return; }
+        //console.log("Poster ID:", poster._id); 
+        
+        const imgBg = document.createElement('div');
+        imgBg.setAttribute('class', 'imgBg');
 
-function w(string){
-    console.log(string);
+        const div_card = document.createElement('div');
+        div_card.setAttribute('class', 'poster-child');
+
+        const image = document.createElement('img');
+        image.setAttribute('class', 'thumbnail');
+        image.setAttribute('id', 'image'); 
+        image.src = product.image;
+
+        const imageLink = document.createElement('a');
+        imageLink.setAttribute('onclick', `saveScrollPosition('${product.type}');`);
+        imageLink.href = `/posters/${product._id}`;
+
+        const link = document.createElement('a');
+        link.setAttribute('onclick', `saveScrollPosition('${product.type}')`);
+        link.setAttribute('class', 'poster-link');
+        link.href = `/posters/${product._id}`;
+
+        const poster_flex = document.createElement('div');
+        poster_flex.setAttribute('class', 'poster-flex')
+
+        const title = document.createElement('h3');
+        title.setAttribute('id', 'title');
+        title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
+
+        const add = document.createElement('button');
+        add.setAttribute('type', 'button');
+        add.setAttribute('id', 'add-button-id');
+        add.setAttribute('onclick', `addToCart('${product._id}');`);
+        add.setAttribute('class', 'fa-plus poster-flex-child add-button');
+        add.style.margin = "0rem";
+        
+        const inner_flex = document.createElement('div');
+        inner_flex.setAttribute('class', 'inner-flex');
+        
+        const middle_flex = document.createElement('div');
+        middle_flex.setAttribute('class', 'middle-flex');
+
+        const price_text = document.createElement('h2');
+        price_text.style = 'margin: 0rem;';
+
+        const emailContainer = document.createElement('div');
+        emailContainer.setAttribute('class', 'formContainer');
+        emailContainer.setAttribute('id', `form${product._id}`);
+        emailContainer.style="background-color: var(--main-bg-color-rgba); padding: 1rem; position: absolute; bottom: 0rem;";
+        //emailContainer.style="width: 100%; background-color: var(--main-bg-color); padding: 10px; min-height: 50px;";
+
+        const selectSizes = document.createElement('select');
+        selectSizes.setAttribute('type', 'select');
+        selectSizes.setAttribute('class', 'product-select');
+        selectSizes.setAttribute('id', `${product._id}`);
+        
+        const sizes = product.sizes; 
+        selectSizes.innerHTML = ""; 
+
+        add.id = 'btn'+product._id;
+        title.innerText = product.name;
+        imgBg.style.backgroundColor = "#fdf8e5";
+        
+        imgBg.appendChild(imageLink);
+        imageLink.appendChild(image); 
+        div_card.appendChild(imgBg);
+        div_card.appendChild(poster_flex);
+        poster_flex.appendChild(link);
+        link.appendChild(title);
+        poster_flex.appendChild(middle_flex);
+        inner_flex.appendChild(price_text);
+        inner_flex.appendChild(selectSizes);
+        middle_flex.appendChild(inner_flex);
+        middle_flex.appendChild(add);
+        imgBg.appendChild(emailContainer);
+        
+        posterGrid.appendChild(div_card);
+        inner_flex.style.order = 1;
+        add.style.order = 2;
+        //inner_flex.classList.add('add-button');
+
+        if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
+            buildSelectSize(selectSizes, sizes, price_text);
+        }
+        checkIfOut(selectSizes, selectSizes.options, price_text);
+    });
+    
+    scrollToSavedPos();
+    window.addEventListener('resize', moveChild);
+    moveChild(); // Run once on page load
 }
-
 async function addToCart(posterId) {
-    console.log("poster.id ",posterId);
     const selectElement = document.getElementById(`${posterId}`);
-    console.log(selectElement);
     const selectedSize = selectElement?.value;
-    console.log(selectedSize);
     if (!selectedSize) {
-        w("no size");
         alert("Please select a size before adding to cart!");
         return; 
     }
-    w(selectedSize);
 
     const selectedOption = selectElement?.selectedOptions[0]; 
     if (selectedOption && selectedOption.getAttribute("data-disabled") === "true") {
-        w("no stock");
         alert("This size is currently out of stock. Please choose another.");
         return; 
     }
@@ -290,7 +262,6 @@ async function addToCart(posterId) {
         const imagesArray = [data.image];
 
         let testQuantity = foundItem ? foundItem.quantity + 1 : 1;
-        console.log('this is before adding to cart ',posterId,selectedSize,testQuantity);
         // Check stock before adding to cart
         const stockResponse = await fetch('/check-stock-item', {
             method: 'POST',
@@ -330,7 +301,6 @@ async function addToCart(posterId) {
         shoppingCart.push(newItem);
         console.log('New item added: ', newItem);
         }
-        console.log("iddd: ",posterId);
 
         // Save cart to local storage
         localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
@@ -340,7 +310,6 @@ async function addToCart(posterId) {
         console.error("Error adding to cart:", error);
     }
 }
-
 function calculatePrices(){
     let price = 0;
     shoppingCart.forEach(item=>{
@@ -355,12 +324,10 @@ function calculatePrices(){
 
     return amount_shipping;
 }
-
 async function checkStock(posterId,selectedSize,testQuantity) {
     const valueInStockResult = await valueInStock(testQuantity); // Assuming valueInStock() is the function you're using
     return valueInStockResult;
 }
-
 async function valueInStock(posterId,selectedSize,testQuantity){
     //console.log(posterId,selectedSize,testQuantity);
     // Check stock before adding to cart
@@ -380,51 +347,6 @@ async function valueInStock(posterId,selectedSize,testQuantity){
     const stockData = await stockResponse.json();
     return stockData.success;
 }
-
-function displayUserPurchaseInformation() {
-    document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("session_id");
-    if (sessionId) {
-        // Fetch session details from your backend
-        fetch(`/stripe/session/${sessionId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.customer_email) {
-                    console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
-                    console.log(typeof(data.customer_email));
-                    const link = detectEmailService(data.customer_email);
-                    if (link !== 'Unknown'){
-                        console.log(link);
-                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
-                    }
-                    else {
-                        console.log(link);
-                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
-                    }
-
-                } else {
-                    console.error("No email found in session data.");
-                }
-            })
-            .catch(error => console.error("Error fetching session details:", error));
-    }
-}
-
-function detectEmailService(email) {
-    if (!email) {
-        console.error('No email provided');
-        return 'Unknown';  // Or handle it however you need to
-    }
-    const parts = email.split('@');
-    const domain = parts[1].trim(); // Get the domain part
-    if (domain === 'gmail.com') {  console.log("email: ",domain); return 'https://mail.google.com';
-    } else if (domain === 'outlook.com' || domain === 'hotmail.com') {  console.log("email: ",domain);  return 'https://outlook.live.com';
-    } else if (domain === 'yahoo.com') { console.log("email: ",domain); return 'https://mail.yahoo.com';
-    } else if (domain === 'icloud.com') { console.log("email: ",domain);  return 'https://www.icloud.com/mail';
-    } else {console.log("email: ",domain);  return 'Unknown';  }
-}
-
 function addCheckoutButton(){
     // Dynamic country and currency select setup
     const countryToCurrencyMap = {
@@ -515,7 +437,6 @@ document.getElementById("checkout-button").addEventListener("click", async (even
 });
 initializeCurrencySelect();
 }
-
 function addCartItems() {
     console.log("Adding updated list to cart:", shoppingCart);
     calculatePrices();
@@ -546,9 +467,10 @@ function addCartItems() {
             const poster_flex = document.createElement('div');
             poster_flex.setAttribute('class', 'order-poster-flex');
             
-            const title = document.createElement('h3');
+            const title = document.createElement('h2');
             title.innerText = `${itemPoster.name}`;
-            title.style.marginBottom = '0rem';
+            title.style.marginBottom = '.2rem';
+            title.style.color = "var(--light)";
             
             const quantityDiv = document.createElement("div");
             quantityDiv.className = "quantity";
@@ -569,13 +491,19 @@ function addCartItems() {
                 calculatePrices();
             });
             
-            const size = document.createElement('h4');
+            const size = document.createElement('p');
             size.innerText = cartItem.size;
             size.style.margin = '0rem';
-            size.style.marginBottom = '1rem';
+            size.style.fontFamily = '"Font Awesome 6 Free", sans-serif';
+;
+            //size.style.marginBottom = '1rem';
             
-            const price = document.createElement('h4');
+            const price = document.createElement('p');
             price.innerText = cartItem.price + 'kr';
+            price.style.margin = "0rem";
+            price.style.marginBottom = '1rem';
+            price.style.fontFamily = '"Font Awesome 6 Free", sans-serif';
+
             
             const remove = document.createElement('button');
             remove.setAttribute('class', 'fa-minus remove-button');
@@ -585,17 +513,16 @@ function addCartItems() {
             div_card.appendChild(imgBg);
             div_card.appendChild(title);
             div_card.appendChild(size);
+            div_card.appendChild(price);
             div_card.appendChild(poster_flex);
             quantityDiv.appendChild(quantityInput);
             poster_flex.appendChild(quantityDiv);
-            poster_flex.appendChild(price);
             poster_flex.appendChild(remove);
             itemGrid.appendChild(div_card);
         });
     })
     .catch(error => console.error('Error fetching posters:', error));
 }
-
 async function updateStock(){ 
     const posterSizes = shoppingCart.map(item => ({
         id: item.id,
@@ -615,7 +542,6 @@ async function updateStock(){
         alert(result.message);
     }
 }
-
 function showProductInfo(){
     const urlParams = new URLSearchParams(window.location.search);
     const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
@@ -640,7 +566,7 @@ function showProductInfo(){
             const selectSizes = document.getElementsByClassName('product-select')[0];
             buildSelectSize(selectSizes, sizes, document.getElementById('product-price'));
         }
-        else (w("error: sizes doesnt exist or isnt an object etc"));
+        else (console.log("error: sizes doesnt exist or isnt an object etc"));
     })
     .catch(error => console.error("Error fetching poster:", error));
 }
@@ -664,7 +590,6 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
 
     let hasInStock = false;
     for (const [size, quantity] of Object.entries(sizesKeysObject)) {
-        console.log(`Size: ${size}, Quantity: ${quantity}`);
         const option = document.createElement('option');
         option.setAttribute('value', size);                                                                                                   
         if (quantity <= 0){
@@ -690,14 +615,12 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         const formContainer = Array.from(formContainers).find(el => el.id === 'form'+selectObject.id);
         formContainer.style.display = 'none';
         removeAddButton(document.getElementById('btn'+selectObject.id));
-        console.log("event change");
         
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
             if (body.dataset.page === 'product'){ formContainer.style.display = 'flex'; }
             else {formContainer.style.display = 'block';}
             if (formContainer && formContainer.children.length === 0){
-                console.log("inside");
                 createEmailInput(formContainer,selectObject);
                 removeAddButton(document.getElementById('btn'+selectObject.id));
             }
@@ -713,7 +636,6 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
     });
     selectObject.dispatchEvent(new Event('change'));
 } 
-
 function checkIfOut(selectSizes, options, priceTextObj){
     // console.log("checking if");
     // console.log([...options].map(option => option.outerHTML)); // Debug: Check all options
@@ -731,22 +653,19 @@ function checkIfOut(selectSizes, options, priceTextObj){
         return false;
     }
 }
-
 function removeEmailInput(emailContainer) {
-    console.log("removing");
     emailContainer.style.display = 'none';
-    const children = Array.from(emailContainer.children); // Make it a static copy
+    const children = Array.from(emailContainer.children); 
     if (!children){return;}
-    for (const child of children) {
-      console.log(child.tagName); // or w() if that's your debug function
+    for (const child of children) { 
       child.remove();
     }
-  }
-  
+}
 function createEmailInput(emailContainer, selectSizes){
     // Create label
     const label = document.createElement("label");
     label.setAttribute("for", "email");
+    label.setAttribute("class", "email-label");
     label.textContent = "Email me when back in stock:";
     label.style.marginLeft = "auto";
 
@@ -812,7 +731,6 @@ function createEmailInput(emailContainer, selectSizes){
         emailAlert.style.display = 'none';
     });
 }
-
 function removeAddButton(addButton){
     if (!addButton){
         document.getElementsByClassName("add-button")[0].style.display = 'none';
@@ -821,7 +739,6 @@ function removeAddButton(addButton){
         addButton.style.display = 'none';
     }
 }
-
 function showAddButton(addButton){
     if (!addButton){
         document.getElementsByClassName("add-button")[0].style.display = 'block';
@@ -830,7 +747,6 @@ function showAddButton(addButton){
         addButton.style.display = 'block';
     }
 }
-
 function removeFromCart(posterId, size) {
     console.log("remove id: ",posterId);
     let idCartItems = Array.from(document.getElementsByClassName('cart-item'));
@@ -858,7 +774,6 @@ function removeFromCart(posterId, size) {
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     calculatePrices();
 }
-
 function clearCart() {
     Array.from(document.getElementsByClassName('cart-item')).forEach(item => item.remove());
     shoppingCart = [];
@@ -866,7 +781,48 @@ function clearCart() {
     if(body.dataset.page === 'success'){return;}
     calculatePrices();
 }
+function displayUserPurchaseInformation() {
+    document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+    if (sessionId) {
+        // Fetch session details from your backend
+        fetch(`/stripe/session/${sessionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.customer_email) {
+                    console.log(data.customer_email);  // Make sure this has a valid value before calling detectEmailService
+                    console.log(typeof(data.customer_email));
+                    const link = detectEmailService(data.customer_email);
+                    if (link !== 'Unknown'){
+                        console.log(link);
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong><a href="${link}"target="_blank">${data.customer_email}</a></strong></p>`;
+                    }
+                    else {
+                        console.log(link);
+                        document.getElementsByClassName("purchase-info-text")[0].innerHTML = `<p><small>I have sent an order confirmation to </small> <strong>${data.customer_email}</strong></p>`;
+                    }
 
+                } else {
+                    console.error("No email found in session data.");
+                }
+            })
+            .catch(error => console.error("Error fetching session details:", error));
+    }
+}
+function detectEmailService(email) {
+    if (!email) {
+        console.error('No email provided');
+        return 'Unknown';  // Or handle it however you need to
+    }
+    const parts = email.split('@');
+    const domain = parts[1].trim(); // Get the domain part
+    if (domain === 'gmail.com') {  console.log("email: ",domain); return 'https://mail.google.com';
+    } else if (domain === 'outlook.com' || domain === 'hotmail.com') {  console.log("email: ",domain);  return 'https://outlook.live.com';
+    } else if (domain === 'yahoo.com') { console.log("email: ",domain); return 'https://mail.yahoo.com';
+    } else if (domain === 'icloud.com') { console.log("email: ",domain);  return 'https://www.icloud.com/mail';
+    } else {console.log("email: ",domain);  return 'Unknown';  }
+}
 function showSwish() {
     const swishDiv = document.getElementsByClassName('swish-div');
     for (let i = 0; i < swishDiv.length; i++) {
@@ -874,35 +830,10 @@ function showSwish() {
         console.log(swishDiv[i]);
         console.log(swishDiv[i].style.display);
     }
-};
-
+}
 const nameAlert = document.getElementById("nameAlert");
 const emailAlert = document.getElementById("emailAlert");
 const phoneAlert = document.getElementById("phoneAlert");
-// Add event listener for input events within the form
-// form.addEventListener("input", (event) => {
-//     // Retrieve the element that triggered the event
-//     const target = event.target;
-//     // console.log(target);
-
-//     // Check if the event was triggered by the name input field
-//     if (target.id === 'name') {
-//         // console.log(target.id)
-//         // Show or hide the name alert based on whether the name input has a value
-//         nameAlert.style.display = target.value ? "none" : "block";        
-//     } 
-//     // Check if the event was triggered by the email input field
-//     else if (target.id === 'email') {
-//         // Call the validateEmail function with the value of the email input field
-//         validateEmail(target.value);
-//     } 
-//     // Check if the event was triggered by the phone input field
-//     else if (target.id === 'phone') {
-//         // Call the validatePhone function with the value of the phone input field
-//         validatePhone(target.value);
-//     }
-// });
-// Function to validate email format using regular expression
 function validateEmail(email, emailAlert) {
     // Regular expression to validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -927,6 +858,30 @@ function validatePhone(phone) {
     // Return whether the phone number is valid
     return isValid;
 }
+// Add event listener for input events within the form
+// form.addEventListener("input", (event) => {
+//     // Retrieve the element that triggered the event
+//     const target = event.target;
+//     // console.log(target);
+
+//     // Check if the event was triggered by the name input field
+//     if (target.id === 'name') {
+//         // console.log(target.id)
+//         // Show or hide the name alert based on whether the name input has a value
+//         nameAlert.style.display = target.value ? "none" : "block";        
+//     } 
+//     // Check if the event was triggered by the email input field
+//     else if (target.id === 'email') {
+//         // Call the validateEmail function with the value of the email input field
+//         validateEmail(target.value);
+//     } 
+//     // Check if the event was triggered by the phone input field
+//     else if (target.id === 'phone') {
+//         // Call the validatePhone function with the value of the phone input field
+//         validatePhone(target.value);
+//     }
+// });
+// Function to validate email format using regular expression
 // Function to validate the entire form
 // function validateForm() {
 //     // Get the values of name, email, and phone input fields

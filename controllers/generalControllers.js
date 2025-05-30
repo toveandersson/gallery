@@ -1,6 +1,7 @@
 const path = require('path');
 const dbUtils = require('../utils/dbUtils');
-const Poster = require('../models/Poster')
+const { Poster, Jewellery, Mug } = require('../models/Product');
+
 
 const serveHome = (req, res, next) => {   
     const filePath = path.join(__dirname, '../public', '/home', `/home.html`);
@@ -121,6 +122,7 @@ const getPoster = async (req, res) => {
     }
 };
 
+
 // const getAllPosters = async (req, res) => {
 //     try {
 //         const posters = await Poster.find();
@@ -135,14 +137,33 @@ const getPoster = async (req, res) => {
 
 const getAllPosters = async (req, res, next) => {
     try {
-      const posters = await Poster.find().sort({ id: 1 }); // Sort by custom ID ascending
-  
+      const posters = await Poster.find().sort({ collection: -1, id: 1 });  // Sort by collection first then custom ID ascending
       res.status(200).json(posters); // Send full poster objects including _id
     } catch (error) {
       console.error("Error fetching posters:", error);
       next(error); // Forward to your error middleware
     }
-  };
+};
+
+const getAllJewellery = async (req, res, next) => {
+    try {
+      const jewellery = await Jewellery.find().sort({ collection: -1, id: 1 });  // Sort by collection first then custom ID ascending
+      res.status(200).json(jewellery); // Send full poster objects including _id
+    } catch (error) {
+      console.error("Error fetching posters:", error);
+      next(error); // Forward to your error middleware
+    }
+};
+
+const getAllMugs = async (req, res, next) => {
+    try {
+      const mugs = await Mug.find().sort({ collection: -1, id: 1 });  // Sort by collection first then custom ID ascending
+      res.status(200).json(mugs); // Send full poster objects including _id
+    } catch (error) {
+      console.error("Error fetching posters:", error);
+      next(error); // Forward to your error middleware
+    }
+};
   
 
 module.exports = {
@@ -151,6 +172,8 @@ module.exports = {
     checkStock,
     getPoster,
     getAllPosters,
+    getAllJewellery,
+    getAllMugs,
     getPosterWithId,
     serveHome
 };

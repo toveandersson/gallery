@@ -33,7 +33,7 @@
     <!-- overlay for mobile -->
     <div id="overlay">
         <div class="close-button">
-            <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
+            <i class="fa fa-times" title="button to close mobile navigation" onclick="hideOverlay()"></i>
         </div>
         <div class="overlay-text">
             <a href="/home"><mark>Home</mark></a>
@@ -52,8 +52,8 @@
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png" alt="painting" style="width: 2.5rem;"loading="lazy" > 
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                         <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: .8rem;"id="sun"> 
-                        <img src="/images\moon (2).png"style="width: 2rem; margin: .8rem;" id="moon"> 
+                         <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: .8rem;"class="sun"> 
+                        <img src="/images\moon (2).png"style="width: 2rem; margin: .8rem;" class="moon"> 
                     </button>
                 </div>
                 <div id="right-side">
@@ -71,12 +71,12 @@
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png" alt="painting" style="width: 2.5rem;"loading="lazy" > 
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"id="sun-m">  
-                        <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" id="moon-m"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"class="sun">  
+                        <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" class="moon"> 
                     </button>
                 </div>
                 <div id="right-side">
-                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="displayOverlay()"></i>
                 </div>
             </nav>
         </div>
@@ -85,7 +85,7 @@
         <div class="page-container">
         
         <div class="paintings">
-            <a href="/posters" style="display: block; margin-left: 3rem;margin-top: 3rem;"><button style="position:fixed;"><----</button></a>
+            <a class="go-back-btn" href="/posters" style="display: block; margin-left: 3rem;margin-top: 3rem;"><button style="position:fixed;"><----</button></a>
             <h1 id="product-title"></h1>
             <div class="product">
                 <img src="" alt="product" id="product-img">

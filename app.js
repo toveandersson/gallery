@@ -37,7 +37,7 @@ app.use(router);
 //error handler last, catch errors after all routes and middlewares
 app.use(errorHandler);
 
-const port = process.env.PORT || 4242;
+const port = process.env.PORT || 5000;
 
 const connectDB = (url) =>{
   return mongoose.connect(url)
@@ -55,10 +55,10 @@ const start = async () =>{
 // dont know with this?
 //app.get('/create-checkout-session/:amount');
 
-// function i dont know how it works, adds to poster
-const addSizesToData = 
-//const postersData = require('./public/scripts/postersData');
-//const Poster = require('./models/Poster')
+// const postersData = require('./public/scripts/postersData');
+// const { Poster, Jewellery, Mug } = require('./models/Product');
+
+
 //
 // const fetchPoster = (fetchId) =>{
 //       return Poster.find({id: fetchId})
@@ -74,6 +74,24 @@ const addSizesToData =
 //   app.get('/postersData', (req, res) => {
 //     res.json(postersData);
 //   });
+
+// const updateAllPosters = async () => {
+//   try {
+//     const result = await Poster.updateMany(
+//       {}, // match all documents
+//       {
+//         $set: {
+//           type: 'poster',
+//         }
+//       }
+//     );
+//     console.log(`${result.modifiedCount || result.nModified} posters updated.`);
+//   } catch (err) {
+//     console.error("Error updating posters:", err);
+//   }
+// };
+
+// updateAllPosters();
 
 start();
 const dbUtils = require('./utils/dbUtils');

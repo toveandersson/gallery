@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Poster = require('../models/Poster')
+const { Poster, Jewellery, Mug } = require('../models/Product');
+
 
 async function fetchProductImages(lineItems) {
   const descriptions = lineItems.map(item => item.description);

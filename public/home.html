@@ -15,14 +15,12 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap" rel="stylesheet"> -->
         <!-- stylesheet -->
-        <link rel="stylesheet" href="../styles/normalize.css">
         <link rel="stylesheet" href="../styles/styles.css">
         <!-- font awesome cdn -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
-        <script src="../app.js" defer></script>
         <script src="../scripts/scripts.js" defer></script>
         <script src="../scripts/postersData.js" defer></script>
         <!-- google adsense -->
@@ -34,7 +32,7 @@
     <!-- overlay for mobile -->
     <div id="overlay">
         <div class="close-button">
-            <i class="fa fa-times" title="button to close mobile navigation" onclick="off()"></i>
+            <i class="fa fa-times" title="button to close mobile navigation" onclick="hideOverlay()"></i>
         </div>
         <div class="overlay-text">
             <a href="/home"><mark>Home</mark></a>
@@ -53,8 +51,8 @@
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png" alt="painting" style="width: 2.5rem;"loading="lazy" >
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: .8rem;"id="sun"> 
-                        <img src="/images\moon (2).png"style="width: 2rem; margin: .8rem;" id="moon"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: .8rem;"class="sun"> 
+                        <img src="/images\moon (2).png"style="width: 2rem; margin: .8rem;" class="moon"> 
                     </button>
                 </div>
                 <div id="right-side">
@@ -72,12 +70,12 @@
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png"  alt="painting" style="width: 2.5rem;"loading="lazy" >
                     </a>
                     <button id="changeColorBtn" onclick="nightmodeSwitch()">
-                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"id="sun-m">  
-                        <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" id="moon-m"> 
+                        <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"class="sun">  
+                        <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" class="moon"> 
                     </button>
                 </div>
                 <div id="right-side">
-                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="on()"></i>
+                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="displayOverlay()"></i>
                 </div>
             </nav>
         </div>
