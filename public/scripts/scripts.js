@@ -54,11 +54,11 @@ function hideMarks(className, hiddenClass, shouldHide) {
         }
     }
 }
-function saveScrollPosition(goBackToPage) {
+function storePageScrollData(goBackToPage) {
     localStorage.setItem("scrollPosition", window.scrollY);
     localStorage.setItem("goBackToPage", goBackToPage);
 }
-function scrollToSavedPos(){
+function scrollToStoredPos(){
     const savedScrollPosition = localStorage.getItem("scrollPosition");
     if (savedScrollPosition !== null) {  window.scrollTo(0, Number(savedScrollPosition));} // Ensure it's a number  
 }
@@ -76,7 +76,6 @@ function moveChild() {
         }
     }
 }
-window.addEventListener('resize', moveChild); 
 // -------------- ^ STYLE AND APPEREANCE ^ --------------- //
 class CartItem {
     constructor(id, name, price, size, images = [], quantity = 1, itemType = "poster", set = 0, unique = false) { //set (collection) number for special sorting, unique if there is only one item and i want to add some text saying that?
@@ -99,7 +98,7 @@ const freeShippingMin = 120;
 
 document.addEventListener("DOMContentLoaded", () => {
     if (body.dataset.page === 'home'){
-        document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
+        //document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
     }
     if(body.dataset.page === 'success'){
         displayUserPurchaseInformation();
@@ -163,11 +162,11 @@ async function buildPosterCards(data, posterGrid){
         image.src = product.image;
 
         const imageLink = document.createElement('a');
-        imageLink.setAttribute('onclick', `saveScrollPosition('${product.type}');`);
+        imageLink.setAttribute('onclick', `storePageScrollData('${product.type}');`);
         imageLink.href = `/posters/${product._id}`;
 
         const link = document.createElement('a');
-        link.setAttribute('onclick', `saveScrollPosition('${product.type}')`);
+        link.setAttribute('onclick', `storePageScrollData('${product.type}')`);
         link.setAttribute('class', 'poster-link');
         link.href = `/posters/${product._id}`;
 
@@ -177,6 +176,10 @@ async function buildPosterCards(data, posterGrid){
         const title = document.createElement('h3');
         title.setAttribute('id', 'title');
         title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
+        title.style.textDecoration = "underline";
+        title.style.textDecorationThickness = ".3rem";
+        title.style.textDecorationStyle ="dotted";
+       // title.style.textDecorationSkipInk="none";
 
         const add = document.createElement('button');
         add.setAttribute('type', 'button');
@@ -236,7 +239,7 @@ async function buildPosterCards(data, posterGrid){
         checkIfOut(selectSizes, selectSizes.options, price_text);
     });
     
-    scrollToSavedPos();
+    scrollToStoredPos();
     window.addEventListener('resize', moveChild);
     moveChild(); // Run once on page load
 }

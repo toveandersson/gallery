@@ -2,14 +2,18 @@
     font-family: "Font Awesome 6 Free";
 }
 :root {
-    --yellow: #efcf43;
-    --yellow-rgb: rgba(250, 214, 57, 0.887);
+    --yellow: #fad537;
+    --pink: #fd5aaa;
+    /* #efcf43; */
+    --yellow-rgb: #fee767d4 ;
+    /* rgba(248, 234, 172, 0.887); */
+    /* rgba(250, 214, 57, 0.887); */
     --dark-yellow: #876c15;
      /* #876c15;  #caaf45; */
     --dark-text: #071705;
     --another-dark-text: #432307;
     --very-light: #fdf8e5;
-    --lighter-yellow:  #f1d661;
+    --lighter-yellow:  #f9da52;
     --lighter-dark-gb:  #0f280d;
     --light-green: #173014;
 }
@@ -19,18 +23,18 @@
     --main-bg-color-rgba: var(--yellow-rgb);
     --h1-color: var(--dark-yellow);
     --text-color: var(--dark-text);
-    --stuff-background-color: white;
+    --stuff-background-color: #fff9e2;
     --bg-text: var(--another-dark-text);
     --h2-text-color: var(--very-light);
     --light: var(--very-light);
     --slightly-lighter-bg: var(--lighter-yellow);
-    --lighter-bg: #f6df75;
+    --lighter-bg: rgb(250, 228, 131);
     --light-bg: var(--light);
 }
 
 .nightmode {
     --main-bg-color: var(--dark-text);
-    --main-bg-color-rgba: rgba(07,17,05,.8);
+    --main-bg-color-rgba: rgba(18, 30, 15, 0.8);
     --h1-color: var(--dark-yellow);
     --text-color: var(--dark-yellow);
     --stuff-background-color: var(--yellow);
@@ -39,7 +43,7 @@
     --light: var(--very-light);
     --slightly-lighter-bg: var(--lighter-dark-gb);
     --lighter-bg: #193217e2;
-    --light-bg: hotpink;
+    --light-bg: var(--pink);
 }
 
 #changeColorBtn {
@@ -57,8 +61,12 @@ option[data-disabled="true"] {
 
 /* --------------------------------------------- */
 
+a {
+   text-decoration-color: var(--h2-text-color); 
+}
+
 mark {
-    background-color: HotPink;
+    background-color: var(--pink);
 }
 
 .mark-hidden {
@@ -67,7 +75,7 @@ mark {
 }
 
 .show-mark {
-    background-color: HotPink;
+    background-color: var(--pink);
     color: inherit; /* Ensures text color remains the same */
 }
 
@@ -562,12 +570,16 @@ p {
     padding: .5rem;
     margin: .5rem;
     border-radius: .5rem;
-    background-color: var(--stuff-background-color);
-    color: var(--text-color);
+    /* background-color: var(--stuff-background-color); */
+    color: var(--light);
     /* cursor: context-menu; */
     /* font-size: calc(1rem + 0.5vw); */
     word-wrap: break-word;         /* Break words when necessary */
     overflow-wrap: break-word;     /* Break long words */
+}
+.poster-flex-child-left {
+    color: var(--light);
+    margin:3rem;
 }
 
 /* denna används, oklart om andra två add gör det? */
@@ -578,6 +590,8 @@ p {
     /* position: static; */
     top: 0;
     right: 0;
+    background-color: var(--stuff-background-color);
+    color: black;
 }
 
 .add-selected button {
@@ -716,10 +730,11 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
 .shopping-cart {
     display: grid; 
     grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 1rem;
-    max-width: 1600px;
-    margin: auto;
-    width: 100%;
+    /* max-width: 1600px; */
+    align-items: stretch;        
+    grid-auto-rows: 1fr; 
 }
 
 .cart-item {
@@ -850,7 +865,7 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
     /* border-radius: 1.5rem; */
     /* font-size: 1.5rem; */
     text-decoration: none;
-    background-color: hotpink;
+    background-color: var(--pink);
 }
 
 .about-child2-street div a {
