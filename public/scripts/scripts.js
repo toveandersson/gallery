@@ -179,14 +179,14 @@ async function buildPosterCards(data, posterGrid){
         title.style.textDecoration = "underline";
         title.style.textDecorationThickness = ".4rem";
         //title.style.textDecorationStyle ="wavy";
-        title.style.textDecorationColor = "rgba(253, 90, 170, 0.1)";
+        title.style.textDecorationColor = "var(--decoration)";
        // title.style.textDecorationSkipInk="none";
 
         const add = document.createElement('button');
         add.setAttribute('type', 'button');
         add.setAttribute('id', 'add-button-id');
         add.setAttribute('onclick', `addToCart('${product._id}');`);
-        add.setAttribute('class', 'fa-plus poster-flex-child add-button');
+        add.setAttribute('class', 'fa-plus poster-flex-child add-button button');
         add.style.margin = "0rem";
         
         const inner_flex = document.createElement('div');

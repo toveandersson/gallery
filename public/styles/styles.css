@@ -30,6 +30,7 @@
     --slightly-lighter-bg: var(--lighter-yellow);
     --lighter-bg: rgb(250, 228, 131);
     --light-bg: var(--light);
+    --decoration: rgba(253, 90, 170, 0.1);
 }
 
 .nightmode {
@@ -37,13 +38,14 @@
     --main-bg-color-rgba: rgba(18, 30, 15, 0.8);
     --h1-color: var(--dark-yellow);
     --text-color: var(--dark-yellow);
-    --stuff-background-color: var(--yellow);
+    --stuff-background-color: var(--light);
     --bg-text: var(--light);
     --h2-text-color: var(--yellow);
     --light: var(--very-light);
     --slightly-lighter-bg: var(--lighter-dark-gb);
     --lighter-bg: #193217e2;
     --light-bg: var(--pink);
+    --decoration:rgb(253 90 170 / 51%);
 }
 
 #changeColorBtn {
@@ -422,7 +424,7 @@ p {
 .paintings h2, h1, .jewellery h2, h1, .mugs h2, h1 {
     font-size: 2.5rem;
     text-align: center;
-    color: var(--h2-text-color);
+    color: var(--light);
     margin-bottom: 3rem;
     margin-top: 3rem;
 }
@@ -965,11 +967,16 @@ form {
     padding: 1rem 3rem;
     background-color: var(--light);
     color: black;
-    border: none;
-    border-radius: 5rem;
     font-size: 2.2rem;
     align-self: center;
     margin: 1rem;
+    border-radius: 5rem;
+}
+
+.button{
+    border: var(--main-bg-color);
+    border-style: double;
+    border-width: .2rem;
 }
 
 .clear-btn {
