@@ -10,11 +10,9 @@ const productSchema = new mongoose.Schema({
     sizes: { type: Map, of: Number },
     unique: { type: Boolean, default: false },
     set: { type: Number,  default: 0 },
-    type: { type: String, default: 'poster'}
+    type: { type: String, enum: ['poster', 'mug', 'jewellery', 'other'], default: 'poster' }
 });
 
-const Poster = mongoose.model('Poster', productSchema, 'posters');
-const Jewellery = mongoose.model('Jewellery', productSchema, 'jewellery');
-const Mug = mongoose.model('Mug', productSchema, 'mugs');
+const Product = mongoose.model('Product', productSchema);
 
-module.exports = { Poster, Jewellery, Mug };
+module.exports =  Product ;

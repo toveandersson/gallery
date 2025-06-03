@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const { Poster, Jewellery, Mug } = require('../models/Product');
-
+const Product = require('../models/Product');
 
 async function fetchProductImages(lineItems) {
   const descriptions = lineItems.map(item => item.description);
   
-  const products = await Poster.find({ name: { $in: descriptions } });
+  const products = await Product.find({ name: { $in: descriptions } });
 
   return lineItems.map(item => {
     const product = products.find(p => p.name === item.description);
@@ -21,7 +20,7 @@ async function fetchProductImages(lineItems) {
 
 const updateSizes = async () => {
   try {
-    const posters = await Poster.find();
+    const posters = await Product.find();
 
     for (let poster of posters) {
       if (poster.sizes && poster.sizes.size > 0) {
@@ -63,20 +62,23 @@ const updateSizes = async () => {
 //   }
 // }
 
-async function checkIfPostersInStock(posterId, size, quantity) {
+async function checkIfProductInStock(productId, size, quantity) {
   try {
-    console.log('poster id:: - ',posterId);
-      const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
-      if (!poster) {
-          return { success: false, message: `Poster with id ${posterId} not found in the database` };
+      console.log(" check product stock ",productId, size, quantity);
+      const product = await Product.findOne({ _id: productId }); 
+      if (!product) {
+          return { success: false, message: `Product with id ${productId} not found in the database` };
       }
-
-      const availableStock = poster.sizes.get(size) || 0;
+      
+      const availableStock = product.sizes.get(size); //poster.sizes.has(size) change to this?!
+      if (!availableStock){
+        return {succes: false, message: "no such size, in dbUtils check"}
+      }
       if (availableStock < quantity) {
-          return { success: false, quantity: quantity, size: size, name: poster.name, message: `There is no longer ${quantity} of poster ${poster.name} with size ${size} in stock`};
+        return { success: false, quantity: quantity, size: size, name: product.name, type: product.type};
       }
 
-      return { success: true }; // Stock is fine
+      return { success: true, name: product.name, availableStock: availableStock }; // Stock is fine
     } catch (error) {
         console.error("Error checking poster stock:", error);
         return { success: false, message: "Error checking stock" };
@@ -100,7 +102,7 @@ async function reducePosterSizes(postersToUpdate) {
           throw new Error("No valid poster updates provided.");
       }
 
-      await Poster.bulkWrite(bulkOperations);
+      await Product.bulkWrite(bulkOperations);
 
       console.log(`Updated sizes for ${postersToUpdate.length} posters successfully.`);
       return { success: true };
@@ -110,10 +112,9 @@ async function reducePosterSizes(postersToUpdate) {
   }
 }
 
-
 const fixSizeNames = async () => {
   try {
-    const posters = await Poster.find();
+    const posters = await Product.find();
 
     for (let poster of posters) {
       if (poster.sizes && poster.sizes.size > 0) {
@@ -142,6 +143,4 @@ const fixSizeNames = async () => {
   }
 };
 
-
-
-module.exports = { fetchProductImages, reducePosterSizes, checkIfPostersInStock, updateSizes, fixSizeNames };
+module.exports = { fetchProductImages, reducePosterSizes, checkIfProductInStock, updateSizes, fixSizeNames };

@@ -55,10 +55,20 @@ const start = async () =>{
 // dont know with this?
 //app.get('/create-checkout-session/:amount');
 
-// const postersData = require('./public/scripts/postersData');
-// const { Poster, Jewellery, Mug } = require('./models/Product');
+const postersData = require('./public/scripts/postersData');
 
+// const { Poster, Product} = require('./models/Product');
 
+// async function movePostersToProducts() {
+//   try {
+//     const posters = await Poster.find();
+//     await Product.insertMany(posters);
+//     await Poster.deleteMany(); // optional: remove from original
+//     console.log('Posters moved to Products successfully.');
+//   } catch (error) {
+//     console.error('Error moving posters:', error);
+//   }
+// }
 //
 // const fetchPoster = (fetchId) =>{
 //       return Poster.find({id: fetchId})
@@ -96,3 +106,5 @@ const start = async () =>{
 start();
 const dbUtils = require('./utils/dbUtils');
 //dbUtils.fixSizeNames();
+
+//movePostersToProducts();

@@ -93,54 +93,38 @@ class CartItem {
 let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity, item.type, item.set, item.unique)) || [];
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
 const shippingPrices = [18, 38];
-const posterPrices = [45, 65];
+//const posterPrices = [45, 65];
 const freeShippingMin = 120;
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (body.dataset.page === 'home'){
+    const page = body.dataset.page;
+    if (page === 'home'){
         //document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
     }
-    if(body.dataset.page === 'success'){
+    if(page === 'success'){
         displayUserPurchaseInformation();
         updateStock();
         clearCart();
         return;
     }
     setNightMode();
-    if (body.dataset.page === 'order'){
+    if (page === 'order'){
         addCartItems();
         document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
         addCheckoutButton();
     }
-    if (body.dataset.page === 'product'){
+    const productPages = ['poster', 'mug', 'jewellery'];
+    if (page === 'product'){
         showProductInfo();
-        const page = localStorage.getItem("goBackToPage");
-        const noPlural = ['jewellery']; // Add more exceptions here if needed
-        const suffix = noPlural.includes(page) ? '' : 's';
-        document.getElementsByClassName("go-back-btn")[0].href = '/' + page + suffix;
+        document.getElementsByClassName("go-back-btn")[0].href = '/' + localStorage.getItem("goBackToPage");
     }
-    else if (body.dataset.page !== 'posters'){
+    else if (!productPages.includes(page)){
         localStorage.setItem("scrollPosition", null);
-    }
-    if (body.dataset.page === 'mugs'){
-    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-        fetch('/getAllMugs')
-            .then(res => res.json())
-            .then(data => buildPosterCards(data, posterGrid))
-            .catch(err => console.error('Error:', err));
-    }
-    if (body.dataset.page === 'jewellery'){
-    const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-        fetch('/getAllJewellery')
-            .then(res => res.json())
-            .then(data => buildPosterCards(data, posterGrid))
-            .catch(err => console.error('Error:', err));
-    }
-    if (body.dataset.page !== 'posters'){
+        console.log("do not include: ",page);
         return;
     }
     const posterGrid = document.getElementsByClassName('painting-grid-posters')[0];
-    fetch('/getAllPosters')
+    fetch(`/get-all-products/${page}`)
         .then(res => res.json())
         .then(data => buildPosterCards(data, posterGrid))
         .catch(err => console.error('Error:', err));
@@ -162,7 +146,10 @@ async function buildPosterCards(data, posterGrid){
         image.src = product.image;
 
         const imageLink = document.createElement('a');
-        imageLink.setAttribute('onclick', `storePageScrollData('${product.type}');`);
+        //imageLink.setAttribute('onclick', `storePageScrollData('${product.type}');`); 
+        const singularPages = ['jewellery'];
+        const s = singularPages.includes(product.type) ? '' : 's';
+        imageLink.setAttribute('onclick', `storePageScrollData('${product.type+s}')`);
         imageLink.href = `/posters/${product._id}`;
 
         const link = document.createElement('a');
@@ -185,7 +172,17 @@ async function buildPosterCards(data, posterGrid){
         const add = document.createElement('button');
         add.setAttribute('type', 'button');
         add.setAttribute('id', 'add-button-id');
-        add.setAttribute('onclick', `addToCart('${product._id}');`);
+        //add.setAttribute('onclick', `addToCart('${product._id}');`);
+        add.addEventListener('click', async () => {
+            const selectedSize = checkAndGetSelectedSize(product._id);
+            if (!selectedSize) return;
+            const foundItem = shoppingCart.find(item => item.id === product._id && item.size === selectedSize);
+            const sizeQuantityToCheck = foundItem ? foundItem.quantity + 1 : 1;
+            const backendData = await sizeBackendCheck(product._id, selectedSize, sizeQuantityToCheck);
+            if (!backendData) return;
+
+            addToCart(product._id, foundItem, selectedSize, backendData);
+        });
         add.setAttribute('class', 'fa-plus poster-flex-child add-button button');
         add.style.margin = "0rem";
         
@@ -244,76 +241,93 @@ async function buildPosterCards(data, posterGrid){
     window.addEventListener('resize', moveChild);
     moveChild(); // Run once on page load
 }
-async function addToCart(posterId) {
+function checkAndGetSelectedSize(posterId){
     const selectElement = document.getElementById(`${posterId}`);
     const selectedSize = selectElement?.value;
     if (!selectedSize) {
         alert("Please select a size before adding to cart!");
-        return; 
+        return null; 
     }
-
     const selectedOption = selectElement?.selectedOptions[0]; 
     if (selectedOption && selectedOption.getAttribute("data-disabled") === "true") {
         alert("This size is currently out of stock. Please choose another.");
-        return; 
+        return null; 
     }
-
-    try {
-        const response = await fetch(`/getPosterWithId/${posterId}`);
-        const data = await response.json();
-
-        const foundItem = shoppingCart.find(item => item.id === posterId && item.size === selectedSize);
-        const imagesArray = [data.image];
-
-        let testQuantity = foundItem ? foundItem.quantity + 1 : 1;
-        // Check stock before adding to cart
-        const stockResponse = await fetch('/check-stock-item', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                id: posterId,  // Change posterId → id 
+    return selectedSize;
+}
+async function sizeBackendCheck(productId, selectedSize, sizeQuantityToCheck){
+    const stockResponse = await fetch('/check-stock-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+                id: productId,  
                 size: selectedSize, 
-                quantity: testQuantity 
+                quantity: sizeQuantityToCheck 
             })
         });
 
-        const stockData = await stockResponse.json();
-        console.log("Stock check response:", stockData);
-        const s = (stockData.quantity-1 > 1) ? 's' :'';
+    const stockData = await stockResponse.json();
+    console.log("Stock response:", stockData); 
+    const s = (stockData.quantity-1 > 1) ? 's' :'';
 
-        if (!stockData.success) {
-            alert(`The last ${stockData.quantity-1} item${s} in stock of ${stockData.name} in size ${stockData.size} is already in your cart 😬`);
-            return;
-        }
-        console.log("sel ind: ",document.getElementById(`${posterId}`).selectedIndex -1);
-        // Add to cart logic
-        if (foundItem) {
-            foundItem.quantity++; // Increase quantity if already in cart
-        } 
-        else {
-            let newItem = new CartItem(
-                posterId, 
-                data.name,
-                //shoppingCart.type.poster ?? poster
-                posterPrices[document.getElementById(`${posterId}`).selectedIndex -1], 
-                //posterPrices[document.getElementById(`s${posterId}`).selectedIndex], 
-                selectedSize, 
-                imagesArray
-            );
-        shoppingCart.push(newItem);
-        console.log('New item added: ', newItem);
-        }
-
-        // Save cart to local storage
-        localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-        console.log('Cart from storage:', localStorage.getItem("shoppingCart"));
-
-    } catch (error) {
-        console.error("Error adding to cart:", error);
+    if (!stockData.success) {
+        alert(`The last ${stockData.quantity-1} item${s} in stock of ${stockData.name} in size ${stockData.size} is in your cart`);
+        return;
+    }
+    return stockData;
+}
+async function retrieveProductImage(productId, productType){
+    try {
+        console.log("id type: ",productId,productType);
+        const response = await fetch(`/get-product/${productId}/${productType}`);
+        const data = await response.json();
+        console.log(data);
+        const imagesArray = [data.image];
+        return imagesArray;
+    } 
+    catch (error){
+       console.error("Error retrieving images:", error); 
     }
 }
+async function retrievePosterPrices(){
+    try {
+        const response = await fetch(`/get-price-info`);
+        const data = await response.json();
+        return data.posterPrices;
+    } 
+    catch (error){
+       console.error("Error retrieving priceinfo:", error); 
+    }
+}
+async function addToCart(productId, foundItem, selectedSize, data) {
+    console.log("data", data, productId,foundItem);
+    const imagesArray = await retrieveProductImage(productId, data.type);
+    const posterPrices = await retrievePosterPrices()
+    const price = data.type === 'poster' ? posterPrices[document.getElementById(`${productId}`).selectedIndex -1] : data.price;
+    if (foundItem) {
+        foundItem.quantity++; // Increase quantity if already in cart
+    } 
+    else {
+        let newItem = new CartItem(
+            productId, 
+            data.name,
+            price, 
+            selectedSize, 
+            imagesArray,
+            1,
+            data.type,
+        );
+    shoppingCart.push(newItem);
+    console.log('New item added: ', newItem);
+    }
+
+    // Save cart to local storage
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
+    console.log('Cart from storage:', localStorage.getItem("shoppingCart"));
+
+} 
 function calculatePrices(){
     let price = 0;
     shoppingCart.forEach(item=>{
@@ -329,7 +343,7 @@ function calculatePrices(){
     return amount_shipping;
 }
 async function checkStock(posterId,selectedSize,testQuantity) {
-    const valueInStockResult = await valueInStock(testQuantity); // Assuming valueInStock() is the function you're using
+    const valueInStockResult = await valueInStock(testQuantity); 
     return valueInStockResult;
 }
 async function valueInStock(posterId,selectedSize,testQuantity){
@@ -379,7 +393,6 @@ function addCheckoutButton(){
     }
 
     async function checkStockBeforeCheckout(buyingSizesAmount) {
-        console.log('buying sizes: am',buyingSizesAmount);
         const response = await fetch("/check-stock", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -387,13 +400,14 @@ function addCheckoutButton(){
         });
     
         const result = await response.json();
+        console.log("stock response:: ",result);
         if (!result.success) {
             console.log("stock: ", false);
             alert(result.message);
             return false;
         }
         
-        return true; // Stock is fine
+        return {success: true, lastItemsLenth: result.lastItemsLenth, lastItems: result.lastItems || null, message: result.message}; 
 }
 
 document.getElementById("checkout-button").addEventListener("click", async (event) => {
@@ -407,8 +421,20 @@ document.getElementById("checkout-button").addEventListener("click", async (even
     console.log("sizes amount: ", buyingSizesAmount);
     const stock = await checkStockBeforeCheckout(buyingSizesAmount);
     console.log("stock: ", stock);
-    if (!stock){ 
+    if (!stock.success){ 
         return;}
+    const pluralText= stock.lastItemsLenth > 1 ? 'them' : 'it';
+    if (stock.lastItems){ 
+        const text = 
+`Note that you have the last item of:
+${stock.lastItems} 
+in your cart,
+
+Somebody could buy ${pluralText} before you on the next page and the Stripe payment system will not know! 
+
+(Of course you'll get informed in that case and get a refund for the missing item)
+`
+        alert(text);}
     let amount_shipping = calculatePrices();
     const country = countrySelect.value;
     const currency = currencySelect.value;
@@ -448,13 +474,13 @@ function addCartItems() {
     itemGrid.innerHTML = "";  // Clear previous items to prevent duplication
     // document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
     // document.getElementById('total-price').innerText = `Total price: ${price + (price > 120 ? 0 : shoppingCart.length === 0 ?  " " : 18)} kr`;
-    fetch('/getAllPosters') //byt ut till getAllProducts
+    fetch('/get-all-products') 
     .then(response => response.json())
-    .then(postersData => {
+    .then(productData => {
         shoppingCart.forEach(cartItem => {
-            const itemPoster = postersData.find(poster => poster._id === cartItem.id);
-            if (!itemPoster) {
-                console.warn("Poster not found for ID:", cartItem.id);
+            const product = productData.find(product => product._id === cartItem.id);
+            if (!product) {
+                console.warn("Product not found for ID:", cartItem.id);
                 return;
             }
             const imgBg = document.createElement('div');
@@ -466,13 +492,13 @@ function addCartItems() {
             
             const image = document.createElement('img');
             image.setAttribute('class', 'thumbnail');
-            image.src = itemPoster.image;
+            image.src = product.image;
             
             const poster_flex = document.createElement('div');
             poster_flex.setAttribute('class', 'order-poster-flex');
             
             const title = document.createElement('h2');
-            title.innerText = `${itemPoster.name}`;
+            title.innerText = `${product.name}`;
             title.style.marginBottom = '.2rem';
             title.style.color = "var(--light)";
             
@@ -486,11 +512,17 @@ function addCartItems() {
             quantityInput.min = "1";
             quantityInput.max = "10";
             
-            quantityInput.addEventListener("change", (event) => {
-                cartItem.quantity = Number(event.target.value);
+            quantityInput.addEventListener("change", async (event) => {
+                console.log("check..:",cartItem.id, cartItem.size, Number(event.target.value));
+                const check = await sizeBackendCheck(cartItem.id, cartItem.size, Number(event.target.value));
+                if (!check){
+                    quantityInput.value = cartItem.quantity;
+                    return;
+                }
                 // checkStock(cartItem.id,selectedSize,cartItem.quantity).then((valueInStock) => {
                     //     console.log('value in stock: ',valueInStock);
                     // if (!valueInStock) {return;}});
+                cartItem.quantity = Number(event.target.value);
                 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
                 calculatePrices();
             });
@@ -548,29 +580,30 @@ async function updateStock(){
 }
 function showProductInfo(){
     const urlParams = new URLSearchParams(window.location.search);
-    const posterData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
+    const productData = Object.fromEntries(urlParams.entries()); // Parse query parameters into an object
     const formContainer = document.getElementsByClassName('formContainer')[0];
-    if (posterData) {
-        document.getElementById('product-img').src = posterData.image;
-        document.getElementById('product-title').textContent = posterData.name;
-        document.getElementById('product-desc').textContent = posterData.desc + ' The image quality is reduzed, look at the homepage to see a more realistic quality of the print!';
-        document.getElementsByClassName('add-button')[0].id = posterData._id;
-        document.getElementsByClassName('product-select')[0].id = posterData._id;
-        formContainer.id = 'form'+posterData._id;
+    if (productData) {
+        document.getElementById('product-img').src = productData.image;
+        document.getElementById('product-title').textContent = productData.name;
+        document.getElementById('product-desc').textContent = productData.desc + ' The image quality is reduzed, look at the homepage to see a more realistic quality of the print!';
+        document.getElementsByClassName('add-button')[0].id = productData._id;
+        document.getElementsByClassName('product-select')[0].id = productData._id;
+        formContainer.id = 'form'+productData._id;
     }
-    fetch(`/getPosterWithId/${posterData._id}`)
+    fetch(`/get-product/${productData._id}`)
     .then(response => response.json())
-    .then(selectedPoster => {
-        if (!selectedPoster) {
-            console.error("Poster not found");
+    .then(selectedProduct => {
+        if (!selectedProduct) {
+            console.error("Product not found");
             return;
         }
-        const sizes = selectedPoster.sizes; // Extract sizes
+        console.log("data ",selectedProduct);
+        const sizes = selectedProduct.sizes; // Extract sizes
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
             const selectSizes = document.getElementsByClassName('product-select')[0];
             buildSelectSize(selectSizes, sizes, document.getElementById('product-price'));
         }
-        else (console.log("error: sizes doesnt exist or isnt an object etc"));
+        else (console.log("error: no sizes or no object etc"));
     })
     .catch(error => console.error("Error fetching poster:", error));
 }
@@ -609,7 +642,7 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         selectObject.appendChild(option);
     }
 
-    selectObject.addEventListener('change', (event) => {
+    selectObject.addEventListener('change', async (event) => {
         const selectedSize = event.target.value;
         const selectedOption = event.target.selectedOptions[0]; // Get the selected <option>
         const sizesKeys = Object.keys(sizesKeysObject);
@@ -620,6 +653,7 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         formContainer.style.display = 'none';
         removeAddButton(document.getElementById('btn'+selectObject.id));
         
+        const posterPrices = await retrievePosterPrices();
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
             if (body.dataset.page === 'product'){ formContainer.style.display = 'flex'; }
@@ -628,7 +662,8 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
                 createEmailInput(formContainer,selectObject);
                 removeAddButton(document.getElementById('btn'+selectObject.id));
             }
-        } else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
+        }
+        else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
             priceTextObject.textContent = posterPrices[sizesIndex] + "kr";
             showAddButton(document.getElementById('btn'+selectObject.id));
             removeEmailInput(formContainer);
