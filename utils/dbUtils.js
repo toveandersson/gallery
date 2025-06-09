@@ -64,7 +64,6 @@ const updateSizes = async () => {
 
 async function checkIfProductInStock(productId, size, quantity) {
   try {
-      console.log(" check product stock ",productId, size, quantity);
       const product = await Product.findOne({ _id: productId }); 
       if (!product) {
           return { success: false, message: `Product with id ${productId} not found in the database` };
@@ -78,7 +77,7 @@ async function checkIfProductInStock(productId, size, quantity) {
         return { success: false, quantity: quantity, size: size, name: product.name, type: product.type};
       }
 
-      return { success: true, name: product.name, availableStock: availableStock }; // Stock is fine
+      return { success: true, name: product.name, availableStock: availableStock, type: product.type, price: product.price }; // Stock is fine
     } catch (error) {
         console.error("Error checking poster stock:", error);
         return { success: false, message: "Error checking stock" };

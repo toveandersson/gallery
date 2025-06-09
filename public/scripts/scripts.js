@@ -92,11 +92,11 @@ class CartItem {
 }
 let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity, item.type, item.set, item.unique)) || [];
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-const shippingPrices = [18, 38];
-//const posterPrices = [45, 65];
-const freeShippingMin = 120;
+frontendPriceData = {posterPrices: [45, 65],
+    shippingPrices: { domestic: 18, international: 38 },
+    freeShippingMin: 120};
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const page = body.dataset.page;
     if (page === 'home'){
         //document.getElementsByClassName('nav')[0].style.backgroundColor = 'rgba(29, 29, 29, 0.5)';
@@ -132,8 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
 async function buildPosterCards(data, posterGrid){
     data.forEach((product) => {
         if (product.available === false){ return; }
-        //console.log("Poster ID:", poster._id); 
-        
         const imgBg = document.createElement('div');
         imgBg.setAttribute('class', 'imgBg');
 
@@ -164,10 +162,8 @@ async function buildPosterCards(data, posterGrid){
         title.setAttribute('id', 'title');
         title.setAttribute('class', 'poster-flex-child .poster-flex-child-left');
         title.style.textDecoration = "underline";
-        title.style.textDecorationThickness = ".4rem";
-        //title.style.textDecorationStyle ="wavy";
-        title.style.textDecorationColor = "var(--decoration)";
-       // title.style.textDecorationSkipInk="none";
+        title.style.textDecorationThickness = ".4rem"; //title.style.textDecorationStyle ="wavy";
+        title.style.textDecorationColor = "var(--decoration)"; // title.style.textDecorationSkipInk="none";
 
         const add = document.createElement('button');
         add.setAttribute('type', 'button');
@@ -181,7 +177,7 @@ async function buildPosterCards(data, posterGrid){
             const backendData = await sizeBackendCheck(product._id, selectedSize, sizeQuantityToCheck);
             if (!backendData) return;
 
-            addToCart(product._id, foundItem, selectedSize, backendData);
+            addToCart(product._id, foundItem, selectedSize, backendData, selectSizes.selectedIndex);
         });
         add.setAttribute('class', 'fa-plus poster-flex-child add-button button');
         add.style.margin = "0rem";
@@ -232,7 +228,7 @@ async function buildPosterCards(data, posterGrid){
         //inner_flex.classList.add('add-button');
 
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-            buildSelectSize(selectSizes, sizes, price_text);
+            buildSelectSize(selectSizes, sizes, price_text, product.type, product.price);
         }
         checkIfOut(selectSizes, selectSizes.options, price_text);
     });
@@ -283,41 +279,34 @@ async function retrieveProductImage(productId, productType){
         console.log("id type: ",productId,productType);
         const response = await fetch(`/get-product/${productId}/${productType}`);
         const data = await response.json();
-        console.log(data);
         const imagesArray = [data.image];
+        console.log('images:: ',imagesArray);
+         //,'/images/ImgReducedSize/grandma_reduced_size.jpg'
         return imagesArray;
     } 
     catch (error){
        console.error("Error retrieving images:", error); 
     }
 }
-async function retrievePosterPrices(){
-    try {
-        const response = await fetch(`/get-price-info`);
-        const data = await response.json();
-        return data.posterPrices;
-    } 
-    catch (error){
-       console.error("Error retrieving priceinfo:", error); 
-    }
-}
-async function addToCart(productId, foundItem, selectedSize, data) {
-    console.log("data", data, productId,foundItem);
-    const imagesArray = await retrieveProductImage(productId, data.type);
-    const posterPrices = await retrievePosterPrices()
-    const price = data.type === 'poster' ? posterPrices[document.getElementById(`${productId}`).selectedIndex -1] : data.price;
+async function addToCart(productId, foundItem, selectedSize, backendData, selectedIndex) {
+    console.log("data", productId,foundItem,selectedSize,backendData,selectedIndex);
+    const imagesArray = await retrieveProductImage(productId, backendData.type);
+    console.log("img",imagesArray);
+    const posterPrices = frontendPriceData.posterPrices;
+    console.log("type, and prices",backendData);
+    const price = backendData.type === 'poster' ? posterPrices[selectedIndex -1] : backendData.price;
     if (foundItem) {
         foundItem.quantity++; // Increase quantity if already in cart
     } 
     else {
         let newItem = new CartItem(
             productId, 
-            data.name,
+            backendData.name,
             price, 
             selectedSize, 
             imagesArray,
             1,
-            data.type,
+            backendData.type,
         );
     shoppingCart.push(newItem);
     console.log('New item added: ', newItem);
@@ -334,13 +323,12 @@ function calculatePrices(){
         console.log('price: ',item.price,' quantity : ',item.quantity);
         price += item.price * item.quantity;
     })
-    let amount_shipping = price > freeShippingMin ? 0 : shippingPrices[0];
+    console.log(frontendPriceData.shippingPrices);
+    let amount_shipping = price > frontendPriceData.freeShippingMin ? 0 : frontendPriceData.shippingPrices.domestic;
     amount_shipping = Math.round(amount_shipping);
     price = Math.round(price);
     document.getElementById('price').innerText = `Price: ${price} kr\u2003\u2003\u2003${price > 120 ? "free shipping!" : shoppingCart.length === 0 ?  " " : "shipping: 18kr"}`;
     document.getElementById('total-price').innerText = `Total price: ${price + amount_shipping} kr`;
-
-    return amount_shipping;
 }
 async function checkStock(posterId,selectedSize,testQuantity) {
     const valueInStockResult = await valueInStock(testQuantity); 
@@ -392,81 +380,60 @@ function addCheckoutButton(){
         currencySelect.value = defaultCurrency; // Set default currency
     }
 
-    async function checkStockBeforeCheckout(buyingSizesAmount) {
-        const response = await fetch("/check-stock", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ buyingSizesAmount })
-        });
-    
-        const result = await response.json();
-        console.log("stock response:: ",result);
-        if (!result.success) {
-            console.log("stock: ", false);
-            alert(result.message);
-            return false;
+    document.getElementById("checkout-button").addEventListener("click", async (event) => {
+        event.preventDefault(); // Prevent default form submission
+        const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+        const buyingSizesAmount = shoppingCart.map(item => ({
+            id: item.id,
+            size: item.size,
+            quantity: item.quantity
+        }));
+        console.log("sizes amount: ", buyingSizesAmount);
+        const stock = await checkStockBeforeCheckout(buyingSizesAmount);
+        console.log("stock: ", stock);
+        if (!stock.success){ 
+            return; }
+        const pluralText= stock.lastItemsLenth > 1 ? 'them' : 'it';
+        if (stock.lastItems){ 
+            const text = 
+    `Note that you have the last item of:
+    ${stock.lastItems} 
+    in your cart
+
+    Somebody could buy ${pluralText} before you on the next page and the Stripe payment system will not know! 
+
+    (Of course you'll get informed in that case and get a refund for the missing item)
+    `
+            alert(text);}
+        const country = countrySelect.value;
+        const currency = currencySelect.value;
+        document.documentElement.setAttribute('lang', country);
+        console.log('lang: ',document.documentElement.getAttribute('lang'));
+
+        if (shoppingCart.length === 0) {
+            alert("Your cart is empty!");
+            return;
         }
-        
-        return {success: true, lastItemsLenth: result.lastItemsLenth, lastItems: result.lastItems || null, message: result.message}; 
-}
 
-document.getElementById("checkout-button").addEventListener("click", async (event) => {
-    event.preventDefault(); // Prevent default form submission
-    const shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-    const buyingSizesAmount = shoppingCart.map(item => ({
-        id: item.id,
-        size: item.size,
-        quantity: item.quantity
-    }));
-    console.log("sizes amount: ", buyingSizesAmount);
-    const stock = await checkStockBeforeCheckout(buyingSizesAmount);
-    console.log("stock: ", stock);
-    if (!stock.success){ 
-        return;}
-    const pluralText= stock.lastItemsLenth > 1 ? 'them' : 'it';
-    if (stock.lastItems){ 
-        const text = 
-`Note that you have the last item of:
-${stock.lastItems} 
-in your cart,
+        console.log({ cartItems: shoppingCart, country : country || "unknown", currency: currency});
+        const response = await fetch("/create-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ cartItems: shoppingCart, country : country || "unknown", currency: currency}),
+        });
 
-Somebody could buy ${pluralText} before you on the next page and the Stripe payment system will not know! 
-
-(Of course you'll get informed in that case and get a refund for the missing item)
-`
-        alert(text);}
-    let amount_shipping = calculatePrices();
-    const country = countrySelect.value;
-    const currency = currencySelect.value;
-    document.documentElement.setAttribute('lang', country);
-    console.log('lang: ',document.documentElement.getAttribute('lang'));
-
-    if (shoppingCart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
-
-    console.log({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency});
-    if (country !== 'SE'){
-        amount_shipping = shippingPrices[1];
-    }
-    const response = await fetch("/create-checkout-session", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cartItems: shoppingCart, amount_shipping, country : country || "unknown", currency: currency}),
+        const data = await response.json();
+        if (data.url) {
+            window.location.href = data.url; // Redirect to Stripe checkout
+        } else {
+            console.error("Error creating checkout session:", data.error);
+        }
     });
-
-    const data = await response.json();
-    if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe checkout
-    } else {
-        console.error("Error creating checkout session:", data.error);
-    }
-});
-initializeCurrencySelect();
+    initializeCurrencySelect();
 }
+
 function addCartItems() {
     console.log("Adding updated list to cart:", shoppingCart);
     calculatePrices();
@@ -531,7 +498,6 @@ function addCartItems() {
             size.innerText = cartItem.size;
             size.style.margin = '0rem';
             size.style.fontFamily = '"Font Awesome 6 Free", sans-serif';
-;
             //size.style.marginBottom = '1rem';
             
             const price = document.createElement('p');
@@ -601,7 +567,7 @@ function showProductInfo(){
         const sizes = selectedProduct.sizes; // Extract sizes
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
             const selectSizes = document.getElementsByClassName('product-select')[0];
-            buildSelectSize(selectSizes, sizes, document.getElementById('product-price'));
+            buildSelectSize(selectSizes, sizes, document.getElementById('product-price'), selectedProduct.type, selectedProduct.price);
         }
         else (console.log("error: no sizes or no object etc"));
     })
@@ -612,7 +578,8 @@ function setOptionsAbled(options){
         option.disabled = "false";
     }
 }
-function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
+function buildSelectSize(selectObject, sizesKeysObject, priceTextObject, productType, productPrice){
+    console.log("building: ",selectObject,sizesKeysObject,priceTextObject);
     const sizesTitleOption = document.createElement("option");
     sizesTitleOption.value = "";
     sizesTitleOption.disabled = true;
@@ -631,7 +598,6 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         option.setAttribute('value', size);                                                                                                   
         if (quantity <= 0){
             option.setAttribute('data-disabled', true);
-            //option.selected = false;
         }
         else if (!hasInStock) {
             option.selected = true; // Set the first available as selected
@@ -641,8 +607,7 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         option.innerHTML = size;
         selectObject.appendChild(option);
     }
-
-    selectObject.addEventListener('change', async (event) => {
+    selectObject.addEventListener('change', (event) => {
         const selectedSize = event.target.value;
         const selectedOption = event.target.selectedOptions[0]; // Get the selected <option>
         const sizesKeys = Object.keys(sizesKeysObject);
@@ -653,7 +618,6 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
         formContainer.style.display = 'none';
         removeAddButton(document.getElementById('btn'+selectObject.id));
         
-        const posterPrices = await retrievePosterPrices();
         if (selectedOption.getAttribute("data-disabled") === "true") {
             priceTextObject.textContent = "out";
             if (body.dataset.page === 'product'){ formContainer.style.display = 'flex'; }
@@ -663,15 +627,21 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject){
                 removeAddButton(document.getElementById('btn'+selectObject.id));
             }
         }
-        else if (sizesIndex !== -1 && sizesIndex < posterPrices.length) {
-            priceTextObject.textContent = posterPrices[sizesIndex] + "kr";
+        else if (productType !== 'poster'){
+            priceTextObject.textContent = productPrice+'kr';
             showAddButton(document.getElementById('btn'+selectObject.id));
             removeEmailInput(formContainer);
-        } else {
-            priceTextObject.textContent = posterPrices[0] + "kr"; // Default price
-            showAddButton(document.getElementById('btn'+selectObject.id));
-            removeEmailInput(formContainer);
+            return;
         }
+        else if (sizesIndex !== -1 && sizesIndex < frontendPriceData.posterPrices.length) {
+            console.log("the price ",sizesIndex,frontendPriceData.posterPrices,frontendPriceData.posterPrices[sizesIndex]);
+            priceTextObject.textContent = frontendPriceData.posterPrices[sizesIndex] + "kr";        
+        } else {
+            console.log("the price ",sizesIndex,frontendPriceData.posterPrices,frontendPriceData.posterPrices[0]);
+            priceTextObject.textContent = frontendPriceData.posterPrices[0] + "kr"; // Default price
+        }
+        showAddButton(document.getElementById('btn'+selectObject.id));
+        removeEmailInput(formContainer);
     });
     selectObject.dispatchEvent(new Event('change'));
 } 
@@ -818,7 +788,7 @@ function clearCart() {
     shoppingCart = [];
     localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
     if(body.dataset.page === 'success'){return;}
-    calculatePrices();
+    calculatePrices(); 
 }
 function displayUserPurchaseInformation() {
     document.getElementsByClassName("purchase-info-text")[0].innerText = "I have sent an order confirmation to no one?";
@@ -939,3 +909,24 @@ function validatePhone(phone) {
 //     // Return true if all inputs are valid, otherwise false
 //     return name && isValidEmailValue && isValidPhoneValue;
 // }
+
+
+//addchekoutbutton function längst ner???
+ async function checkStockBeforeCheckout(buyingSizesAmount) {
+    console.log('sizes check:',buyingSizesAmount);
+        const response = await fetch("/check-stock", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ buyingSizesAmount })
+        });
+    
+        const result = await response.json();
+        console.log("stock response:: ",result);
+        if (!result.success) {
+            console.log("stock: ", false);
+            alert(result.message);
+            return false;
+        }
+        
+        return {success: true, lastItemsLenth: result.lastItemsLenth, lastItems: result.lastItems || null, message: result.message}; 
+ }

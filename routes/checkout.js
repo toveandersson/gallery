@@ -2,9 +2,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
-const sendMail = require("../mailer"); // Import the mailer function
 const axios = require('axios');
 require('dotenv').config();
+const generalControllers = require('../controllers/generalControllers.js');
 const router = express.Router(); // Create a new Router instance
 
 const STRIPE_KEY = process.env.STRIPE_URI;
@@ -68,11 +68,11 @@ async function deliveryEstimation(country){
     return deliveryEstimate;
 }
 
-
-
 router.post('/create-checkout-session', async (req, res) => {
-  const { cartItems, amount_shipping, country, currency } = req.body;
-  console.log('Received:', cartItems, amount_shipping, country, currency);
+  const { cartItems, country, currency } = req.body;
+  //console.log('Received:', cartItems, amount_shipping, country, currency);
+  const price_data = generalControllers.getPriceInfo();
+  const amount_shipping = country !== 'SE' ? price_data.shippingPrices.international : price_data.shippingPrices.domestic;
   const { convertedShippingAmount, sekToTarget } = await axiosConvert(amount_shipping, country);
   const selectedCurrency = currency;
   const convertion = sekToTarget;
@@ -82,6 +82,7 @@ router.post('/create-checkout-session', async (req, res) => {
   console.log("selectedCurrency ",selectedCurrency);
   console.log("",);
   console.log("",);
+  
   try {
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({

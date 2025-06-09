@@ -64,14 +64,11 @@ const checkStock = async (req, res) => {
 
         for (const item of buyingSizesAmount) {
             const result = await dbUtils.checkIfProductInStock(item.id, item.size, item.quantity);
-            console.log("resultt:",result);
             if (!result.success) {
                 insufficientStock.push(`${item.quantity} of ${result.name} with size ${item.size}`); //${item.quantity} of 
             }
-            console.log(item.name," available:",result.success," you want ",item.quantity);
             if (result.availableStock === item.quantity){
                 lastItem.push(`${result.name} with size ${item.size}`); //${result.availableStock} of 
-                console.log("available stock (generalcontroller) ",result.availableStock);
             }
         }
 
@@ -90,13 +87,13 @@ const checkStock = async (req, res) => {
     }
 };
 
-const getPriceInfo = (req, res) => {
-  return res.status(200).json({
+const getPriceInfo = () => {
+  return {
     posterPrices: [45, 65],
-    shipping: { domestic: 18, international: 38 }
-  });
+    shippingPrices: { domestic: 18, international: 38 },
+    freeShippingMin: 120
+  };
 };
-
 
 const getProductWithIdAndType = async (req, res) => {
     try {
