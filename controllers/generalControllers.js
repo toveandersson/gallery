@@ -89,7 +89,6 @@ const checkStock = async (req, res) => {
 
 const getPriceInfo = () => {
   return {
-    posterPrices: [45, 65],
     shippingPrices: { domestic: 18, international: 38 },
     freeShippingMin: 120
   };
@@ -98,7 +97,6 @@ const getPriceInfo = () => {
 const getProductWithIdAndType = async (req, res) => {
     try {
         const { id, productType }= req.params;
-        console.log("id::: ",id);
         const product = await Product.findOne({ _id: id }); // Query by your custom id
             if (!product) {
                 return res.status(404).json({ msg: "Product not found" });

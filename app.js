@@ -105,6 +105,7 @@ const postersData = require('./public/scripts/postersData');
 
 start();
 const dbUtils = require('./utils/dbUtils');
+//dbUtils.migrate();
 //dbUtils.fixSizeNames();
 
 //movePostersToProducts();

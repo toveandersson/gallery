@@ -52,6 +52,30 @@ const updateSizes = async () => {
   }
 };
 
+async function migrate() {
+  const result = await Product.updateMany(
+    //{ "sizes.1": { $exists: true } },  // filter: at least two sizes
+    {
+      $set:   { prices: [45, 65] },
+      $unset: { price: "" }
+    }
+  );
+  console.log('Modified:', result.modifiedCount);
+  process.exit();
+}
+
+async function deleteField() {
+  const result = await Product.updateMany({}, { $unset: { price: "" } });
+  console.log('Modified:', result.modifiedCount);
+  process.exit();
+}
+
+// migrate().catch(err => {
+//   console.error(err);
+//   process.exit(1);
+// });
+
+
 // async function addMailToList(posterId,size){
 //   try{
 //     const poster = await Poster.findOne({ _id: posterId }); // Use 'id' instead of '_id'
@@ -77,7 +101,7 @@ async function checkIfProductInStock(productId, size, quantity) {
         return { success: false, quantity: quantity, size: size, name: product.name, type: product.type};
       }
 
-      return { success: true, name: product.name, availableStock: availableStock, type: product.type, price: product.price }; // Stock is fine
+      return { success: true, name: product.name, availableStock: availableStock, type: product.type, prices: product.prices }; // Stock is fine
     } catch (error) {
         console.error("Error checking poster stock:", error);
         return { success: false, message: "Error checking stock" };
@@ -142,4 +166,19 @@ const fixSizeNames = async () => {
   }
 };
 
-module.exports = { fetchProductImages, reducePosterSizes, checkIfProductInStock, updateSizes, fixSizeNames };
+const getItemPrices = async (idArray) => {
+  try {
+    const productPricesArray = await Product.find(
+      { _id: { $in: idArray } },
+      { price: 1 } // Only return the `price` field and `_id`
+    );
+    if (!productPricesArray || productPricesArray.length === 0) {
+      throw new Error("No matching products found");
+    }
+    return productPricesArray;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { fetchProductImages, reducePosterSizes, checkIfProductInStock, updateSizes, fixSizeNames, getItemPrices, migrate, deleteField };

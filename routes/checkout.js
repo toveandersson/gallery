@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 require('dotenv').config();
 const generalControllers = require('../controllers/generalControllers.js');
+const dbUtils = require('../utils/dbUtils');
 const router = express.Router(); // Create a new Router instance
 
 const STRIPE_KEY = process.env.STRIPE_URI;
@@ -68,21 +69,35 @@ async function deliveryEstimation(country){
     return deliveryEstimate;
 }
 
-router.post('/create-checkout-session', async (req, res) => {
-  const { cartItems, country, currency } = req.body;
-  //console.log('Received:', cartItems, amount_shipping, country, currency);
+async function setCartWithBackendData(cartItems) {
+  const ids = [];
+  cartItems.forEach(item => {
+    ids.push(item.id);
+  });
+  const priceArray = await dbUtils.getItemPrices(ids);
+  for (let i = 0; i < cartItems.length; i++) {
+    cartItems[i].price = priceArray[i].price;
+  }
+}
+
+async function getShippingData(country){
   const price_data = generalControllers.getPriceInfo();
+  console.log("price dt",price_data);
   const amount_shipping = country !== 'SE' ? price_data.shippingPrices.international : price_data.shippingPrices.domestic;
   const { convertedShippingAmount, sekToTarget } = await axiosConvert(amount_shipping, country);
+  return { convertedShippingAmount, sekToTarget };
+}
+
+router.post('/create-checkout-session', async (req, res) => {
+  const { cartItems, country, currency } = req.body;
+  const { convertedShippingAmount, sekToTarget } = await getShippingData(country);
+  const deliveryEstimate = await deliveryEstimation(country);
   const selectedCurrency = currency;
   const convertion = sekToTarget;
-  const deliveryEstimate = await deliveryEstimation(country);
   const stripeLocale = countryToLocaleMap[country] || 'auto';
+  setCartWithBackendData(cartItems);
   console.log("shipping ",convertedShippingAmount);
   console.log("selectedCurrency ",selectedCurrency);
-  console.log("",);
-  console.log("",);
-  
   try {
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({

@@ -92,9 +92,7 @@ class CartItem {
 }
 let shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))?.map(item => new CartItem(item.id, item.name, item.price, item.size, item.images, item.quantity, item.type, item.set, item.unique)) || [];
 localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart));
-frontendPriceData = {posterPrices: [45, 65],
-    shippingPrices: { domestic: 18, international: 38 },
-    freeShippingMin: 120};
+frontendPriceData = { shippingPrices: { domestic: 18, international: 38 }, freeShippingMin: 120};
 
 document.addEventListener("DOMContentLoaded", async () => {
     const page = body.dataset.page;
@@ -228,7 +226,7 @@ async function buildPosterCards(data, posterGrid){
         //inner_flex.classList.add('add-button');
 
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
-            buildSelectSize(selectSizes, sizes, price_text, product.type, product.price);
+            buildSelectSize(selectSizes, sizes, price_text, product.type, product.prices);
         }
         checkIfOut(selectSizes, selectSizes.options, price_text);
     });
@@ -289,12 +287,9 @@ async function retrieveProductImage(productId, productType){
     }
 }
 async function addToCart(productId, foundItem, selectedSize, backendData, selectedIndex) {
-    console.log("data", productId,foundItem,selectedSize,backendData,selectedIndex);
+    console.log(backendData);
     const imagesArray = await retrieveProductImage(productId, backendData.type);
-    console.log("img",imagesArray);
-    const posterPrices = frontendPriceData.posterPrices;
-    console.log("type, and prices",backendData);
-    const price = backendData.type === 'poster' ? posterPrices[selectedIndex -1] : backendData.price;
+    const price = backendData.prices[selectedIndex-1];
     if (foundItem) {
         foundItem.quantity++; // Increase quantity if already in cart
     } 
@@ -578,7 +573,7 @@ function setOptionsAbled(options){
         option.disabled = "false";
     }
 }
-function buildSelectSize(selectObject, sizesKeysObject, priceTextObject, productType, productPrice){
+function buildSelectSize(selectObject, sizesKeysObject, priceTextObject, productType, productPrices){
     console.log("building: ",selectObject,sizesKeysObject,priceTextObject);
     const sizesTitleOption = document.createElement("option");
     sizesTitleOption.value = "";
@@ -625,20 +620,11 @@ function buildSelectSize(selectObject, sizesKeysObject, priceTextObject, product
             if (formContainer && formContainer.children.length === 0){
                 createEmailInput(formContainer,selectObject);
                 removeAddButton(document.getElementById('btn'+selectObject.id));
+                return;
             }
         }
-        else if (productType !== 'poster'){
-            priceTextObject.textContent = productPrice+'kr';
-            showAddButton(document.getElementById('btn'+selectObject.id));
-            removeEmailInput(formContainer);
-            return;
-        }
-        else if (sizesIndex !== -1 && sizesIndex < frontendPriceData.posterPrices.length) {
-            console.log("the price ",sizesIndex,frontendPriceData.posterPrices,frontendPriceData.posterPrices[sizesIndex]);
-            priceTextObject.textContent = frontendPriceData.posterPrices[sizesIndex] + "kr";        
-        } else {
-            console.log("the price ",sizesIndex,frontendPriceData.posterPrices,frontendPriceData.posterPrices[0]);
-            priceTextObject.textContent = frontendPriceData.posterPrices[0] + "kr"; // Default price
+        else {
+            priceTextObject.textContent = productPrices[selectObject.selectedIndex-1] + "kr"; // Default price
         }
         showAddButton(document.getElementById('btn'+selectObject.id));
         removeEmailInput(formContainer);
@@ -672,6 +658,8 @@ function removeEmailInput(emailContainer) {
 }
 function createEmailInput(emailContainer, selectSizes){
     // Create label
+    console.log("CREATING EMAIL");
+    console.log(emailContainer, selectSizes);
     const label = document.createElement("label");
     label.setAttribute("for", "email");
     label.setAttribute("class", "email-label");
@@ -710,7 +698,6 @@ function createEmailInput(emailContainer, selectSizes){
     addedToListAlert.setAttribute("id", "addedToListAlert");
     addedToListAlert.style.marginLeft = "auto";
 
-    // Append elements to the DOM (for example, inside a form or a div)
     emailContainer.appendChild(label);   
     emailContainer.appendChild(input);
     emailContainer.appendChild(confirmButton);
@@ -719,7 +706,9 @@ function createEmailInput(emailContainer, selectSizes){
     if (body.dataset.page === 'product'){
         emailContainer.style.display = 'flex';
     }   
-    else{emailContainer.style.display = 'block';}
+    else{emailContainer.style.display = 'block';
+        console.log("block",emailContainer);
+    }
 
     confirmButton.addEventListener("click", () => {
         console.log("Email confirmed:", input.value);
