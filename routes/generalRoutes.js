@@ -7,6 +7,8 @@ router.post('/check-stock-item', controllers.checkStockItem);
 router.post('/check-stock', controllers.checkStock);
 router.get('/update-stock', controllers.updateStock);
 router.get('/posters/:posterID', controllers.getPoster);
+router.get('/api/builds', controllers.getBuilds);
+//router.get('portfolio/')
 router.get('/get-all-products/:type?', controllers.getAllProductsWithType);    //byt ut ena stället till getAllProducts
 router.get('/get-product/:id/:type?', controllers.getProductWithIdAndType);    //inte baserat på poster, byt till product?
 // router.get('/:folderName', (req, res, next) => {

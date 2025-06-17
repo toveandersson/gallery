@@ -111,6 +111,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('clear-cart-btn').addEventListener('click', clearCart);
         addCheckoutButton();
     }
+    if (page === 'portfolio'){
+        buildPortfolio();
+    }
     const productPages = ['poster', 'mug', 'jewellery'];
     if (page === 'product'){
         showProductInfo();
@@ -429,6 +432,101 @@ function addCheckoutButton(){
     initializeCurrencySelect();
 }
 
+async function buildPortfolio() {
+    fetch('/api/builds')
+        .then(res => res.json())
+        .then(data => {
+            console.log("data dirs:",data);
+            games = data;
+
+            const container = document.getElementsByClassName('painting-grid-posters')[0];
+
+            for (let i = 0; i < games.length; i++) {
+                const gameName = games[i];
+
+                const imgBg = document.createElement('div');
+                imgBg.setAttribute('class', 'imgBg');
+                imgBg.style.paddingTop = "1rem";
+
+                const div_card = document.createElement('div');
+                div_card.setAttribute('class', 'cart-item');
+
+                const image = document.createElement('img');
+                image.setAttribute('class', 'game-thumbnail');
+                //image.setAttribute('class', 'thumbnail');
+                image.src = `/builds/${gameName}/thumbnail.gif`;
+                image.onerror = () => {
+                image.onerror = null; // prevent infinite loop if jpg also fails
+                image.src = `/builds/${gameName}/thumbnail.png`;
+                };
+                image.addEventListener("mouseover", function () {
+                    image.classList.add("hover-float");
+                    image.src = `/builds/${gameName}/thumbnail.gif`;
+                    image.onerror = () => {
+                        image.onerror = null;
+                        image.src = `/builds/${gameName}/thumbnail.png`;
+                    };
+                });
+
+                image.addEventListener("mouseout", function () {
+                    image.classList.remove("hover-float");
+                    image.src = `/builds/${gameName}/thumbnail.png`;
+                    image.onerror = () => {
+                        image.onerror = null;
+                        image.src = `/builds/${gameName}/thumbnail.gif`;
+                    };
+                });
+
+
+                const link = document.createElement('a');
+                link.href = `/game?id=${gameName}`;
+                
+                const poster_flex = document.createElement('div');
+                poster_flex.setAttribute('class', 'order-poster-flex');
+                
+                const title = document.createElement('h2');
+                title.innerText = `${gameName}`;
+                title.style.marginBottom = '.2rem';
+                title.style.color = "var(--light)";
+
+                link.appendChild(image);
+                imgBg.appendChild(link);
+                poster_flex.appendChild(title);
+                div_card.appendChild(imgBg);
+                div_card.appendChild(poster_flex);
+                container.appendChild(div_card);
+            }
+        })
+        .catch(err => {
+            console.error("Failed to fetch builds:", err);
+        });
+}
+// function buildPortfolio(){
+//     if (!games){
+//         games = 
+//     }
+//     for (let i = 0; i < games.length; i++) {
+//         const imgBg = document.createElement('div');
+//         imgBg.setAttribute('class', 'imgBg');
+        
+//         const div_card = document.createElement('div');
+//         div_card.setAttribute('class', 'cart-item');
+//         div_card.setAttribute('id', cartItem.id);
+        
+//         const image = document.createElement('img');
+//         image.setAttribute('class', 'thumbnail');
+//         image.src = `/game?id=${[i]}`;
+        
+//         const poster_flex = document.createElement('div');
+//         poster_flex.setAttribute('class', 'order-poster-flex');
+        
+//         const title = document.createElement('h2');
+//         title.innerText = `${product.name}`;
+//         title.style.marginBottom = '.2rem';
+//         title.style.color = "var(--light)";
+//     }
+// }
+
 function addCartItems() {
     console.log("Adding updated list to cart:", shoppingCart);
     calculatePrices();
@@ -562,7 +660,7 @@ function showProductInfo(){
         const sizes = selectedProduct.sizes; // Extract sizes
         if (sizes && typeof sizes === 'object' && Object.keys(sizes).length > 0) {
             const selectSizes = document.getElementsByClassName('product-select')[0];
-            buildSelectSize(selectSizes, sizes, document.getElementById('product-price'), selectedProduct.type, selectedProduct.price);
+            buildSelectSize(selectSizes, sizes, document.getElementById('product-price'), selectedProduct.type, selectedProduct.prices);
         }
         else (console.log("error: no sizes or no object etc"));
     })

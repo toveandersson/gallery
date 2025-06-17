@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const dbUtils = require('../utils/dbUtils');
 const Product = require('../models/Product');
 
@@ -127,6 +128,7 @@ const getPoster = async (req, res) => {
     }
 };
 
+
 const getAllProductsWithType = async (req, res) => {
     try {
         const { type } = req.params;
@@ -140,6 +142,22 @@ const getAllProductsWithType = async (req, res) => {
     }
 };
 
+const getBuilds = (req, res) => {
+  try {
+    const buildsPath = path.join(process.cwd(), 'public', 'builds');
+    const files = fs.readdirSync(buildsPath, { withFileTypes: true });
+
+    const gameFolders = files
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name);
+
+    res.json(gameFolders);
+  } catch (err) {
+    console.error('💥 Error reading builds:', err.message);
+    res.status(500).json({ error: 'Failed to list builds' });
+  }
+};
+
 module.exports = {
     updateStock,
     checkStockItem,
@@ -148,6 +166,7 @@ module.exports = {
     getAllProductsWithType,
     getProductWithIdAndType,
     serveHome,
-    getPriceInfo
+    getPriceInfo,
+    getBuilds
 };
   
