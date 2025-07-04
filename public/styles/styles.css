@@ -1027,3 +1027,15 @@ span {
     border-radius: .5rem;
     font-size: 1rem;
 }
+
+.engine-logo {
+    height: 2rem;
+    margin: auto;
+}
+
+.tag-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 1rem;
+    align-self: left;
+}

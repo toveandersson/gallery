@@ -95,6 +95,12 @@ const getPriceInfo = () => {
   };
 };
 
+// const getGameTags = () => {
+//     return {
+
+//     }
+// }
+
 const getProductWithIdAndType = async (req, res) => {
     try {
         const { id, productType }= req.params;

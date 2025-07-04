@@ -45,6 +45,25 @@
         productVersion: "1.0",
         showBanner: unityShowBanner,
     };
+    var tags = buildUrl + "/Tags.json";
+
+    async function fetchTags() {
+      const res = await fetch(buildUrl +'/Tags.json');
+      if (!res.ok) throw new Error("No tag file found");
+      const tags = await res.json(); 
+      console.log("engine:",tags[0]);
+      if (tags[2]== null){
+        console.log("false");
+        return null;
+      }
+      else {
+        console.log("true");
+        return true;
+      }
+    }
+    
+    fetchTags();
+    
     console.log("title ",unityBuildTitle);
     console.log("title ",productData.id);
 
@@ -83,7 +102,11 @@
 
       var script = document.createElement("script");
       script.src = loaderUrl;
-      script.onload = () => {
+      script.onload = async ()  => {
+      const res = await fetchTags();
+        if (!res){
+          console.log("return;");
+            return;  }
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {

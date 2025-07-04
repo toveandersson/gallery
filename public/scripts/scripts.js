@@ -440,67 +440,156 @@ async function buildPortfolio() {
             games = data;
 
             const container = document.getElementsByClassName('painting-grid-posters')[0];
-
-            for (let i = 0; i < games.length; i++) {
+            
+            for (let i = games.length - 1; i >= 0; i--) {
                 const gameName = games[i];
-
+                
                 const imgBg = document.createElement('div');
                 imgBg.setAttribute('class', 'imgBg');
                 imgBg.style.paddingTop = "1rem";
-
+                
                 const div_card = document.createElement('div');
                 div_card.setAttribute('class', 'cart-item');
+                div_card.setAttribute('data-game', gameName);
 
-                const image = document.createElement('img');
+                const image = document.createElement('img');    
                 image.setAttribute('class', 'game-thumbnail');
-                //image.setAttribute('class', 'thumbnail');
-                image.src = `/builds/${gameName}/thumbnail.gif`;
-                image.onerror = () => {
-                image.onerror = null; // prevent infinite loop if jpg also fails
-                image.src = `/builds/${gameName}/thumbnail.png`;
+
+                const src = [
+                    `/builds/${gameName}/thumbnail.gif`,
+                    `/builds/${gameName}/thumbnail.png`,
+                    `/builds/${gameName}/thumbnail.jpg`,
+                    `/builds/${gameName}/gif.png`
+                ];
+
+                const tryNextSource = (sources, image, index = 0) => {
+                    if (index >= sources.length) {
+                        image.onerror = null;
+                        return;
+                    }
+
+                    image.onerror = () => tryNextSource(sources, image, index + 1);
+                    image.src = sources[index];
                 };
+
+                tryNextSource(src, image);
+
                 image.addEventListener("mouseover", function () {
                     image.classList.add("hover-float");
-                    image.src = `/builds/${gameName}/thumbnail.gif`;
-                    image.onerror = () => {
-                        image.onerror = null;
-                        image.src = `/builds/${gameName}/thumbnail.png`;
-                    };
+                    const hoverSources = [
+                        `/builds/${gameName}/thumbnail.gif`,
+                        `/builds/${gameName}/thumbnail.jpg`,
+                        `/builds/${gameName}/gif.png`,
+                        `/builds/${gameName}/thumbnail.png`
+                    ];
+                    tryNextSource(hoverSources, image);
                 });
 
                 image.addEventListener("mouseout", function () {
                     image.classList.remove("hover-float");
-                    image.src = `/builds/${gameName}/thumbnail.png`;
-                    image.onerror = () => {
-                        image.onerror = null;
-                        image.src = `/builds/${gameName}/thumbnail.gif`;
-                    };
+                    tryNextSource(src, image); // Revert back to original order
                 });
-
 
                 const link = document.createElement('a');
                 link.href = `/game?id=${gameName}`;
+
+                const tagContainer = document.createElement('p');
+                tagContainer.setAttribute('class','tag-container');
+                tagContainer.classList.add('tag-container');
+                tagContainer.style.hitgh = '3rem';
                 
                 const poster_flex = document.createElement('div');
                 poster_flex.setAttribute('class', 'order-poster-flex');
                 
                 const title = document.createElement('h2');
                 title.innerText = `${gameName}`;
+                title.style.margin = 'auto';
                 title.style.marginBottom = '.2rem';
+                title.style.marginTop = '.2rem';
                 title.style.color = "var(--light)";
+                //title.style.textAlign = 'center';
 
                 link.appendChild(image);
                 imgBg.appendChild(link);
                 poster_flex.appendChild(title);
                 div_card.appendChild(imgBg);
+                div_card.appendChild(tagContainer);
                 div_card.appendChild(poster_flex);
                 container.appendChild(div_card);
             }
+            addTagsToGames(games);
         })
         .catch(err => {
             console.error("Failed to fetch builds:", err);
         });
 }
+
+async function addTagsToGames(games) {
+    for (let i = games.length - 1; i >= 0; i--) {
+        const gameName = games[i];
+        const card = document.querySelector(`[data-game="${gameName}"]`);
+
+        if (!card) continue;
+
+        try {
+            const res = await fetch(`/builds/${gameName}/Tags.json`);
+            if (!res.ok) throw new Error("No tag file found");
+            const tags = await res.json(); 
+            console.log("tags, ",tags);
+
+            tags.forEach(tag => {
+                if (tag == tags[0] && tag == 'Unity'){
+                    const image = document.createElement('img');  
+                    image.setAttribute('class', 'engine-logo');
+                    image.src = "/TemplateData/unity-logo-light.png";
+                    card.children[1].appendChild(image);
+                }
+                else if (tag == tags[0]) {
+                    const image = document.createElement('img');
+                    image.setAttribute('class', 'engine-logo');   
+                    image.src = "/TemplateData/UE-Icon-2023-Black.png";
+                    card.children[1].appendChild(image);
+                }
+                const tagElement = document.createElement('span');
+                //tagElement.classList.add('tag');
+                if (tag == tags[1]){
+                    const text = document.createElement('p');  
+                    text.textContent = tag;
+                    card.children[1].appendChild(text);
+                    text.style.margin = 'auto';
+                    text.style.marginLeft = '0rem';
+                }
+                else if (tag == tags[2] ){
+                    const text = document.createElement('h4');  
+                    text.textContent = tag;
+                    card.children[1].appendChild(text);
+                    text.style.textAlign = 'center';
+                    text.style.margin = "0rem";
+                }
+                if (tags[2]==null){
+                    console.log("game",gameName);
+                    let link = null;
+                    if (gameName == 'Gun Juggler'){
+                        link = 'https://yrgo-game-creator.itch.io/gun-juggler';
+                        console.log("yup");
+                    }
+                    else if (gameName == 'Epos'){
+                        link = "https://yrgo-game-creator.itch.io/epos";
+                        console.log("yup");
+                    }
+                    if (link){
+                        card.children[0].children[0].href = link;
+                    }
+                }
+            });
+
+            //card.appendChild(tagContainer);
+        } catch (err) {
+            console.log(`No tags for ${gameName}:`, err.message);
+        }
+    }
+}
+
 // function buildPortfolio(){
 //     if (!games){
 //         games = 
