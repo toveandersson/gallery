@@ -451,11 +451,13 @@ async function buildPortfolio() {
                 const div_card = document.createElement('div');
                 div_card.setAttribute('class', 'cart-item');
                 div_card.setAttribute('data-game', gameName);
+                div_card.setAttribute('align-self', 'start');
 
                 const image = document.createElement('img');    
                 image.setAttribute('class', 'game-thumbnail');
 
                 const src = [
+                    `/builds/${gameName}/hej.mp4`,
                     `/builds/${gameName}/thumbnail.gif`,
                     `/builds/${gameName}/thumbnail.png`,
                     `/builds/${gameName}/thumbnail.jpg`,
@@ -477,6 +479,7 @@ async function buildPortfolio() {
                 image.addEventListener("mouseover", function () {
                     image.classList.add("hover-float");
                     const hoverSources = [
+                        `/builds/${gameName}/hej.mp4`,
                         `/builds/${gameName}/thumbnail.gif`,
                         `/builds/${gameName}/thumbnail.jpg`,
                         `/builds/${gameName}/gif.png`,
