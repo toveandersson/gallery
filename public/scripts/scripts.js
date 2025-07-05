@@ -503,6 +503,7 @@ async function buildPortfolio() {
                 poster_flex.setAttribute('class', 'order-poster-flex');
                 
                 const title = document.createElement('h2');
+                title.setAttribute('class','game-title');
                 title.innerText = `${gameName}`;
                 title.style.margin = 'auto';
                 title.style.marginBottom = '.2rem';
@@ -559,7 +560,7 @@ async function addTagsToGames(games) {
                     card.children[1].appendChild(text);
                     text.style.margin = 'auto';
                     text.style.marginLeft = '0rem';
-                    text.style.fontSize = '';
+                    text.style.alignSelf= 'stretch';
                 }
                 else if (tag == tags[2] ){
                     const text = document.createElement('h4');  
@@ -567,7 +568,6 @@ async function addTagsToGames(games) {
                     card.children[1].appendChild(text);
                     text.style.textAlign = 'center';
                     text.style.margin = "0rem";
-                    text.style.fontSize = '';
                 }
                 if (tags[2]==null){
                     console.log("game",gameName);

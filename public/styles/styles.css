@@ -755,13 +755,15 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
 
 .cart-item {
     display: grid;
-    grid-template-columns: repeat(1);
+    grid-template-columns: repeat(1, 1fr);
     justify-items: center;
     grid-gap: .2rem;
     background-color: var(--lighter-bg);
     border-radius: .5rem;
     padding: .9rem .5rem;
     align-items: start;
+    align-self: stretch;
+    grid-auto-rows: auto;
     img {
         border-radius: .5rem;
     }
@@ -898,6 +900,9 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
 @media(max-width: 1000px){
     .about-street {
         grid-template-columns: repeat(1, 1fr);
+    }
+    .game-title {
+        min-height: 2.2em;
     }
 }
 @media(max-width: 768px){
@@ -1037,6 +1042,20 @@ span {
 .tag-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    margin: 1rem;
-    align-self: left;
+    margin: .5rem;
+    /* //align-self: stretch; */
+}
+
+.game-title {
+    align-self: center; /* stretches inside the grid cell */
+    width: 100%;
+    align-items: center;   
+    text-align: center;      
+    /* line-height: 1.2;      */
+    align-content: center;
+}
+
+
+.cart-item > * {
+  align-self: stretch; /* ensures children stretch by default */
 }
