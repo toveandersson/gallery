@@ -764,6 +764,7 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
     img {
         border-radius: .5rem;
     }
+    align-items: start;
 }
 
 .order-poster-flex {
