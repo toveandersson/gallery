@@ -478,11 +478,10 @@ async function buildPortfolio() {
                 image.addEventListener("mouseover", function () {
                     image.classList.add("hover-float");
                     const hoverSources = [
-                        `/builds/${gameName}/thumbnail.gif`,
-                        `/builds/${gameName}/thumbnail.jpg`,
-                        `/builds/${gameName}/thumbnail.jpg`,
-                        `/builds/${gameName}/gif.png`,
                         `/builds/${gameName}/thumbnail.png`
+                        `/builds/${gameName}/thumbnail.jpg`,
+                        `/builds/${gameName}/thumbnail.gif`,
+                        `/builds/${gameName}/gif.png`,
                     ];
                     tryNextSource(hoverSources, image);
                 });
