@@ -761,10 +761,10 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
     background-color: var(--lighter-bg);
     border-radius: .5rem;
     padding: .9rem .5rem;
+    align-items: start;
     img {
         border-radius: .5rem;
     }
-    align-items: start;
 }
 
 .order-poster-flex {
