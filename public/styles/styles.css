@@ -24,7 +24,7 @@
 
 .lightmode {
     --main-bg-color: var(--yellow); /*var(--yellow);  white;  */
-    --main-bg-color-rgba: var(--yellow-rgb);
+    --main-bg-color-rgba: var(--yellow-rgb); /* på homepage: #ffc05ed6 */
     --h1-color: var(--dark-yellow);
     --text-color: var(--dark-text);
     --stuff-background-color: #fff9e2;
@@ -646,11 +646,11 @@ p {
 
 
 @media(max-width: 1200px){
-    .painting-grid {
+    /* .painting-grid, .mugs-grid{
         grid-template-columns: repeat(1, 1fr);
-    }
+    } */
     .painting-child {
-        width: 70%;
+        width: 95%;
         margin: auto;
     }
     .painting-grid-posters {
@@ -1006,7 +1006,7 @@ form {
 
 .button{
     border: var(--main-bg-color);
-    border-style: double;
+    /* border-style: double; */
     border-width: .2rem;
 }
 
