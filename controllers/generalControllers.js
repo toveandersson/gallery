@@ -5,6 +5,7 @@ const Product = require('../models/Product');
 const MailList = require('../models/MailList');
 //const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
+const sendMail = require('../mailer');
 const ObjectId = mongoose.Types.ObjectId;
 
 
@@ -112,12 +113,14 @@ const addMailToList = async (req, res) => {
             console.log("found maillist already existing", mailList, mail, size);
             if (!mailList.mail.includes(mail)) {
                 mailList.mail.push(mail);
-                await mailList.save();
+                await mailList.save();  
+                sendMail(process.env.MAIL_USER, `${mail} joined the maillist for product with id ${idCopy}, ${size}`);
             }
         }  else {
             const product = await Product.findOne({ _id: new ObjectId(idCopy) });
             console.log("mailLists ,", mail, size);
             await MailList.create({ mail: mail, idCopy: idCopy, size: size, image: product.image });
+            sendMail(process.env.MAIL_USER, `${mail} created a maillist for ${product.name}, ${size}`);
         }
   } catch (err){
     console.error(err);

@@ -216,7 +216,7 @@ p {
 
 .nav {
     background-color: var(--main-bg-color-rgba);
-    color: var(--another-dark-text);
+    color: var(--white);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -263,7 +263,7 @@ p {
     }
     
     #product-img {
-        width: 70%
+        width: 60%
     }
 }
 
@@ -283,7 +283,7 @@ p {
 
     
     #product-img {
-        width: 70%
+        width: 60%
     }
     
 }
