@@ -2,6 +2,10 @@ const path = require('path');
 const fs = require('fs');
 const dbUtils = require('../utils/dbUtils');
 const Product = require('../models/Product');
+const MailList = require('../models/MailList');
+//const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const serveHome = (req, res, next) => {   
@@ -11,18 +15,6 @@ const serveHome = (req, res, next) => {
     });
 }; 
 
-// const serveFolders = (req, res, next) => {
-//     const folderName = req.params.folderName;
-//     const filePath = path.join(__dirname, '../public', folderName, `${folderName}.html`);
-
-//     res.sendFile(filePath, (error) => {
-//         if (error) {
-//             console.error("Error sending file:", error);
-//             next(error); // Forward error to centralized handler
-//         }
-//     });
-// };
- 
 const updateStock = async (req, res) => {
     try {
         const { posterSizes } = req.body;
@@ -35,6 +27,7 @@ const updateStock = async (req, res) => {
 
 const checkStockItem = async (req, res) => {
     try {
+        console.log('checkStockItem called');
         const { id, size, quantity } = req.body;
         
         if (!id || !size || !quantity) {
@@ -55,7 +48,6 @@ const checkStock = async (req, res) => {
     try {
         const { buyingSizesAmount } = req.body; // Expecting an array of objects
         console.log("check stock ",buyingSizesAmount);
-        console.log("buying sizes gotten: ",buyingSizesAmount)
         if (!buyingSizesAmount || !Array.isArray(buyingSizesAmount)) {
             return res.status(400).json({ success: false, message: "Invalid request format" });
         }
@@ -66,22 +58,23 @@ const checkStock = async (req, res) => {
         for (const item of buyingSizesAmount) {
             const result = await dbUtils.checkIfProductInStock(item.id, item.size, item.quantity);
             if (!result.success) {
-                insufficientStock.push(`${item.quantity} of ${result.name} with size ${item.size}`); //${item.quantity} of 
+                insufficientStock.push(`${item.quantity} of ${result.name} ${item.size}`); //${item.quantity} of 
             }
             if (result.availableStock === item.quantity){
-                lastItem.push(`${result.name} with size ${item.size}`); //${result.availableStock} of 
+                lastItem.push(`${result.name} ${item.size}`); //${result.availableStock} of 
             }
         }
 
         if (insufficientStock.length > 0) {
-            return res.json({ success: false, message: `I'm sorry, I no longer have: \n    •${insufficientStock.join("\n    •")}\nin stock` });
+            return res.json({ success: false, message: `I'm sorry, I no longer have: \n    •${insufficientStock.join("\n    •")}\nin stock.` });
         }
+        console.log('last items length: ', lastItem.length);
         if (lastItem.length > 0){
             console.log("last items: ",lastItem);
-            return res.json({success: true, lastItemsLenth: lastItem.length, lastItems:`    •${lastItem.join(`\n    •`)}`})
+            return res.json({success: true, lastItemsLength: lastItem.length, lastItems:`    •${lastItem.join(`\n    •`)}`})
         }
 
-        res.json({ success: true }); // Everything is in stock
+        res.json({ success: true });
     } catch (error) {
         console.error("Error checking stock:", error);
         next(error);
@@ -94,12 +87,6 @@ const getPriceInfo = () => {
     freeShippingMin: 120
   };
 };
-
-// const getGameTags = () => {
-//     return {
-
-//     }
-// }
 
 const getProductWithIdAndType = async (req, res) => {
     try {
@@ -114,6 +101,28 @@ const getProductWithIdAndType = async (req, res) => {
       res.status(500).json({ msg: error.message });
     }
 };
+
+const addMailToList = async (req, res) => {
+    try {
+        const { mail, idCopy, size } = req.body;
+        console.log(mail, idCopy, size);
+        console.log("id ", typeof idCopy);
+        const mailList = await MailList.findOne({ idCopy: idCopy });  
+        if (mailList) {
+            console.log("found maillist already existing", mailList, mail, size);
+            if (!mailList.mail.includes(mail)) {
+                mailList.mail.push(mail);
+                await mailList.save();
+            }
+        }  else {
+            const product = await Product.findOne({ _id: new ObjectId(idCopy) });
+            console.log("mailLists ,", mail, size);
+            await MailList.create({ mail: mail, idCopy: idCopy, size: size, image: product.image });
+        }
+  } catch (err){
+    console.error(err);
+  }
+}
 
 const getPoster = async (req, res) => {
     try {
@@ -133,7 +142,6 @@ const getPoster = async (req, res) => {
         next(error);
     }
 };
-
 
 const getAllProductsWithType = async (req, res) => {
     try {
@@ -165,14 +173,6 @@ const getBuilds = (req, res) => {
 };
 
 module.exports = {
-    updateStock,
-    checkStockItem,
-    checkStock,
-    getPoster,
-    getAllProductsWithType,
-    getProductWithIdAndType,
-    serveHome,
-    getPriceInfo,
-    getBuilds
+    updateStock, checkStockItem, checkStock, getPoster, getAllProductsWithType, getProductWithIdAndType, serveHome, getPriceInfo, getBuilds, addMailToList
 };
   

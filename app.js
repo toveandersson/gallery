@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const path = require('path');
-
 const controllers = require('./controllers/generalControllers');
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
@@ -28,8 +27,8 @@ app.use(express.urlencoded({ extended: false }));
 const router = require('./routes/generalRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
-const checkoutRoutes = require('./routes/checkout'); // Import the checkout routes
-const webhookRoutes = require('./routes/webhooks'); // Import the webhook routes
+const checkoutRoutes = require('./routes/checkout'); 
+const webhookRoutes = require('./routes/webhooks'); 
 app.use(checkoutRoutes); 
 app.use(webhookRoutes); 
 app.use(router);
@@ -54,8 +53,6 @@ const start = async () =>{
 }
 // dont know with this?
 //app.get('/create-checkout-session/:amount');
-
-const postersData = require('./public/scripts/postersData');
 
 // const { Poster, Product} = require('./models/Product');
 

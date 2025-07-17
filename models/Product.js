@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     prices:   { type: [Number], default: [] },
     desc: { type: String, required: true },
     available: { type: Boolean, required: true },
-    sizes: { type: Map, of: Number },
+    sizes: { type: Map, of: String },
     unique: { type: Boolean, default: false },
     set: { type: Number,  default: 0 },
     type: { type: String, enum: ['poster', 'mug', 'jewellery', 'other'], default: 'poster' }
@@ -16,4 +16,4 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-module.exports =  Product ;
+module.exports =  Product;

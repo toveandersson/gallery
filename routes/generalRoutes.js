@@ -5,6 +5,7 @@ const controllers = require('../controllers/generalControllers');
 router.post('/update-stock', controllers.updateStock);
 router.post('/check-stock-item', controllers.checkStockItem);
 router.post('/check-stock', controllers.checkStock);
+router.post('/add-mail', controllers.addMailToList);
 router.get('/update-stock', controllers.updateStock);
 router.get('/posters/:posterID', controllers.getPoster);
 router.get('/api/builds', controllers.getBuilds);

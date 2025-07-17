@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial=1.0">
+        <meta name="viewport" content="width=device-width">
 
         <meta name="description" content="Gallery">
         <meta name="keywords" content="TA, art, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
@@ -21,8 +21,8 @@
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
-        <script src="../scripts/scripts.js" defer></script>
-        <script src="../scripts/postersData.js" defer></script>
+        <script type="module" src="../scripts/mainScript.js" defer></script>
+        
         <!-- google adsense -->
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5894583602325760"
         crossorigin="anonymous"></script>
@@ -32,7 +32,7 @@
     <!-- overlay for mobile -->
     <div id="overlay">
         <div class="close-button">
-            <i class="fa fa-times" title="button to close mobile navigation" onclick="hideOverlay()"></i>
+            <i class="fa fa-times" title="button to close mobile navigation"></i>
         </div>
         <div class="overlay-text">
             <a href="/home"><mark>Home</mark></a>
@@ -50,7 +50,7 @@
                     <a href="/home">
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png" alt="painting" style="width: 2.5rem;"loading="lazy" >
                     </a>
-                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                    <button id="changeColorBtn">
                         <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: .8rem;"class="sun"> 
                         <img src="/images\moon (2).png"style="width: 2rem; margin: .8rem;" class="moon"> 
                     </button>
@@ -69,19 +69,19 @@
                     <a href="/home">
                         <img src="\images\LargerPosters\sunny_bg_lowRes.png"  alt="painting" style="width: 2.5rem;"loading="lazy" >
                     </a>
-                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                    <button id="changeColorBtn">
                         <img src="/images\sun-and-moon (1).png" style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;"class="sun">  
                         <img src="/images\moon (2).png"style="width: 2rem; margin: 0.6rem 0.8rem 0.95rem 0.1rem;" class="moon"> 
                     </button>
                 </div>
-                <div id="right-side">
-                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="displayOverlay()"></i>
+                <div id="open-nav">
+                    <i class="fa-solid fa-bars" title="button to open navigation"></i>
                 </div>
             </nav>
         </div>
 <!-- "/images\LargerPosters\Eyes\grandma_eyes.jpg" -->
         <div class="hero-container">
-            <img class="hero-image" src="\images\LargerPosters\Eyes\weird_eyes4.jpeg" width="353.75" height="354"
+            <img class="hero-image" src="/images\LargerPosters\Eyes\weird_eyes3.jpeg" width="353.75" height="354"
                 alt="painting">
             <div class="hero-text">
                 <h1>Tove</h1>
@@ -95,27 +95,30 @@
             <a href="/posters" a><h2>Posters</h2> </a>
             <div class="painting-grid">
                 <div class="painting-child">
-                    <img src="/images\LargerPosters\Eyes\grandma_eyes.jpg" alt="" loading="lazy"
-                    style="width: 100%;">
+                    <a href = "posters/67e343fd7b2fd24edb6b5af1">
+                        <img src="/images\LargerPosters\Eyes\grandma_eyes.jpg" alt="" pointerEvents="auto" loading="lazy" style="width: 100%;">
+                    </a>
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Grunna</h4>
                 </div>
                 <div class="painting-child">
-                    <img src="\images\LargerPosters\Eyes\emma_eyes.jpeg" alt="" loading="lazy"
-                    style="width: 100%;">
+                    <a href = "posters/67e343fd7b2fd24edb6b5b00">
+                        <img src="\images\LargerPosters\Eyes\emma_eyes.jpeg" alt="" pointerEvents="auto" loading="lazy" style="width: 100%;">
+                    </a>
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Rannsakan</h4>
                 </div>
                 <div class="painting-child">
-                    <img src="/images\LargerPosters\Eyes\wave_eyes.jpeg", alt="" loading="lazy"
-                    style="width: 100%;">
+                    <a href = "posters/67e343fd7b2fd24edb6b5af4">
+                        <img src="/images\LargerPosters\Eyes\wave_eyes.jpeg" alt="" pointerEvents="auto" loading="lazy" style="width: 100%;">
+                    </a>
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Wave</h4>
                 </div>
                 <!-- <div class="painting-child">
-                    <img src="\images\LargerPosters\Eyes\hello_eyes.jpeg" alt="" loading="lazy"
+                    <img src="\images\LargerPosters\Eyes\hello_eyes.jpeg" alt="" pointerEvents="auto" loading="lazy"
                     style="width: 100%;">
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Rannsakan</h4>
                 </div>
                 <div class="painting-child">
-                    <img src="\images\LargerPosters\Eyes\circus_eyes.jpeg" alt="" loading="lazy"
+                    <img src="\images\LargerPosters\Eyes\circus_eyes.jpeg" alt="" pointerEvents="auto" loading="lazy"
                     style="width: 100%;">
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Sola sig</h4>
                 </div>
@@ -137,66 +140,48 @@
             </div>
 
         </div>
-
-        <!-- class="jewellery"  -->
-        <div class="jewellery">
-            <a href="/jewellery" a><h2>Jewellery</h2> </a>
-            <div class="jewellery-grid">
-                <div class="painting-child">
-                    <img src="\images\LargerPosters\Eyes\earrings3.jpg" alt="" loading="lazy"
-                    style="width: 100%;">
-                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-                </div>
-            </div>
-        </div>
-
+        
         <div class="mugs">
             <a href="/mugs" a><h2>Mugs</h2> </a>
             <div class="mugs-grid">
                 <div class="painting-child">
-                    <img src="\images\IMG_4385.JPG" alt="" loading="lazy"
-                    style="width: 100%;">
-                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+                    <a href = "posters/68434ed875a9af84902cf0e0">
+                        <img src="/images\mugs\green.jpeg" alt="" pointerEvents="auto" loading="lazy" style="width: 100%;">
+                    </a>
+                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Gräshoppa</h4>
                 </div>
                 <div class="painting-child">
-                    <img src="\images\IMG_4393_2.JPG" alt="" loading="lazy"
-                    style="width: 100%;">
-                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+                    <a href = "posters/6843527175a9af84902cf0ea">
+                        <img src="/images\mugs\orange.jpeg" alt="" pointerEvents="auto" loading="lazy" style="width: 100%;">
+                    </a>
+                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;">Bebop</h4>
                 </div>
                 <!-- <div class="painting-child">
-                    <img src="\images\_2.JPG" alt="" loading="lazy"
+                    <img src="\images\_2.JPg" alt="" pointerEvents="auto" loading="lazy"
                     style="width: 100%;">
                     <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
                 </div> -->
             </div>
         </div>
+        
+        <!-- class="jewellery" 
+        <div class="jewellery">
+            <a href="/jewellery" a><h2>Jewellery</h2> </a>
+            <div class="jewellery-grid">
+                <div class="painting-child">
+                    <img src="\images\LargerPosters\Eyes\earrings3.jpg" alt="" pointerEvents="auto" loading="lazy"
+                    style="width: 100%;">
+                    <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+                </div>
+            </div>
+        </div> -->
 
-        <div class="grid">
-            <div class="">
-                <img src="\images\IMG_4385.JPG" alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
+<!-- fina bilder -->
             <!-- <div class="">
-                <img src="\images\IMG_4405.jpg", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div><div class="">
-                <img src="\images\IMG_4202.jpg", alt="" loading="lazy"
+                <img src="\images\IMG_4385.JPg" alt="" pointerEvents="auto" loading="lazy"
                 style="width: 100%;">
                 <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
             </div>
-            <div class="">
-                <img src="\images\IMG_4393_2.JPG" alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
-            <div class="">
-                <img src="\images\IMG_4211.jpg", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div> -->
-            
             <div class="">
                 <img src="\images\Photos\IMG_5023.JPG", alt="" loading="lazy"
                 style="width: 100%;">
@@ -206,29 +191,9 @@
                 <img src="\images\Photos\IMG_5020.JPG", alt="" loading="lazy"
                 style="width: 100%;">
                 <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
-            <div class="">
-                <img src="\images\Photos\IMG_5027.JPG", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
-            <div class="">
-                <img src="\images\Photos\IMG_5024.JPG", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
-            <div class="">
-                <img src="\images\Photos\IMG_5031.JPG", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div>
+            </div> -->
 
             <!-- <div class="">
-                <img src="\images\Photos\IMG_5025.JPG", alt="" loading="lazy"
-                style="width: 100%;">
-                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
-            </div> -->
-            <div class="">
                 <img src="\images\Photos\IMG_5026.JPG", alt="" loading="lazy"
                 style="width: 100%;">
                 <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
@@ -252,7 +217,51 @@
                 <img src="\images\Photos\IMG_5017_2.JPG", alt="" loading="lazy"
                 style="width: 100%;">
                 <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div> -->
+
+
+        <div class="grid" style="padding-top: 2rem;">
+            <!-- <div class="">
+                <img src="\images\IMG_4405.jpg", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div><div class="">
+                <img src="\images\IMG_4202.jpg", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
             </div>
+            <div class="">
+                <img src="\images\IMG_4393_2.JPg" alt="" pointerEvents="auto" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div>
+            <div class="">
+                <img src="\images\IMG_4211.jpg", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div> -->
+            
+            <div class="">
+                <img src="\images\Photos\IMG_5027.JPG", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div>
+            <div class="">
+                <img src="\images\Photos\IMG_5024.JPG", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div>
+            <div class="">
+                <img src="\images\Photos\IMG_5031.JPG", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div>
+
+            <!-- <div class="">
+                <img src="\images\Photos\IMG_5025.JPG", alt="" loading="lazy"
+                style="width: 100%;">
+                <h4 style="padding-top: 1rem; padding-bottom: 2rem;"></h4>
+            </div> -->
     </main>
 
     <!-- footer -->

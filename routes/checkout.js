@@ -1,19 +1,15 @@
 const express = require('express');
-const app = express();
-const path = require('path');
-const mongoose = require('mongoose');
 const axios = require('axios');
 require('dotenv').config();
 const generalControllers = require('../controllers/generalControllers.js');
 const dbUtils = require('../utils/dbUtils');
-const router = express.Router(); // Create a new Router instance
+const router = express.Router();
 
 const STRIPE_KEY = process.env.STRIPE_URI;
 if (!STRIPE_KEY) {
   console.error("Stripe API key is missing!");
 }
 const stripe = require('stripe')(STRIPE_KEY);
-
 
 const countryCurrencyMap = {
   'SE': 'sek', 'FR': 'eur', 'DE': 'eur', 'IT': 'eur', 'ES': 'eur',
@@ -25,7 +21,7 @@ const countryCurrencyMap = {
 };
 
 const countryToLocaleMap = {
-  'SE': 'sv', 'DK': 'da', 'NO': 'nb', 'FI': 'fi', 'DE': 'de',
+  'SE': 'sv', 'DK': 'da', 'NO': 'nb', 'FI': 'fi', 'DE': 'de', 
   'FR': 'fr', 'IT': 'it', 'ES': 'es', 'NL': 'nl', 'BE': 'nl',
   'AT': 'de', 'IE': 'en', 'PT': 'pt', 'GR': 'el', 'LU': 'fr',
   'CZ': 'cs', 'SK': 'sk', 'SI': 'sl', 'LT': 'lt',
@@ -72,17 +68,18 @@ async function deliveryEstimation(country){
 async function setCartWithBackendData(cartItems) {
   const ids = [];
   cartItems.forEach(item => {
-    ids.push(item.id);
+    ids.push(item._id);
   });
   const priceArray = await dbUtils.getItemPrices(ids);
   for (let i = 0; i < cartItems.length; i++) {
-    cartItems[i].price = priceArray[i].price;
+    let pricesObj = priceArray.find(obj => obj._id.toString() === cartItems[i]._id)?.prices;
+    cartItems[i].price = pricesObj[cartItems[i].priceIndex];  
+    console.log("images: ",cartItems[i].image);   
   }
 }
 
 async function getShippingData(country){
   const price_data = generalControllers.getPriceInfo();
-  console.log("price dt",price_data);
   const amount_shipping = country !== 'SE' ? price_data.shippingPrices.international : price_data.shippingPrices.domestic;
   const { convertedShippingAmount, sekToTarget } = await axiosConvert(amount_shipping, country);
   return { convertedShippingAmount, sekToTarget };
@@ -92,12 +89,8 @@ router.post('/create-checkout-session', async (req, res) => {
   const { cartItems, country, currency } = req.body;
   const { convertedShippingAmount, sekToTarget } = await getShippingData(country);
   const deliveryEstimate = await deliveryEstimation(country);
-  const selectedCurrency = currency;
-  const convertion = sekToTarget;
   const stripeLocale = countryToLocaleMap[country] || 'auto';
-  setCartWithBackendData(cartItems);
-  console.log("shipping ",convertedShippingAmount);
-  console.log("selectedCurrency ",selectedCurrency);
+  await setCartWithBackendData(cartItems);
   try {
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({
@@ -112,7 +105,7 @@ router.post('/create-checkout-session', async (req, res) => {
                       type: 'fixed_amount',
                       fixed_amount: {
                           amount: convertedShippingAmount, // Amount in smallest unit (e.g., cents) convertedShippingAmount
-                          currency: selectedCurrency // Stripe will handle conversion automatically
+                          currency: currency // Stripe will handle conversion automatically
                       },
                       display_name: 'Standard shipping',
                       delivery_estimate: deliveryEstimate,
@@ -121,9 +114,9 @@ router.post('/create-checkout-session', async (req, res) => {
           ],
           line_items: cartItems.map(item => ({
               price_data: { 
-                  currency: selectedCurrency,
-                  product_data: { name: item.name, images: [process.env.BASE_URL+ encodeURI(item.images)]},
-                  unit_amount: Math.round(item.price * convertion * currencyDecimals),  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
+                  currency: currency,
+                  product_data: { name: item.name, images: [process.env.BASE_URL+ encodeURI(item.image)]},
+                  unit_amount: Math.round(item.price * sekToTarget * currencyDecimals),  // Stripe expects amounts in the smallest unit (e.g., cents) Math.round(item.price * sekToTarget * (currencyDecimals[selectedCurrency.toUpperCase()]))
               },
               quantity: item.quantity,
               // metadata: {
@@ -131,7 +124,7 @@ router.post('/create-checkout-session', async (req, res) => {
               // }
           })),
           mode: 'payment',
-          metadata: { orderId: "12345XYZ" },  // ✅ Allowed
+          //metadata: { orderId: "12345XYZ" },  // ✅ Allowed
           success_url: `${process.env.BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,  
           cancel_url: `${process.env.BASE_URL}/order`,
       });

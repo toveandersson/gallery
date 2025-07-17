@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial=1.0">      
+        <meta name="viewport" content="width=device-width">      
 
         <meta name="description" content="Gallery">
         <meta name="keywords" content="TA, art, gallery, posters, buy posters, buy art, cheap posters, posters sweden, buy posters online">
@@ -21,8 +21,8 @@
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
-        <script src="../scripts/scripts.js" defer></script>
-        <script src="../scripts/postersData.js" defer></script>
+        <script type="module" src="../scripts/mainScript.js" defer></script>
+        
         <!-- google adsense -->
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5894583602325760"
         crossorigin="anonymous"></script>
@@ -32,7 +32,7 @@
     <!-- overlay for mobile -->
     <div id="overlay">
         <div class="close-button">
-            <i class="fa fa-times" title="button to close mobile navigation" onclick="hideOverlay()"></i>
+            <i class="fa fa-times" title="button to close mobile navigation"></i>
         </div>
         <div class="overlay-text">
             <a href="/home"><mark>Home</mark></a>
@@ -50,7 +50,7 @@
                     <a href="/home">
                         <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
                     </a>
-                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                    <button id="changeColorBtn">
                         <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"class="sun"> 
                         <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" class="moon"> 
                     </button>
@@ -69,13 +69,13 @@
                     <a href="/home">
                         <img src="/images\LargerPosters\snailing_bg.png" alt="painting" style="width: 2rem;"loading="lazy" >
                     </a>
-                    <button id="changeColorBtn" onclick="nightmodeSwitch()">
+                    <button id="changeColorBtn">
                         <img src="/images\sun-and-moon (1).png" style="width: 1.5rem; margin: .8rem;"class="sun"> 
                         <img src="/images\moon (2).png"style="width: 1.5rem; margin: .8rem;" class="moon"> 
                     </button>
                 </div>
-                <div id="right-side">
-                    <i class="fa-solid fa-bars" title="button to open navigation" onclick="displayOverlay()"></i>
+                <div id="open-nav">
+                    <i class="fa-solid fa-bars" title="button to open navigation"></i>
                 </div>
             </nav>
         </div>

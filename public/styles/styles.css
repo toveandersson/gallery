@@ -16,6 +16,10 @@
     --lighter-yellow:  #f9da52;
     --lighter-dark-gb:  #0f280d;
     --light-green: #173014;
+
+    --red-theme: #b62517;
+    --red-theme-yellow: #f7ca3e;
+    /* main-bg-color in lightmode = contrasting red theme yellow! */
 }
 
 .lightmode {
@@ -89,7 +93,7 @@ mark {
 /* --------------------------------------------- */
 
 h2 {
-    color: var(--h2-text-color)
+    color: white;
 }
 
 body {
@@ -259,7 +263,7 @@ p {
     }
     
     #product-img {
-        width: 35%
+        width: 70%
     }
 }
 
@@ -279,7 +283,7 @@ p {
 
     
     #product-img {
-        width: 40%
+        width: 70%
     }
     
 }
@@ -363,12 +367,19 @@ p {
     width: 100%;
     /* height: 100%; */
     /* object-fit: contain; */
-  transition: transform 0.3s ease;
+    transition: transform 0.3s ease;
 }
-
-.game-thumbnail.hover-float {
+.red {
+    background-color: #b62517;
+}
+.hover-float {
   transform: translateY(-.3rem);
+   transition: transform 0.3s ease;
 }
+/* .game-thumbnail.hover-float {
+  transform: translateY(-.3rem);
+} */
+
 
 /* --------------------------------------------- */
 /*hero style image*/
@@ -457,19 +468,19 @@ p {
     grid-template-columns: repeat(1, 1fr);
     justify-items: center;
     grid-gap: .5rem;
-    background-color: var(--main-bg-color);
+    background-color: #c83021;
     border-radius: .5rem;
     padding: 0rem .5rem 0rem .5rem;
     img {
         border-radius: .5rem;
-        pointer-events: none;
+        transition: transform 0.3s ease;
     }
 }
 
 .painting-child h4 {
     font-size: 1rem;
     margin: 0;
-    color: var(--h1-color);
+    color: white;
 }
 
 .painting-child h4:nth-child(1) {
@@ -697,7 +708,7 @@ p {
 footer {
     position: relative;
     justify-content: space-between;
-    background-color: var(--dark-yellow);
+    background-color: var(--main-bg-color-rgba);
     display: flex;
     bottom: 0;
     width: 100%;
@@ -727,7 +738,7 @@ footer div:nth-child(2) div:nth-child(1){
 
 footer div:nth-child(2) div:nth-child(1) a{
     text-decoration: none;
-    color: var(--main-bg-color);
+    color: white;
     padding: .5rem;
     font-weight: bolder;
 }
@@ -835,7 +846,7 @@ footer div:nth-child(1) img, footer div:nth-child(3) img {
     text-align: center;
     color: var(--h2-text-color);
     border-radius: .5rem;
-    background-color: var(--dark-yellow);
+    background-color: var(--slightly-lighter-bg);
 }
 
 .about-child2-street {
